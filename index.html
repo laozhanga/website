@@ -26,6 +26,7 @@
       <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+      <a id="_top"></a>
   </head>
 
   <body>
@@ -87,5 +88,13 @@
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="ie10-viewport-bug-workaround.js"></script>
+      
+   <script type="text/javascript">  
+    function form_top(){  
+        document.write('<div id="form_top"><a href="#_top" title="回到顶部"><div class="top_img"></div></a></div>')  
+    }  
+    form_top();  
+  </script>
+      
   </body>
 </html>

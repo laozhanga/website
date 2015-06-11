@@ -77,3 +77,11 @@ body {
     border-bottom: 0;
   }
 }
+
+#form_top{display:block; bottom:3px; right:3px; position:fixed;}  
+.top_img{  
+    background-image: url("top.png");  
+    width: 40px;  
+    height:40px;  
+    cursor: pointer;  
+}
