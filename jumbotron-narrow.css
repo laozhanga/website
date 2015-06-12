@@ -78,7 +78,7 @@ body {
   }
 }
 
-#form_top{display:block; bottom:3px; right:3px; position:fixed;}  
+#form_top{display:block; bottom:100px; right:100px; position:fixed;}  
 .top_img{  
     background-image: url("top.png");  
     width: 40px;  
