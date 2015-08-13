@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>LDAP: Add a mail alias account</title>
+        <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
+    </head>
+    <body>
+    
+    <div id="navigation">
+        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
+    
+        // <a href="./index.html">Document Index</a>
+    </div><h1 id="ldap-add-a-mail-alias-account">LDAP: Add a mail alias account</h1>
+<h2 id="add-mail-alias-with-iredadmin-pro">Add mail alias with iRedAdmin-Pro</h2>
+<p>With iRedAdmin-Pro, please click menu in main navigation bar: `Add -&gt; Mail Alias'.
+Screenshot:</p>
+<p><img alt="" src="../images/iredadmin/alias_create.png" /></p>
+<h2 id="add-mail-alias-with-phpldapadmin">Add mail alias with phpLDAPadmin</h2>
+<ul>
+<li>Log into phpLDAPadmin as LDAP root dn <code>cn=Manager</code> or <code>cn=vmailadmin</code>.</li>
+<li>Expand LDAP tree in left panel, click <code>Create new entry here</code> under
+  <code>ou=Aliases</code> of your domain, and select <code>Default</code> in right panel.</li>
+<li>Select object class <code>mailAlias</code> in right panel.</li>
+<li>Input required fields of mail alias account.</li>
+</ul>
+<p><strong>WARNING</strong>: Attribute <code>enabledService</code> requires two values: <code>mail</code>, <code>deliver</code>.</p>
+<ul>
+<li>Confirm to create.</li>
+<li>Add missing value for attribute <code>enabledService</code>:  <code>mail</code>, <code>deliver</code>.</li>
+<li>Add new attribute <code>accountStatus</code> with value <code>active</code>. This is required.</li>
+<li>Add alias members (full email address) in attribute <code>mailForwardingAddress</code>.
+  You can add as many members as you want.</li>
+</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3293801-21', 'auto');
+  ga('send', 'pageview');
+</script>
+</body></html>

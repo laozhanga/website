@@ -1,0 +1,275 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Locations of configuration and log files of mojor components</title>
+        <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
+    </head>
+    <body>
+    
+    <div id="navigation">
+        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
+    
+        // <a href="./index.html">Document Index</a>
+    </div><h1 id="locations-of-configuration-and-log-files-of-mojor-components">Locations of configuration and log files of mojor components</h1>
+<div class="toc">
+<ul>
+<li><a href="#locations-of-configuration-and-log-files-of-mojor-components">Locations of configuration and log files of mojor components</a><ul>
+<li><a href="#apache">Apache</a></li>
+<li><a href="#nginx">Nginx</a></li>
+<li><a href="#postfix">Postfix</a><ul>
+<li><a href="#main-config-files">Main config files:</a></li>
+<li><a href="#log-files">Log files</a></li>
+</ul>
+</li>
+<li><a href="#dovecot">Dovecot</a><ul>
+<li><a href="#config-files">Config files</a></li>
+<li><a href="#log-files_1">Log files</a></li>
+</ul>
+</li>
+<li><a href="#openldap">OpenLDAP</a></li>
+<li><a href="#mysql-mariadb">MySQL, MariaDB</a></li>
+<li><a href="#amavisd">Amavisd</a><ul>
+<li><a href="#main-config-files_1">Main config files</a></li>
+<li><a href="#log-files_2">Log files</a></li>
+</ul>
+</li>
+<li><a href="#cluebringer">Cluebringer</a></li>
+<li><a href="#fail2ban">Fail2ban</a></li>
+<li><a href="#roundcube-webmail">Roundcube webmail</a></li>
+<li><a href="#sogo-groupware">SOGo Groupware</a></li>
+<li><a href="#iredapd">iRedAPD</a></li>
+<li><a href="#iredadmin">iRedAdmin</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="apache">Apache</h2>
+<ul>
+<li>
+<p>On RHEL/CentOS: Apache config files are placed under <code>/etc/httpd/</code>.</p>
+<ul>
+<li>Main config file is <code>/etc/httpd/conf/httpd.conf</code>.</li>
+<li>Module config files are placed under <code>/etc/httpd/conf.d/</code> (old releases)
+  or <code>/etc/httpd/conf.modules.d/</code>.</li>
+<li>Root directory used to store web applications is <code>/var/www</code>, document
+  root is <code>/var/www/html/</code>.</li>
+<li>Log files are placed under <code>/var/www/httpd/</code>.</li>
+</ul>
+</li>
+<li>
+<p>On Debian/Ubuntu: Apache config files are placed under <code>/etc/apache2</code>.</p>
+<ul>
+<li>Main config file is <code>/etc/apache2/apache2.conf</code>.</li>
+<li>Module config files are placed under <code>/etc/apache2/conf.d/</code> (old
+  releases) or <code>/etc/apache2/conf-available/</code>.</li>
+<li>Root directory used to store web applications is <code>/usr/share/apache2</code>,
+  document root is <code>/var/www/</code> (old releases) or <code>/var/www/html/</code>.</li>
+<li>Log files are placed under <code>/var/log/apache2/</code>.</li>
+</ul>
+</li>
+<li>
+<p>On FreeBSD: Apache config files are placed under <code>/usr/local/etc/apache2</code>.</p>
+<ul>
+<li>Main config file is <code>/usr/local/etc/apache2/httpd.conf</code>.</li>
+<li>Module config files are placed under <code>/usr/local/etc/apache2/Includes/</code>.</li>
+<li>Root directory used to store web applications is <code>/usr/local/www/</code>,
+  document root is <code>/usr/local/www/apache22/data/</code>.</li>
+<li>Log files are placed under <code>/var/log/</code>, main log files are
+  <code>/var/log/httpd-access.log</code> and <code>/var/log/httpd-error.log</code>.</li>
+</ul>
+</li>
+<li>
+<p>On OpenBSD: Apache (the one shipped in OpenBSD base system) config files
+  are placed under <code>/var/www/conf</code>.</p>
+<ul>
+<li>Main config file is <code>/var/www/conf/httpd.conf</code>.</li>
+<li>Module config files are placed under <code>/var/www/conf/modules/</code>.</li>
+<li>Root directory used to store web applications is <code>/var/www/</code>,
+  document root is <code>/var/www/htdocs/</code>.</li>
+<li>Log files are placed under <code>/var/www/logs/</code>.</li>
+</ul>
+</li>
+</ul>
+<h2 id="nginx">Nginx</h2>
+<ul>
+<li>On <code>Linux</code> and OpenBSD: Nginx config files are placed under <code>/etc/nginx/</code>,
+  uWSGI config files are placed under <code>/etc/uwsgi/</code>.</li>
+<li>On FreeBSD: Nginx config files are placed under <code>/usr/local/etc/nginx</code>,
+  uWSGI config files are placed under <code>/usr/local/etc/uwsgi/</code>.</li>
+</ul>
+<p>Main config files are <code>nginx.conf</code> and <code>default.conf</code>.</p>
+<ul>
+<li>On <code>Linux</code> and FreeBSD: log files are placed under <code>/var/log/nginx/</code>.</li>
+<li>On OpenBSD: log files are placed under <code>/var/www/logs/</code> (same as Apache).</li>
+</ul>
+<h2 id="postfix">Postfix</h2>
+<ul>
+<li>on <code>Linux</code> and OpenBSD, Postfix config files are placed under <code>/etc/postfix/</code>.</li>
+<li>on FreeBSD, Postfix config files are placed under <code>/usr/local/etc/postfix/</code>.</li>
+</ul>
+<h3 id="main-config-files">Main config files:</h3>
+<ul>
+<li><code>main.cf</code>: contains most configurations.</li>
+<li><code>master.cf</code>: contains transport related settings.</li>
+<li><code>aliases</code>: aliases for system accounts.</li>
+<li><code>helo_access.pcre</code>: PCRE regular expressions of HELO check rules.</li>
+<li><code>ldap/*.cf</code>: used to query mail accounts. LDAP backends only.</li>
+<li><code>mysql/*.cf</code>: used to query mail accounts. MySQL/MariaDB backends only.</li>
+<li><code>pgsql/*.cf</code>: used to query mail accounts. PostgreSQL backend only.</li>
+</ul>
+<h3 id="log-files">Log files</h3>
+<ul>
+<li>on RHEL/CentOS, FreeBSD, OpenBSD, it's <code>/var/log/maillog</code>.</li>
+<li>on Debian, Ubuntu, it's <code>/var/log/mail.log</code>.</li>
+</ul>
+<h2 id="dovecot">Dovecot</h2>
+<ul>
+<li>on <code>Linux</code> and OpenBSD, Dovecot config files are placed under <code>/etc/dovecot/</code>.</li>
+<li>on FreeBSD, Dovecot config files are placed under <code>/usr/local/etc/dovecot/</code>.</li>
+</ul>
+<h3 id="config-files">Config files</h3>
+<p>Main config file is <code>dovecot.conf</code>. It contains most configurations.</p>
+<p>Additional config files under <code>/etc/dovecot/</code>:</p>
+<ul>
+<li><code>dovecot-ldap.conf</code>: used to query mail users and passwords. LDAP backends only.</li>
+<li><code>dovecot-mysql.conf</code>: used to query mail users and passwords. MySQL/MariaDB backends only.</li>
+<li><code>dovecot-pgsql.conf</code>: used to query mail users and passwords. PostgreSQL backend only.</li>
+<li><code>dovecot-used-quota.conf</code>: used to store and query real-time per-user mailbox quota.</li>
+<li><code>dovecot-share-folder.conf</code>: used to store settings of shared IMAP mailboxes.</li>
+<li><code>dovecot-master-users-password</code> or <code>dovecot-master-users</code>: used to store Dovecot master user accounts.</li>
+</ul>
+<h3 id="log-files_1">Log files</h3>
+<ul>
+<li><code>/var/log/dovecot.log</code>: main log file. IMAP/POP3 sessions, login, lotout,
+  some error messages will be logged in this file.</li>
+<li><code>/var/log/dovecot-sieve.log</code>: sieve LDA (Local Delivery Agent) related log.
+  Mail delivery related log will be logged in this file. NOTE: on old iRedMail
+  releases, it's <code>/var/log/sieve.log</code>.</li>
+<li><code>/var/log/dovecot-lmtp.log</code>: LMTP related log. Mail delivery (via LMTP)
+  related log will be logged in this file. Note: there's no such file on
+  iRedMail-0.8.6 and old iRedMail releases.</li>
+</ul>
+<h2 id="openldap">OpenLDAP</h2>
+<p>Main config file:</p>
+<ul>
+<li>on RHEL/CentOS: it's <code>/etc/openldap/slapd.conf</code>.</li>
+<li>on Debian/Ubuntu: it's <code>/etc/ldap/slapd.conf</code>.</li>
+<li>on FreeBSD: it's <code>/usr/local/etc/openldap/slapd.conf</code>.</li>
+<li>on OpenBSD: it's <code>/etc/openldap/slapd.conf</code>.</li>
+</ul>
+<p>Schema files are stored under <code>schema/</code> directory (same directory as <code>slapd.conf</code>).</p>
+<p>OpenLDAP is configured to log to <code>/var/log/openldap.log</code> by default, if it's
+empty, please check normal syslog log file <code>/var/log/messages</code> or
+<code>/var/log/syslog</code> instead.</p>
+<h2 id="mysql-mariadb">MySQL, MariaDB</h2>
+<p>Main config file:</p>
+<ul>
+<li>on RHEL/CentOS: `/etc/my.cnf.</li>
+<li>on Debian/Ubuntu, it's <code>/etc/mysql/my.cnf</code>. If you're running MariaDB, it's
+  <code>/etc/mysql/mariadb.conf.d/mysqld.cnf</code>.</li>
+<li>on FreeBSD: <code>/var/db/mysql/my.cnf</code>.</li>
+<li>on OpenBSD: `/etc/my.cnf.</li>
+</ul>
+<h2 id="amavisd">Amavisd</h2>
+<h3 id="main-config-files_1">Main config files</h3>
+<ul>
+<li>on RHEL/CentOS: it's <code>/etc/amavisd/amavisd.conf</code>.</li>
+<li>
+<p>on Debian/Ubuntu: it's <code>/etc/amavis/conf.d/50-user</code>.</p>
+<p>Debian/Ubuntu have some additional config files under <code>/etc/amavis/conf.d/</code>,
+but you can always override them in <code>/etc/amavis/conf.d/50-user</code>.
+When we mention <code>amavisd.conf</code> in other documents, it always means <code>50-user</code>
+on Debian/Ubuntu.</p>
+</li>
+<li>
+<p>on FreeBSD: it's <code>/usr/local/etc/amavisd.conf</code>.</p>
+</li>
+<li>on OpenBSD: it's <code>/etc/amavisd.conf</code>.</li>
+</ul>
+<h3 id="log-files_2">Log files</h3>
+<p>Amavisd is configured to log to <a href="#postfix">Postfix log file</a> by iRedMail.</p>
+<h2 id="cluebringer">Cluebringer</h2>
+<p>Main config file:</p>
+<ul>
+<li>RHEL/CentOS: <code>/etc/policyd/cluebringer.conf</code>, <code>/etc/policyd/webui.conf</code> (web admin panel).</li>
+<li>Debian/Ubuntu: <code>/etc/cluebringer/cluebringer.conf</code>, <code>/etc/cluebringer/cluebringer-webui.conf</code> (web admin panel).</li>
+<li>FreeBSD: <code>/usr/local/etc/cluebringer.conf</code>, <code>/usr/local/etc/apache24/cluebringer.conf</code> (web admin panel).</li>
+<li>OpenBSD: Not applicable, cluebringer is not available on OpenBSD.</li>
+</ul>
+<p>Init script:</p>
+<ul>
+<li>RHEL/CentOS: <code>/etc/init.d/cbpolicyd</code></li>
+<li>Debian/Ubuntu: <code>/etc/init.d/postfix-cluebringer</code></li>
+<li>FreeBSD: <code>/usr/local/etc/rc.d/cluebringer</code></li>
+<li>OpenBSD: N/A. we don't have Cluebringer installed on OpenBSD.</li>
+</ul>
+<h2 id="fail2ban">Fail2ban</h2>
+<ul>
+<li>
+<p>Main config file is <code>/etc/fail2ban/jail.local</code>. All custom settings should be
+  placed in <code>/etc/fail2ban/jail.local</code>, and don't touch <code>jail.conf</code>, so that
+  upgrading Fail2ban binary package won't override your custom settings.</p>
+</li>
+<li>
+<p>All filter rules are defined in files under <code>/etc/fail2ban/filter.d/</code>.</p>
+</li>
+<li>Actions are defined in files under <code>/etc/fail2ban/action.d/</code>.</li>
+</ul>
+<p>FreeBSD system is <code>/usr/local/etc/fail2ban/</code>.</p>
+<h2 id="roundcube-webmail">Roundcube webmail</h2>
+<p>Roundcube webmail is installed under below directory by default:</p>
+<ul>
+<li>RHEL/CentOS: <code>/var/www/roundcubemail</code>. It's a symbol link to
+  <code>/var/www/roundcubemail-x.y.z</code>.</li>
+<li>Debian/Ubuntu: <code>/usr/share/apache2/roundcubemail</code>. It's a symbol link of
+  <code>/usr/share/apache2/roundcubemail-x.y.z/</code>.</li>
+<li>FreeBSD: <code>/usr/local/www/roundcube</code>.</li>
+<li>OpenBSD: <code>/var/www/roundcubemail</code>. It's a symbol link to
+  <code>/var/www/roundcubemail-x.y.z/</code>.</li>
+</ul>
+<p>Config files:</p>
+<ul>
+<li>
+<p>Main config file is <code>config/config.inc.php</code> under Roundcube webmail
+  directory.</p>
+<p>If you're running old Roundcube webmail (0.9.x and earlier
+releases), it has two separate config files: <code>config/db.inc.php</code> and
+<code>config/main.inc.php</code>.</p>
+</li>
+<li>
+<p>Config files of plugins are placed under plugin directory. for example,
+  config file of <code>password</code> plugin is <code>plugins/password/config.inc.php</code>.</p>
+</li>
+</ul>
+<h2 id="sogo-groupware">SOGo Groupware</h2>
+<ul>
+<li>Main config file is <code>/etc/sogo/sogo.conf</code>.</li>
+<li>Log file is <code>/var/log/sogo/sogo.log</code>.</li>
+</ul>
+<h2 id="iredapd">iRedAPD</h2>
+<p>Main config file is <code>/opt/iredapd/settings.py</code> on all Linux/BSD distributions.</p>
+<h2 id="iredadmin">iRedAdmin</h2>
+<p>Main config file:</p>
+<ul>
+<li>on RHEL/CentOS, it's <code>/var/www/iredadmin/settings.py</code>.</li>
+<li>on Debian/Ubuntu, it's <code>/opt/www/iredadmin/settings.py</code> (in recent iRedMail
+  releases) or <code>/usr/share/apache2/iredadmin/settings.py</code> (in old iRedMail
+  releases).</li>
+<li>on FreeBSD, it's <code>/usr/local/www/iredadmin/settings.py</code>.</li>
+<li>on OpenBSD, it's <code>/var/www/iredadmin/settings.py</code>.</li>
+</ul>
+<p>iRedAdmin is a web application, when debug mode is turned on, it will log error
+message to <a href="#apache">Apache ssl error log file</a>, or uwsgi log file (if you're running
+Nginx). uwsgi log file is under <code>/var/log/uwsgi/</code> on Linux/FreeBSD, and
+<code>/var/www/logs/</code> on OpenBSD.</p>
+<p>Note: If you modified any iRedAdmin files (not just config file), please restart
+Apache or uwsgi service (if you're running Nginx) to reload modified files.</p><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3293801-21', 'auto');
+  ga('send', 'pageview');
+</script>
+</body></html>

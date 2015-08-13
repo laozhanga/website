@@ -1,0 +1,111 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Errors you may see while maintaining iRedMail server</title>
+        <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
+    </head>
+    <body>
+    
+    <div id="navigation">
+        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
+    
+        // <a href="./index.html">Document Index</a>
+    </div><h1 id="errors-you-may-see-while-maintaining-iredmail-server">Errors you may see while maintaining iRedMail server</h1>
+<div class="toc">
+<ul>
+<li><a href="#errors-you-may-see-while-maintaining-iredmail-server">Errors you may see while maintaining iRedMail server</a><ul>
+<li><a href="#postfix">Postfix</a><ul>
+<li><a href="#sender-address-rejected-not-logged-in">Sender address rejected: not logged in</a></li>
+<li><a href="#sender-address-rejected-not-owned-by-user-userdomainltd">Sender address rejected: not owned by user user@domain.ltd</a></li>
+<li><a href="#unreasonable-virtual_alias_maps-map-expansion-size-for-userdomaincom">unreasonable virtual_alias_maps map expansion size for user@domain.com</a></li>
+</ul>
+</li>
+<li><a href="#amavisd">Amavisd</a><ul>
+<li><a href="#connect-to-12700112700110024-connection-refused">connect to 127.0.0.1[127.0.0.1]:10024: Connection refused</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="postfix">Postfix</h2>
+<h3 id="sender-address-rejected-not-logged-in">Sender address rejected: not logged in</h3>
+<p>Sample error message in Postfix log file:</p>
+<blockquote>
+<p>Jun 24 11:57:13 mx1 postfix/smtpd[2667]: NOQUEUE: reject: RCPT from
+mail.mydomain.com[1.2.3.4]: 553 5.7.1 &lt;sombody@my-domain.com>: Sender address
+rejected: not logged in; from=&lt;sombody@my-domain.com>
+to=&lt;receipent@receipentdomain.com> proto=ESMTP helo=&lt;client_helo.com></p>
+</blockquote>
+<p>This error is caused by incorrectly configured mail client application, not a
+server issue.</p>
+<p>All mail users are forced to perform SMTP auth before sending email, so you
+must configure your mail client applications (Outlook, Thunderbird, ...) to
+enable SMTP authentication.</p>
+<h3 id="sender-address-rejected-not-owned-by-user-userdomainltd">Sender address rejected: not owned by user user@domain.ltd</h3>
+<p>This error is caused by restriction rule <code>reject_sender_login_mismatch</code> in
+Postfix parameter <code>smtpd_recipient_restrictions</code>, in file <code>/etc/postfix/main.cf</code>:</p>
+<pre><code>smtpd_recipient_restrictions =
+    ...
+    reject_sender_login_mismatch,
+    ...
+</code></pre>
+
+<p>It will reject the request when $smtpd_sender_login_maps specifies an owner
+for the MAIL FROM address, but the client is not (SASL) logged in as that MAIL
+FROM address owner; or when the client is (SASL) logged in, but the client
+login name doesn't own the MAIL FROM address according to $smtpd_sender_login_maps.
+Check <a href="http://www.postfix.org/postconf.5.html#reject_sender_login_mismatch">manual page of Postfix configuration file</a> for more details.</p>
+<p>Removing <code>reject_sender_login_mismatch</code> and restarting Postfix service fixes
+this issue.</p>
+<blockquote>
+<p>If you want to allow some users to send as other users, or allow all users
+to send as their alias addresses, or allow member of mail list/alias to send
+as mail list/alias, you should try iRedAPD plugin <code>reject_sender_login_mismatch</code>
+instead (requires iRedAPD-1.4.4 or later releases).</p>
+<p>Read comments in file <code>/opt/iredapd/plugins/reject_sender_login_mismatch.py</code>,
+then enable it in iRedAPD config file <code>/opt/iredapd/settings.py</code> (<code>plugins =</code>),
+restart iRedAPD service. That's all.</p>
+</blockquote>
+<h3 id="unreasonable-virtual_alias_maps-map-expansion-size-for-userdomaincom">unreasonable virtual_alias_maps map expansion size for user@domain.com</h3>
+<p>Sample error message in Postfix log file:</p>
+<blockquote>
+<p>Feb 11 19:59:06 mail postfix/cleanup[30575]: warning: 23C334232FB3:
+unreasonable virtual_alias_maps map expansion size for user@domain.com
+-- deferring delivery</p>
+</blockquote>
+<p>It means the maximal number of addresses that virtual alias expansion produces
+from each original recipient exceeds hard limit, please either increase the
+hard limit (default is 1000), or reduce alias members.</p>
+<p>To increase the limit to, for example, 1500, please add below setting in
+Postfix config file <code>/etc/postfix/main.cf</code>:</p>
+<pre><code>virtual_alias_expansion_limit = 1500
+</code></pre>
+
+<p>Reference: <a href="http://www.postfix.org/postconf.5.html#virtual_alias_expansion_limit">Postfix Configuration Parameters</a></p>
+<h2 id="amavisd">Amavisd</h2>
+<h3 id="connect-to-12700112700110024-connection-refused">connect to 127.0.0.1[127.0.0.1]:10024: Connection refused</h3>
+<p>This error means Amavisd service is not running, please try to start it first.</p>
+<ul>
+<li>RHEL/CentOS/FreeBSD/OpenBSD: <code># service amavisd restart</code></li>
+<li>Debian/Ubuntu: <code># service amavis restart</code></li>
+</ul>
+<p>After restarted amavisd service, please check its
+<a href="./file.locations.html#amavisd">log file</a> to make sure it's running.</p>
+<p>Notes:</p>
+<ul>
+<li>At least 1GB memory is required for a low traffic mail server. If your
+  server doesn't have enough memory, Amavisd may stop running automatically after
+  running for a while. If it's just a testing server, you can follow
+  <a href="./completely.disable.amavisd.clamav.spamassassin.html">our tutorial</a>
+  to disable some features of Amavisd to keep it running, or disable it completely.</li>
+</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3293801-21', 'auto');
+  ga('send', 'pageview');
+</script>
+</body></html>

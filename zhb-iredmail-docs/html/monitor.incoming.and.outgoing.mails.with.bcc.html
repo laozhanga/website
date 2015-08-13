@@ -1,0 +1,108 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Monitor incoming and outgoing mails with BCC</title>
+        <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
+    </head>
+    <body>
+    
+    <div id="navigation">
+        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
+    
+        // <a href="./index.html">Document Index</a>
+    </div><h1 id="monitor-incoming-and-outgoing-mails-with-bcc">Monitor incoming and outgoing mails with BCC</h1>
+<div class="toc">
+<ul>
+<li><a href="#monitor-incoming-and-outgoing-mails-with-bcc">Monitor incoming and outgoing mails with BCC</a><ul>
+<li><a href="#manage-bcc-settings-with-iredadmin-pro">Manage BCC settings with iRedAdmin-Pro</a></li>
+<li><a href="#sql-manage-bcc-settings-with-sql-command-line-tools">SQL: Manage BCC settings with SQL command line tools</a></li>
+<li><a href="#ldap-manage-bcc-settings-with-phpldapadmin-or-other-ldap-client-tools">LDAP: Manage BCC settings with phpLDAPadmin or other LDAP client tools</a></li>
+<li><a href="#screenshot-of-iredadmin-pro">Screenshot of iRedAdmin-Pro</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>This tutorial describes how to configure your iRedMail server
+to monitor incoming and outgoing mails with BCC, via iRedAdmin-Pro or other
+tools.</p>
+<p><strong>Important note</strong>: the destination email address used to store emails
+must exist. In this tutorial, they're <code>outbound@example.com</code> and
+<code>inboud@example.com</code>.</p>
+<h2 id="manage-bcc-settings-with-iredadmin-pro">Manage BCC settings with iRedAdmin-Pro</h2>
+<p>With iRedAdmin-Pro, you can configure BCC easily.</p>
+<ul>
+<li>For per-domain BCC settings, please go to domain profile page, then you can
+manage BCC settings under tab <code>BCC</code>.</li>
+<li>For per-user BCC settings, please go to user profile page, then you can
+manage BCC settings under tab <code>BCC</code>.</li>
+</ul>
+<h2 id="sql-manage-bcc-settings-with-sql-command-line-tools">SQL: Manage BCC settings with SQL command line tools</h2>
+<p>We take MySQL backend for example, but the SQL commands should work with
+PostgreSQL too.</p>
+<ul>
+<li>To add per-domain bcc settings for domain <code>mydomain.com</code>, you can add
+  below records in SQL database <code>vmail</code>:</li>
+</ul>
+<pre><code class="sql">-- BCC outgoing emails to 'outbound@example.com'
+mysql&gt; INSERT INTO sender_bcc_domain (domain, bcc_address, active, created)
+       VALUES ('mydomain.com', 'outbound@example.com', 1, NOW());
+
+-- BCC incoming emails to 'inbound@example.com'
+mysql&gt; INSERT INTO recipient_bcc_domain (domain, bcc_address, active, created)
+       VALUES ('mydomain.com', 'inbound@example.com', 1, NOW());
+</code></pre>
+
+<ul>
+<li>To add per-user bcc settings for user <code>user@mydomain.com</code>, you can add
+  below records in SQL database <code>vmail</code>:</li>
+</ul>
+<pre><code class="sql">-- BCC outgoing emails to 'outbound@example.com'
+mysql&gt; INSERT INTO sender_bcc_user (username, bcc_address, domain, active, created)
+       VALUES ('user@mydomain.com', 'outbound@example.com', 'mydomain.com', 1, NOW());
+
+-- BCC incoming emails to 'inbound@example.com'
+mysql&gt; INSERT INTO recipient_bcc_user (username, bcc_address, domain, active, created)
+       VALUES ('user@mydomain.com', 'inbound@example.com', 'mydomain.com', 1, NOW());
+</code></pre>
+
+<h2 id="ldap-manage-bcc-settings-with-phpldapadmin-or-other-ldap-client-tools">LDAP: Manage BCC settings with phpLDAPadmin or other LDAP client tools</h2>
+<ul>
+<li>For per-domain BCC settings, you can add below LDAP attribute/value pairs
+for domain object:</li>
+</ul>
+<pre><code># per-domain sender bcc
+enabledService=senderbcc
+domainSenderBccAddress=outbound@example.com
+
+# per-domain recipient bcc
+enabledService=recipientbcc
+domainRecipientBccAddress=inbound@example.com
+</code></pre>
+
+<ul>
+<li>For per-user BCC settings, you can add below LDAP attribute/value pairs
+for user object:</li>
+</ul>
+<pre><code># per-domain sender bcc
+enabledService=senderbcc
+userSenderBccAddress=outbound@example.com
+
+# per-domain recipient bcc
+enabledService=recipientbcc
+userRecipientBccAddress=inbound@example.com
+</code></pre>
+
+<h2 id="screenshot-of-iredadmin-pro">Screenshot of iRedAdmin-Pro</h2>
+<p>Per-domain bcc settings:</p>
+<p><img alt="" src="../images/iredadmin/domain_profile_bcc.png" /></p>
+<p>Per-user bcc settings:</p>
+<p><img alt="" src="../images/iredadmin/user_profile_bcc.png" /></p><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3293801-21', 'auto');
+  ga('send', 'pageview');
+</script>
+</body></html>

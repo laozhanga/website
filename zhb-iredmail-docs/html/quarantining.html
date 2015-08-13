@@ -1,0 +1,157 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Quarantining</title>
+        <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
+    </head>
+    <body>
+    
+    <div id="navigation">
+        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
+    
+        // <a href="./index.html">Document Index</a>
+    </div><h1 id="quarantining">Quarantining</h1>
+<div class="toc">
+<ul>
+<li><a href="#quarantining">Quarantining</a><ul>
+<li><a href="#quarantining-spam-virus-banned-and-bad-header-messages">Quarantining spam, virus, banned and bad header messages</a></li>
+<li><a href="#configure-iredadmin-pro-to-manage-quarantined-mails">Configure iRedAdmin-Pro to manage quarantined mails</a></li>
+<li><a href="#quarantine-clean-emails">Quarantine clean emails</a></li>
+<li><a href="#screenshots">Screenshots</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Since iRedMail-<code>0.7.0</code>, quarantining related settings in Amavisd are configured
+by iRedMail but disabled by default, you can easily enable quarantining with
+this tutorial.</p>
+<p>With below steps, Virus/Spam/Banned emails will be quarantined into SQL database.
+You can then manage quarantined emails with iRedAdmin-Pro.</p>
+<h2 id="quarantining-spam-virus-banned-and-bad-header-messages">Quarantining spam, virus, banned and bad header messages</h2>
+<p>Edit Amavisd config file, find below settings and update them. If it doesn't
+exist, please add them.</p>
+<ul>
+<li>on Red Hat Enterprise Linux, CentOS, Scientific Linux, it's <code>/etc/amavisd/amavisd.conf</code>
+or <code>/etc/amavisd.conf</code>.</li>
+<li>on Debian/Ubuntu, it's <code>/etc/amavis/conf.d/50-user</code>.</li>
+<li>on FreeBSD, it's <code>/usr/local/etc/amavisd.conf</code>.</li>
+<li>on OpenBSD, it's <code>/etc/amavisd.conf</code>.</li>
+</ul>
+<pre><code># Part of file: /etc/amavisd/amavisd.conf
+
+# Change values of below parameters to D_DISCARD.
+# Detected spams/virus/banned messages will not be delivered to user's mailbox.
+$final_virus_destiny = D_DISCARD;
+$final_spam_destiny = D_DISCARD;
+$final_banned_destiny = D_DISCARD;
+$final_bad_header_destiny = D_DISCARD;
+
+# Quarantine SPAM into SQL server.
+$spam_quarantine_to = 'spam-quarantine';
+$spam_quarantine_method = 'sql:';
+
+# Quarantine VIRUS into SQL server.
+$virus_quarantine_to = 'virus-quarantine';
+$virus_quarantine_method = 'sql:';
+
+# Quarantine BANNED message into SQL server.
+$banned_quarantine_to = 'banned-quarantine';
+$banned_files_quarantine_method = 'sql:';
+
+# Quarantine Bad Header message into SQL server.
+$bad_header_quarantine_method = 'sql:';
+$bad_header_quarantine_to = 'bad-header-quarantine';
+</code></pre>
+
+<p>Also, make sure you have below lines configured in same config file:</p>
+<pre><code class="perl"># For MySQL/MariaDB/OpenLDAP backends
+@storage_sql_dsn = (
+    ['DBI:mysql:database=amavisd;host=127.0.0.1;port=3306', 'amavisd', 'password'],
+);
+
+# For PostgreSQL
+#@storage_sql_dsn = (
+#    ['DBI:Pg:database=amavisd;host=127.0.0.1;port=5432', 'amavisd', 'password'],
+#);
+</code></pre>
+
+<p>Restarting amavisd service is required.</p>
+<h2 id="configure-iredadmin-pro-to-manage-quarantined-mails">Configure iRedAdmin-Pro to manage quarantined mails</h2>
+<p>Update iRedAdmin-Pro config file, make sure you have correct settings for Amavisd:</p>
+<ul>
+<li>on Red Hat Enterprise Linux, CentOS, Scientific Linux, it's <code>/var/www/iredadmin/settings.py</code>.</li>
+<li>on Debian, Ubuntu, it's <code>/opt/www/iredadmin/settings.py</code> or <code>/usr/share/apache2/iredadmin/settings.py</code>.</li>
+<li>on FreeBSD, it's <code>/usr/local/www/iredadmin/settings.py</code>.</li>
+<li>on OpenBSD, it's <code>/var/www/iredadmin/settings.py</code>.</li>
+</ul>
+<pre><code class="python"># File: settings.py
+
+amavisd_db_host = '127.0.0.1'
+amavisd_db_port = 3306
+amavisd_db_name = 'amavisd'
+amavisd_db_user = 'amavisd'
+amavisd_db_password = 'password'
+
+# Log basic info of inbound/outbound, no mail body stored.
+amavisd_enable_logging = True
+
+# Quarantining management
+amavisd_enable_quarantine = True
+amavisd_quarantine_port = 9998
+
+# Per-recipient policy lookup
+amavisd_enable_policy_lookup = True
+</code></pre>
+
+<p>Restarting Apache web server or <code>uwsgi</code> service (if you're running Nginx as
+web server) is required.</p>
+<p>You can now login to iRedAdmin-Pro, and manage quarantined messages via menu
+<code>System -&gt; Quarantined Mails</code>. Choose action in drop-down menu list to release
+or delete them.</p>
+<p>Screenshots attached at the bottom.</p>
+<h2 id="quarantine-clean-emails">Quarantine clean emails</h2>
+<p>Note: If you just want to quarantine clean emails sent from/to certain local
+user, please refer to this document instead:
+<a href="./quarantine.clean.mails.per-user.html">Quarantine clean emails sent from/to certain local user</a></p>
+<p>If you want to quarantine clean emails into SQL database for further approval
+or whatever reason, please follow below steps:</p>
+<ul>
+<li>Update below parameters in Amavisd config file <code>amavisd.conf</code>:</li>
+</ul>
+<pre><code class="perl">$clean_quarantine_method = 'sql:';
+$clean_quarantine_to = 'clean-quarantine';
+</code></pre>
+
+<ul>
+<li>Find policy bank <code>MYUSERS</code>, append two lines in this policy bank:</li>
+</ul>
+<pre><code class="perl">$policy_bank{'MYUSERS'} = {
+    ...
+    clean_quarantine_method =&gt; 'sql:',
+    final_destiny_by_ccat =&gt; {CC_CLEAN, D_DISCARD},
+}
+</code></pre>
+
+<ul>
+<li>Restart Amavisd service.</li>
+</ul>
+<p>Now all clean emails sent by your mail users will be quarantined into SQL
+database.</p>
+<h2 id="screenshots">Screenshots</h2>
+<ul>
+<li>View quarantined mails:</li>
+</ul>
+<p><img alt="" src="../images/iredadmin/system_maillog_quarantined.png" /></p>
+<ul>
+<li>Expand quarantined mail to view mail body and headers.</li>
+</ul>
+<p><img alt="" src="../images/iredadmin/system_maillog_quarantined_expanded.png" /></p><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3293801-21', 'auto');
+  ga('send', 'pageview');
+</script>
+</body></html>

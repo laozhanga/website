@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Amavisd: Enable per-recipient policy lookup</title>
+        <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
+    </head>
+    <body>
+    
+    <div id="navigation">
+        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
+    
+        // <a href="./index.html">Document Index</a>
+    </div><h1 id="amavisd-enable-per-recipient-policy-lookup">Amavisd: Enable per-recipient policy lookup</h1>
+<p>With per-recipient policy lookup, you can achieve per-recipient white/blacklists,
+basic spamassassin preferences, etc. Settings are available as global setting,
+or per-domain, per-user settings. iRedMail uses it to reject blacklisted
+senders and bypass whitelisted senders during smtp session to save system
+resource (implemented via iRedAPD plugin <code>amavisd_wblist</code>, new in iRedAPD-1.4.4.).</p>
+<p>iRedMail has <code>@storage_sql_dsn</code> enabled in Amavisd config file by default, so
+it's very easy to enable per-recipient policy lookup. Just add one line after
+<code>@storage_sql_dsn</code> like below:</p>
+<pre><code># Part of file: amavisd.conf
+
+@storage_sql_dsn = [...]
+@lookup_sql_dsn = @storage_sql_dsn;
+</code></pre>
+
+<p>Then restart Amavisd serivce.</p>
+<p>If you don't know where Amavisd config file is, please refer to our document:
+<a href="./file.locations.html#amavisd">Locations of configuration and log files of mojor components</a></p>
+<h2 id="references">References:</h2>
+<ul>
+<li><a href="http://www.ijs.si/software/amavisd/README.sql.txt">Amavisd doc: Uing SQL for lookups, log/reporting and quarantine</a></li>
+<li><a href="http://www.ijs.si/software/amavisd/README.lookups.txt">Amavisd doc: Lookup maps (hash, SQL) and access list explained</a></li>
+</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3293801-21', 'auto');
+  ga('send', 'pageview');
+</script>
+</body></html>

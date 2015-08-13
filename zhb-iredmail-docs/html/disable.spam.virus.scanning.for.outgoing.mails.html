@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Disable spam virus scanning for outgoing mails</title>
+        <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
+    </head>
+    <body>
+    
+    <div id="navigation">
+        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
+    
+        // <a href="./index.html">Document Index</a>
+    </div><h1 id="disable-spam-virus-scanning-for-outgoing-mails">Disable spam virus scanning for outgoing mails</h1>
+<p>To disable spam/virus scanning for outgoing mails, you can add bypass settings in Amavisd config file: <code>/etc/amavisd/amavisd.conf</code> (RHEL/CentOS/Scientific Linux) or <code>/etc/amavis/conf.d/50-user</code> (Debian/Ubuntu) or <code>/usr/local/etc/amavisd.conf</code> (FreeBSD).</p>
+<ul>
+<li>bypass_spam_checks_maps</li>
+<li>bypass_virus_checks_maps</li>
+<li>bypass_header_checks_maps</li>
+<li>bypass_banned_checks_maps</li>
+</ul>
+<p>These settings can be added in setting block <code>$policy_bank{'MYUSERS'}</code>:</p>
+<pre><code class="perl">$policy_bank{'MYUSERS'} = {
+    [...OMIT OTHER SETTINGS HERE...]
+
+    # don't perform spam/virus/header check.
+    bypass_spam_checks_maps =&gt; [1],
+    bypass_virus_checks_maps =&gt; [1],
+    bypass_header_checks_maps =&gt; [1],
+
+    # allow sending any file names and types
+    bypass_banned_checks_maps =&gt; [1],
+}
+</code></pre>
+
+<p>Restarting Amavisd service is required after changing settings.</p><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3293801-21', 'auto');
+  ga('send', 'pageview');
+</script>
+</body></html>

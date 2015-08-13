@@ -1,0 +1,179 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>iRedMail Documentations</title>
+        <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
+    </head>
+    <body>
+    
+    <div id="navigation">
+        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
+    </div><p>All articles are written in Markdown format, you can download them for offline
+reading, contribute new articles or update existing ones in <a href="https://bitbucket.org/zhb/iredmail-docs/">BitBucket
+repository</a>.</p>
+<h3 id="overview">Overview</h3>
+<ul>
+<li><a href="./why.build.your.own.mail.server.html">Why build your own mail server instead of outsourcing to external entities</a></li>
+<li><a href="./used.components.html">Major open source softwares used in iRedMail, and big picture of mail flow</a></li>
+<li><a href="./network.ports.html">Which network ports are open by iRedMail</a></li>
+</ul>
+<h3 id="install-iredmail">Install iRedMail</h3>
+<ul>
+<li>
+<p>Install iRedMail on:</p>
+<ul>
+<li><a href="./install.iredmail.on.rhel.html">Red Hat Enterprise Linux, CentOS</a></li>
+<li><a href="./install.iredmail.on.debian.ubuntu.html">Debian, Ubuntu</a></li>
+<li><a href="./install.iredmail.on.freebsd.html">FreeBSD (without Jail)</a>, <a href="./install.iredmail.on.freebsd.with.jail.html">FreeBSD with Jail (ezjail)</a></li>
+<li><a href="./install.iredmail.on.openbsd.html">OpenBSD</a></li>
+</ul>
+</li>
+<li>
+<p>After installtion:</p>
+<ul>
+<li><a href="./setup.dns.html">Setup DNS records for your iRedMail server</a></li>
+</ul>
+</li>
+<li>
+<p>Additional installation tips</p>
+<ul>
+<li><a href="./install.iredmail.with.remote.mysql.server.html">Install iRedMail with a remote MySQL server</a></li>
+<li><a href="./unattended.iredmail.installation.html">Perform silent/unattended iRedMail installation</a></li>
+</ul>
+</li>
+<li>
+<p><a href="./performance.tuning.html">Performance tuning for a busy server</a></p>
+</li>
+</ul>
+<h3 id="configure-mail-client-applications">Configure mail client applications</h3>
+<p>If you're using different mail clients, please help write documents to guide other users to setup the mail clients.</p>
+<ul>
+<li><a href="activesync.android.html">Exchange ActiveSync: Setup Android devices</a></li>
+<li><a href="activesync.bb10.html">Exchange ActiveSync: Setup BlackBerry 10 devices</a></li>
+<li><a href="activesync.ios.html">Exchange ActiveSync: Setup iOS devices</a></li>
+<li><a href="activesync.outlook.html">Exchange ActiveSync: Setup Outlook 2013 for Windows</a></li>
+<li><a href="configure.thunderbird.html">Configure Thunderbird as mail client (POP3/IMAP, SMTP and global ldap address book)</a></li>
+<li><a href="sogo.macosx.contacts.html">Mac OS X: Add contact service (CardDAV) in Contacts.app</a></li>
+<li><a href="sogo.macosx.icalendar.html">Mac OS X: Add calendar (CalDAV) and task (Reminders) service in iCalendar.app</a></li>
+</ul>
+<h3 id="release-notes-and-upgrade-tutorials">Release notes and upgrade tutorials</h3>
+<ul>
+<li><a href="iredmail.releases.html">iRedMail release notes and upgrade tutorials</a></li>
+<li><a href="iredadmin-pro.releases.html">iRedAdmin-Pro (web-based admin panel) release notes and upgrade tutorials</a></li>
+<li><a href="iredapd.releases.html">iRedAPD (Postfix Access Policy Daemon) release notes and upgrade tutorials</a></li>
+</ul>
+<h3 id="migrations">Migrations</h3>
+<ul>
+<li><a href="migrate.to.new.iredmail.server.html">Migrate old iRedMail server to the latest stable release</a></li>
+<li><a href="password.hashes.html">Password hashes</a></li>
+</ul>
+<h3 id="how-to">How to</h3>
+<ul>
+<li><a href="allow.certain.users.to.send.email.as.different.user.html">Allow certain users to send email as another user</a></li>
+<li><a href="change.mail.attachment.size.html">Change mail attachment size</a></li>
+<li><a href="completely.disable.amavisd.clamav.spamassassin.html">Completely disable Amavisd + ClamAV + SpamAssassin</a></li>
+<li><a href="enable.smtps.html">Enable SMTPS service (SMTP over SSL, port 465)</a></li>
+<li><a href="disable.spam.virus.scanning.for.outgoing.mails.html">Disable spam virus scanning for outgoing mails</a></li>
+<li><a href="no.x-spam.headers.html">Amavisd + SpamAssassin not working, no mail header (X-Spam-*) inserted.</a></li>
+<li><a href="quarantine.clean.mails.per-user.html">Quarantine clean emails sent from/to certain local user</a></li>
+<li><a href="quarantining.html">Quarantining</a></li>
+<li><a href="sign.dkim.signature.for.new.domain.html">Sign DKIM signature on outgoing emails for new mail domain</a></li>
+<li><a href="allow.insecure.pop3.imap.smtp.connections.html">Allow insecure POP3/IMAP/SMTP connections without STARTTLS</a></li>
+<li><a href="allow.member.to.send.email.as.mail.list.html">Allow member to send email as mailing list or mail alias</a></li>
+<li><a href="allow.user.to.send.email.without.authentication.html">Allow user to send email without authentication</a></li>
+<li><a href="amavisd.per-recipient.policy.lookup.html">Amavisd: Enable per-recipient policy lookup</a></li>
+<li><a href="change.server.hostname.html">Change server hostname</a></li>
+<li><a href="concurrent.processing.html">Process more emails concurrently</a></li>
+<li><a href="disable.greylisting.html">Disable greylisting in Cluebringer</a></li>
+<li><a href="dovecot.master.user.html">Dovecot Master User: Access user's mailbox without owner's password.</a></li>
+<li><a href="enable.dnsbl.html">Enable DNSBL service in Postfix to reduce spam</a></li>
+<li><a href="enable.postscreen.html">Enable postscreen service</a></li>
+<li><a href="force.user.to.change.password.html">Force mail user to change password in 90 days</a></li>
+<li><a href="ignore.trash.folder.in.quota.html">Ignore Trash folder in mailbox quota</a></li>
+<li><a href="ldap.add.alias.domain.html">LDAP: Add an alias domain</a></li>
+<li><a href="ldap.add.catch-all.html">LDAP: Add per-domain catch-all account</a></li>
+<li><a href="ldap.add.mail.alias.html">LDAP: Add a mail alias account</a></li>
+<li><a href="ldap.add.mail.list.html">LDAP: Add a mail list account</a></li>
+<li><a href="ldap.user.mail.forwarding.html">LDAP: User mail forwarding.</a></li>
+<li><a href="mailbox.sharing.html">Mailbox sharing (Sharing IMAP folder with other users)</a></li>
+<li><a href="monitor.incoming.and.outgoing.mails.with.bcc.html">Monitor incoming and outgoing mails with BCC</a></li>
+<li><a href="move.detected.spam.to.junk.folder.html">Move detected spam to Junk folder</a></li>
+<li><a href="per-account.transport.html">Per-domain or per-user transport (relay)</a></li>
+<li><a href="per-user.send.receive.restrictions.html">Per-user outbound restrictions</a></li>
+<li><a href="pipe.incoming.email.for.certain.user.to.external.script.html">Pipe incoming email for certain user to external script </a></li>
+<li><a href="recalculate.mailbox.quota.html">Force Dovecot to recalculate mailbox quota</a></li>
+<li><a href="reset.user.password.html">Reset user password</a></li>
+<li><a href="restrict.mail.user.to.login.from.specified.ip.or.networks.html">Restrict mail user to login from specified IP addresses or networks</a></li>
+<li><a href="send.out.email.from.specified.ip.addresses.html">Send out email from specified IP address</a></li>
+<li><a href="sql.add.catch-all.html">SQL: Add per-domain catch-all account</a></li>
+<li><a href="sql.create.mail.alias.html">SQL: Add a mail alias account</a></li>
+<li><a href="store.spamassassin.bayes.in.sql.html">Store SpamAssassin bayes in SQL</a></li>
+<li><a href="use.a.bought.ssl.certificate.html">Use a bought SSL certificate</a></li>
+<li><a href="use.openldap.as.address.book.in.outlook.html">Use OpenLDAP as address book in Microsoft Outlook</a></li>
+</ul>
+<p>Documents contributed by iRedMail users:</p>
+<ul>
+<li><a href="http://www.iredmail.org/forum/topic8169-iredmail-support-antispam-via-dovecot-and-spamassassin.html">Anti-spam with Dovecot antispam plugin and SpamAssassin</a>, contributed by Dexus.</li>
+</ul>
+<h3 id="third-party-integrations">Third-party integrations</h3>
+<p>Below tutorials are maintained by iRedMail project.</p>
+<ul>
+<li><a href="active.directory.html">Integrate Microsoft Active Directory in iRedMail</a></li>
+<li>
+<p>Install SOGo groupware on:</p>
+<ul>
+<li>CentOS 6: <a href="./sogo-centos-6-mysql.html">MySQL</a>, <a href="./sogo-centos-6-openldap.html">OpenLDAP</a>.</li>
+</ul>
+</li>
+</ul>
+<p>Documents contributed by iRedMail users:</p>
+<ul>
+<li><a href="https://extremeshok.com/6622/enabling-apache-solr-4-10-using-jetty-with-dovecot-2-2-for-fulltext-search-results-on-centos-6-iredmail-compatible/">Enabling Apache Solr 4.10 (using jetty) with Dovecot 2.2 for fulltext search results on Centos 6 (iRedMail compatible)</a></li>
+<li><a href="http://www.howtoforge.com/installing-iredmail-and-mailman-on-debian-squeeze">Install iRedMail and Mailman on Debian Squeeze</a>. Howtoforge tutorial, contributed by Jason Norwood-Young.</li>
+<li><a href="./dbmail.mysql.centos.html">Integrate DBMail in iRedMail (MySQL backend), CentOS</a></li>
+<li><a href="http://www.iredmail.org/forum/topic2147-highavailability-maildir-storage-with-glusterfs-centos-5x.html">High-Availability Maildir Storage With GlusterFS + CentOS 5.x</a>, contributed by Basem Hegazy. 2011-06-26</li>
+<li><a href="https://www.howtoforge.com/using-iredmail-and-openvpn-for-virtual-email-hosting-and-vpn-services-centos-5.4">Integrate OpenVPN in iRedMail with OpenLDAP</a>, Howtoforge tutorial.</li>
+<li><a href="./ejabberd.openldap.ubuntu.html">Integrate Ejabberd in iRedMail with OpenLDAP</a></li>
+<li><a href="./pureftpd.openldap.centos.html">Virtual Mail And FTP Hosting With iRedMail And Pure-FTPd</a></li>
+<li>SOGo Groupware<ul>
+<li><a href="http://www.iredmail.org/forum/topic6604-iredmail-support-iredmail-ldap-sogo-centos.html">CentOS 6.5 + iRedMail (OpenLDAP backend) + SOGo Groupware</a>. Contributed by kospel. 2014-04-18</li>
+<li><a href="http://www.wynni.com/howto-iredmail-sogo-mysql-authentication-ubuntu-11-10-oneiric-ocelot/">Ubuntu 11.04 (oneiric) + iRedMail (MySQL backend) + SOGo Groupware</a>. Contributed by Wynni, 2012-05-12.</li>
+<li><a href="http://www.iredmail.org/forum/topic2071-debian-iredmail-sogo-installation-guide.html">Debian + iRedMail (OpenLDAP backend) + SOGo Groupware</a>. Contributed by Luciano Pedron, 2011-06-04.</li>
+<li><a href="http://conheotiensinh.blogspot.com/2009/12/install-iredmail-use-ldap-and-groupware.html">Install iRedMail with LDAP backend and SOGo as Groupware</a>. Contributed by conheotiensinh</li>
+</ul>
+</li>
+</ul>
+<h3 id="cluster">Cluster</h3>
+<p>Documents contributed by iRedMail users:</p>
+<ul>
+<li><a href="http://pastebin.com/JcYeQBrX">An Ultra-HA, full Mult-Master E-mail cluster with iRedMail, MariaDB, and IPVS</a>, contributed by Joshua Boniface.</li>
+</ul>
+<h3 id="troubleshooting-and-debug">Troubleshooting and Debug</h3>
+<ul>
+<li><a href="debug.amavisd.html">Turn on debug mode in Amavisd and SpamAssassin</a></li>
+<li><a href="debug.cluebringer.html">Turn on debug mode in Cluebringer</a></li>
+<li><a href="debug.dovecot.html">Turn on debug mode in Dovecot</a></li>
+<li><a href="debug.iredapd.html">Turn on debug mode in iRedAPD</a></li>
+<li><a href="debug.mysql.html">Log executed SQL commands in MySQL/MariaDB</a></li>
+<li><a href="debug.openldap.html">Turn on debug mode in OpenLDAP</a></li>
+</ul>
+<h3 id="frequently-asked-questions">Frequently Asked Questions</h3>
+<ul>
+<li><a href="errors.html">Errors you may see while maintaining iRedMail server</a></li>
+<li><a href="why.append.timestamp.in.maildir.path.html">Why append timestamp in maildir path</a></li>
+<li><a href="iredadmin-pro.default.password.policy.html">iRedAdmin-Pro: Default password restrictions</a></li>
+<li><a href="iredadmin-pro.self-service.html">iRedAdmin-Pro: Enable self-service to allow users to manage their own preferences and more</a></li>
+<li><a href="translate.iredadmin.html">iRedAdmin-Pro: Translate iRedAdmin to your local language</a></li>
+<li><a href="amavisd.sql.db.html">Explanation of Amavisd SQL database</a></li>
+<li><a href="backup.restore.html">Backup and restore</a></li>
+<li><a href="file.locations.html">Locations of configuration and log files of mojor components</a></li>
+</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3293801-21', 'auto');
+  ga('send', 'pageview');
+</script>
+</body></html>

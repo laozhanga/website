@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Exchange ActiveSync: Setup Outlook 2013 for Windows</title>
+        <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
+    </head>
+    <body>
+    
+    <div id="navigation">
+        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
+    
+        // <a href="./index.html">Document Index</a>
+    </div><h1 id="exchange-activesync-setup-outlook-2013-for-windows">Exchange ActiveSync: Setup Outlook 2013 for Windows</h1>
+<blockquote>
+<p>Important notes:</p>
+<ul>
+<li>
+<p>SOGo provides <strong>EAS (Exchange ActiveSync)</strong> support, but not <strong>EWS
+  (Exchange Web Service)</strong>.</p>
+</li>
+<li>
+<p>Outlook 2013 for Windows works well with EAS.</p>
+</li>
+<li>
+<p>Below mobile devices works well with EAS, they will sync mails, calendars,
+  contacts, tasks, memos/notes.</p>
+<ul>
+<li>BlackBerry 10 devices</li>
+<li>iOS devices (iPad, iPhone). Tested with iOS 8.1.3.</li>
+<li>Android devices. Tested with OS v4.0.</li>
+</ul>
+</li>
+<li>
+<p>Apple Mail.app, and Outlook for Mac support EWS. But not EAS.</p>
+</li>
+<li>Outlook 2010 for Windows supports MAPI.</li>
+<li>iRedMail-0.9.0 doesn't integrate <a href="http://www.openchange.org">OpenChange</a> and
+  <a href="http://www.samba.org">Samba4</a> for native MAPI support, so SOGo groupware
+  in iRedMail doesn't provide full support for Microsoft Outlook clients,
+  Mac OS X Mail.app and all iOS devices, don't try to add your mail account
+  as an <code>Exchange</code> account in these mail clients. You have to add separate
+  POP3/IMAP account, caldav/carddav account instead.</li>
+</ul>
+</blockquote>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>iRedMail-0.9.0 or later releases is required.</li>
+<li>You must choose to install SOGo groupware during iRedMail installation.</li>
+<li>Outlook 2013 for Windows. Earlier releases of Outlook for Windows doesn't work.</li>
+</ul>
+<h2 id="step-by-step-configuration">Step-by-step configuration</h2>
+<p>1: Open application <code>Outlook 2013</code>:</p>
+<p><img alt="" src="./images/sogo/outlook.2013.app.png" /></p>
+<p>2: Add a new account in Outlook, in <code>Auto Account Setup</code> page, please choose <code>Manual setup
+   or additional server types</code>, then click <code>Next</code>:</p>
+<p><img alt="" src="./images/sogo/outlook.add.account.png" /></p>
+<p>3: In <code>Choose Service</code> page, please choose <code>Outlook.com or Exchange ActiveSync
+   compatible service</code>, then click <code>Next</code>:</p>
+<p><img alt="" src="./images/sogo/outlook.choose.service.png" /></p>
+<p>4: In <code>Server Settings</code> page, fill up the form with your server address and
+   email account credential, then click <code>Next</code>:</p>
+<ul>
+<li>Your Name: <code>your full name</code></li>
+<li>E-mail Address: <code>your full email address</code></li>
+<li>Mail server: <code>your server name or IP address</code></li>
+<li>User Name: <code>your full email address</code></li>
+<li>Password: <code>password of your email account</code></li>
+</ul>
+<p><img alt="" src="./images/sogo/outlook.server.settings.png" /></p>
+<p>After you click <code>Next</code>, Outlook will start verifying your email account, please
+wait and you will see below screen after verified:</p>
+<p><img alt="" src="./images/sogo/outlook.test.account.settings.png" /></p>
+<p>That's all.</p><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3293801-21', 'auto');
+  ga('send', 'pageview');
+</script>
+</body></html>
