@@ -1,0 +1,88 @@
+############################################################
+# DO NOT TOUCH BELOW LINE.
+#
+# Import default settings.
+# You can always override default settings by placing custom settings in this
+# file.
+from libs.default_settings import *
+############################################################
+
+# Listen address and port.
+listen_address = '127.0.0.1'
+listen_port = 7777
+
+# Run as a low privileged user.
+run_as_user = 'iredapd'
+
+# Path to pid file.
+pid_file = '/var/run/iredapd.pid'
+
+# Path to log file.
+# Set 'log_file = /dev/null' if you don't want to keep the log.
+log_file = '/var/log/iredapd.log'
+
+# Log level: info, debug.
+log_level = 'info'
+
+# Backend: ldap, mysql, pgsql.
+backend = 'ldap'
+
+# Enabled plugins.
+#
+# - Plugin name is file name which placed under 'plugins/' directory,
+#   without file extension '.py'.
+# - Plugins are applied in specified order. It's better to list plugins which
+#   doesn't require SQL/LDAP query first (e.g. reject_null_sender), then
+#   white/blacklist related plugins, e.g. amavisd_wblist.
+# - Suggested order of plugins (if you enable them) for RCPT state:
+#
+#   1: reject_null_sender
+#   2: amavisd_wblist
+#   3: reject_sender_login_mismatch
+#
+#   LDAP backend:
+#
+#   4: ldap_force_change_password_in_days
+#   5: ldap_maillist_access_policy
+#
+#   SQL backends:
+#
+#   4: sql_force_change_password_in_days
+#   5: sql_alias_access_policy
+#   6: sql_user_restrictions
+#
+plugins = ['reject_null_sender', 'amavisd_wblist', 'ldap_maillist_access_policy']
+
+# For LDAP backend.
+#
+# LDAP server setting.
+# Uri must starts with ldap:// or ldaps:// (TLS/SSL).
+#
+# Tip: You can get binddn, bindpw from /etc/postfix/ldap/*.cf.
+#
+ldap_uri = 'ldap://127.0.0.1:389'
+ldap_basedn = 'o=domains,dc=iredmail,dc=org'
+ldap_binddn = 'cn=vmail,dc=iredmail,dc=org'
+ldap_bindpw = 'password'
+
+# For SQL (MySQL/MariaDB/PostgreSQL) backends, used to query mail accounts.
+sql_server = '127.0.0.1'
+sql_port = '3306'
+sql_db = 'vmail'
+sql_user = 'vmail'
+sql_password = 'password'
+
+# For Amavisd policy lookup and white/blacklists.
+amavisd_db_server = '127.0.0.1'
+amavisd_db_port = '3306'
+amavisd_db_name = 'amavisd'
+amavisd_db_user = 'amavisd'
+amavisd_db_password = 'password'
+
+# Log reject (and other non-DUNNO) action in iRedAdmin SQL database
+log_action_in_db = True
+iredadmin_db_server = '127.0.0.1'
+iredadmin_db_port = '3306'
+iredadmin_db_name = 'iredadmin'
+iredadmin_db_user = 'iredadmin'
+iredadmin_db_password = 'password'

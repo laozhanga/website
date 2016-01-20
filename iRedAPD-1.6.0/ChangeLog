@@ -1,0 +1,219 @@
+iRedAPD-1.6.0:
+    * New setting: `MYNETWORKS`. used to set trusted or internal networks.
+    * Plugin `ldap_domain_wblist` was removed, we didn't use it at all.
+    * Plugin `ldap_recipient_restrictions` is marked as deprecated, please use
+      `amavisd_wblist` instead.
+
+    * Fixed issues:
+        * plugin/ldap_maillist_access_policy.py: not use correct ldap
+          connection cursor. this causes access policy not work.
+        * plugin/reject_sender_login_mismatch.py: Not return correct value for
+          allowed senders.
+        * Not correctly fetch SQL query result with SQLAlchemy.
+        * Doesn't work with PostgreSQL backend.
+        * iRedAPD daemon exits with error (9, 'Bad file descriptor').
+
+iRedAPD-1.5.0:
+    * Improvements:
+        * Use sql connection pool provided by SQLAlchemy.
+        * Log reject and other non-DUNNO actions in iredadmin database
+          (log_action_in_db = True).
+        * plugin/amavisd_wblist: able to use 'user@*' as white/blacklist
+          sender.
+        * plugin/sql_alias_access_policy, plugin/ldap_maillist_access_policy:
+          able to use `*@domain.com` (all senders from `domain.com`) as
+          moderator.
+        * plugin/reject_sender_login_mismatch.py:
+            + New optional setting ALLOWED_LOGIN_MISMATCH_LIST_MEMBER, used to
+              allow member of mail list/alias to send as mail list/alias.
+              Default is False.
+            + Setting ALLOWED_LOGIN_MISMATCH_SENDERS is now optional.
+        * Log smtp protocol state in log file.
+
+    * Fixed issues:
+        * plugin/amavisd_message_size_limit.py: just use the first valid
+          policy (with highest priority) and skip rest.
+        * plugin/reject_sender_login_mismatch.py: not reject email if sender
+          is forged address (sender domain is hosted locally).
+        * Not close sql connection explicitly.
+
+iRedAPD-1.4.4:
+    * New plugins:
+        * plugins/amavisd_wblist.py.
+          Used to reject blacklisted senders and bypass whitelisted senders in
+          Amavisd per-recipient white/blacklists stored in SQL table
+          'amavisd.wblist'.
+          Works with OpenLDAP/MySQL/PostgreSQL backends.
+
+        * plugins/amavisd_message_size_limit.py.
+          Wworks with Postfix 'smtpd_end_of_data_restrictions'.
+          Used to reject email if current message size exceeds per-recipient
+          message_size_limit stored in Amavisd database (column
+          `policy.message_size_limit`).
+          Works with OpenLDAP/MySQL/PostgreSQL backends.
+
+        * plugins/reject_null_sender.py.
+          Used to reject message submitted by sasl authenticated user but
+          specifying null sender in 'From:' header (from=<> in mail log).
+          Works with OpenLDAP/MySQL/PostgreSQL backends.
+
+    * Improvements:
+        * New tool to help upgrade iRedAPD: tools/upgrade_iredapd.sh.
+        * Verify whether sender (From:) is an alias address of sasl username
+          (plugins/reject_sender_login_mismatch.py).
+        * Able to bypass whole domain if sender login mismatch
+          (plugins/reject_sender_login_mismatch.py).
+        * Detect alias domains while check mail list access policy
+          (plugins/sql_alias_access_policy.py).
+
+        * Detect current smtp protocol state and pick up applicable plugins.
+          It's now working with Postfix 'smtpd_end_of_data_restrictions'.
+
+    * Fixed:
+        - plugin/sql_force_change_password_in_days.py: not correctly set
+          password last change date if user didn't reset password before.
+          Thanks Joel A.G.Oliveira <joel _at_ gabrieldeoliveira dot com.br>
+          for the report.
+        - Close socket channel after each smtp session.
+          Thanks Václav Bílek <vaclav.bilek _at_ livesport dot eu> for the
+          report.
+        - Improper rc script for FreeBSD: set_rcvar -> set_rcvar_obsolete.
+
+iRedAPD-1.4.3:
+    * New plugin to force user to change password in certain days. Please
+      read comment in plugin file to understand how to configure it and how
+      it works.
+        + For LDAP backend: ldap_force_change_password_in_days
+        + For MySQL/PostgreSQL backend: sql_force_change_password_in_days
+
+    * Fixed:
+        + Not detect returned values before processing (split string) in
+          plugin sql_user_restrictions.py.
+          Thanks jford <jford _at_ cisp dot com> for the report.
+        + Incorrect detection of sender domain (missing '@') in plugin
+          sql_user_restrictions.py.
+          Thanks Tim Lau for the report.
+
+iRedAPD-1.4.2:
+    * Fixed:
+        + Incorrect detection of domain (missing '@') in plugin
+          sql_user_restrictions.py.
+          Thanks wildweasel@forum for the report.
+        + Fix Python path on FreeBSD after the latest ports tree update.
+          Thanks hainan <hasanalpinan _at_ gmail> in our online support forum
+          for the report and fix.
+
+iRedAPD-1.4.1:
+    * Fixed:
+        + Incorrect return values of service status in rc scripts on Linux.
+          Thanks Marek Skubela <marek.skubela _at_ gmail> for the report.
+        + Don't return DUNNO if sender address has less than 6 characters.
+          Thanks warriornew for the report in our bbs.
+        + Incorrect variable name in plugins/sql_alias_access_policy.py.
+        + Not quote email address and domain name in SQL command in plugins
+          sql_alias_access_policy.py, sql_user_restrictions.py.
+          Thanks Petr Pytelka <pytelka _at_ lightcomp.cz> for the report.
+        + Check sender domain immediately instead of querying addition domain
+          names: plugins/ldap_maillist_access_policy.py.
+        + Incorrect LDAP attribute name in plugins/ldap_recipient_restrictions:
+          mailBlacklistedRecipient -> mailBlacklistRecipient (no 'ed').
+          Thanks Ho ho <ho.iredmail _at_ gmail.com> for the report.
+
+iRedAPD-1.4.0:
+    * New plugin for all backends: reject_sender_login_mismatch.
+      Reject sender login mismatch (sender in mail header and SASL username).
+    * No iredapd-rr.py any more, we need only one instance of iRedAPD.
+    * Remove dependence of web.py.
+    * Better user alias and alias domain support in plugin
+      ldap_maillist_access_policy.
+    * Plugin renamed:
+      block_amavisd_blacklisted_senders -> ldap_amavisd_block_blacklisted_senders
+    * New plugin for SQL backends: sql_user_restrictions.
+      Note: 4 new columns on table `vmail.mailbox`, please refer to iRedMail
+      upgrade tutorials.
+
+iRedAPD-1.3.8:
+    * Add rc scripts for OpenBSD.
+    * Fixed:
+        + Ignore signal SIGHUP, so that it will continue running after log
+          rotation with newsyslog on FreeBSD.
+          Thanks viq@bitbucket for the report.
+        + Cannot correctly hander mail list access policy 'subdomain'.
+        + Cannot handle '@.' (without quotes) to match all destinations.
+
+iRedAPD-1.3.7:
+    * New plugin for LDAP backend: ldap_expired_password. Used to force mail
+      user to change the password in 90 days.
+    * Log client IP address.
+    * Supports PostgreSQL.
+    * Excluding mail user in SQL query (plugin: sql_alias_access_policy).
+
+iRedAPD-1.3.6:
+    * Use MySQLdb directly for SQL related operations. Avoid 'too many
+      connections' issue.
+    * Fixed incorrect policy name in plugin 'sql_alias_access_policy.py':
+      allowedOnly -> allowedonly (convert to lower case).
+
+iRedAPD-1.3.5:
+    * Fix incorrect ldap search scope in plugin 'ldap_maillist_access_policy'.
+
+iRedAPD-1.3.4:
+    * Bypass sender if it's under domainAliasName when access policy is
+      'domain' or 'subdomain'. Thanks Alvin Chen <zhhchen@>.
+    * New option for iredapd-rr: bypass_mynetworks. Used to bypass mails sent
+      from postfix mynetworks.
+    * Bypass user alias addresses (shadowAddress) if user is allowed to send
+      to mail list. Thanks Henri Veldsink for his feedback and testing.
+    * Allow to use same logging hander in plugins, print plugin debug message.
+    * Query user aliases as allowed sender.
+    * Print error message if plugin module doesn't exist.
+
+iRedAPD-1.3.3:
+    * Fix bug in src/plugins-rr/ldap_recipient_restriction.py. Thanks
+      avrajesh@forum for his/her feedback.
+    * Set default umask to 0077. Thanks rizkiwicaksono@forum.
+    * New parameter: run_as_user. Used to force running iRedAPD as a low
+      privileged user. Thanks rizkiwicaksono@forum.
+
+iRedAPD-1.3.2:
+    * Fix bypassing whitelisted sender issue in plugin:
+      block_amavisd_blacklisted_senders. Thanks HoHo for his report.
+
+iRedAPD-1.3.1:
+    * Fix defective sender address list in plugin:
+      block_amavisd_blacklisted_senders.
+    * Fix incorrect recipient address in plugin: ldap_recipient_restrictions.
+
+iRedAPD-1.3.0:
+    * Ability to bypass or block centain domains or users in OpenLDAP backend.
+      WARNING: This feature requires at least iRedMail-0.6.0.
+    * Ability to handle policy 'subdomain'. Bypass if sender is under same
+      domain or sub domains.
+    * Ability to handle policy 'membersAndAllowedOnly'.
+    * Support MySQL backend.
+    * Add rc script for FreeBSD.
+
+iRedAPD-1.2.3:
+    * Change default action to 'DUNNO', so that we won't miss any email while
+      incorrect config.
+    * Add handle of LDAP quering of non exist recipient. Thanks Bill Holt for
+      his report.
+    * Prepend 'action=' only one time.
+
+iRedAPD-1.2.2:
+    * Fix incorrect member list, return all instead of one the first one.
+    * Don't ignore external mail list members.
+
+iRedAPD-1.2.1:
+    * Fix incorrect ps parameter on FreeBSD.
+
+iRedAPD-1.2:
+    * Support plugins.
+
+iRedAPD-1.1:
+    * Fixed: return moderator list instead of the first one.
+    * Fixed: remove accountStatus and enabledService in filter.
+      mail list doesn't use it.
+
+iRedAPD-1.0:
+    * Initialize version.
