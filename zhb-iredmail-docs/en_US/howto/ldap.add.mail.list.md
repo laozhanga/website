@@ -82,7 +82,7 @@ Available access policies are:
 * `domain`: all users under same domain are allowed to send email to this mail list.
 * `subdomain`: all users under same domain and sub-domains are allowed to send email to this mail list.
 * `membersOnly`: only members of this mail list are allowd.
-* `moderatorsOnly`: only moderators of this mail list are allowed. Moderators
+* `allowedOnly`: only moderators of this mail list are allowed. Moderators
   are email addresses stored in SQL column `alias.moderators`. With iRedAPD-1.4.5,
   it's ok to use `*@domain.com` as (one of) moderator for all users under
   mail domain 'domain.com'.
@@ -95,4 +95,4 @@ enabled in parameter `plugins = []`.
 
 ## See also
 
-* [Create mailing list (mail alias account) for SQL backend (MySQL/MariaDB/PostgreSQL)](./ldap.add.mail.list.html)
+* [Create mailing list (mail alias account) for SQL backend (MySQL/MariaDB/PostgreSQL)](./sql.create.mail.alias.html)

@@ -2,9 +2,12 @@
 
 [TOC]
 
-## ChangeLog
+!!! note "Paid Remote Upgrade Support"
 
-> We provide remote upgrade service, check [the price](../support.html) and [contact us](../contact.html).
+    We offer remote upgrade support if you don't want to get your hands dirty,
+    check [the details](../support.html) and [contact us](../contact.html).
+
+## ChangeLog
 
 * 2012-10-16: [ldap] Fix incorrect LDAP URI in Cluebringer config file.
 * 2012-10-16: [Optional] Send an email to postmaster@ if user's mailbox is larger than or equal to 95% full.
@@ -34,7 +37,7 @@ latest stable release immediately: [How to upgrade Roundcube](http://trac.roundc
 ### Upgrade iRedAPD (Postfix policy server) to the latest stable release
 
 Please follow below tutorial to upgrade iRedAPD to the latest stable release:
-[How to upgrade iRedAPD-1.4.0 or later versions to the latest stable release](./upgrade.iredapd.html)
+[Upgrade iRedAPD to the latest stable release](./upgrade.iredapd.html)
 
 ### Upgrade iRedAdmin (open source edition) to the latest stable release
 

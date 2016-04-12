@@ -37,14 +37,16 @@ Notes:
   in backup scripts, default is `/var/vmail/backup`.
 * SQL backup is plain SQL file, LDAP backup is plain LDIF file.
 * Backup files are compressed with `bzip2` by default, you can decompress them
-  with command `bunzip2`. for example, `bunzip file_name.bz2`.
+  with command `bunzip2`. for example, `bunzip2 file_name.bz2`.
 * It's ok to run the backup scripts manually.
 
 ### Backup additional data manually
 
 * DKIM keys. They're stored under `/var/lib/dkim/` by default. If you don't
   backup them, it's ok to generate new keys and you must update DNS record
-  (`dkim._domainkey.[YOUR_MAIL_DOMAIN]`) with new DKIM key.
+  (`dkim._domainkey.[YOUR_MAIL_DOMAIN]`) with new DKIM key. Refer to another
+  document to generate DKIM key and update DNS record:
+  [Sign DKIM signature on outgoing emails for new mail domain](./sign.dkim.signature.for.new.domain.html).
 
 * OpenLDAP backend:
 
@@ -58,14 +60,13 @@ Notes:
 
 You can simply restore plain SQL files backed up by above backup scripts.
 
-> __WARNING: Do not restore database `mysql` on a new iRedMail server.__
->
 > If you're restoring on a __NEW__ iRedMail server, do *NOT*
-> restore database `mysql` exported from old server, it contains SQL usernames
-> and passwords used in many components (e.g. Postfix, Dovecot, Roundcube
-> webmail) on old server. New iRedMail server already has the same SQL accounts
-> with different passwords, so please do not restore `mysql` database,
-> otherwise almost all services won't work due to incorrect SQL credentials.
+> restore the database which is named `mysql` exported from old server, it
+> contains SQL usernames and passwords used in many components (e.g. Postfix,
+> Dovecot, Roundcube webmail) on old server. New iRedMail server already has
+> the same SQL accounts with different passwords, so please do not restore
+> `mysql` database, otherwise almost all services won't work due to incorrect
+> SQL credentials.
 
 ### How to restore LDAP backup
 
@@ -75,7 +76,7 @@ must be so restored with command `slapadd`.
 Below example shows how to restore a LDAP backup on RHEL/CentOS 6.x, files and
 directories may be different on other Linux/BSD distributions, you can find
 the correct ones in this tutorial: 
-[Locations of configuration and log files of mojor components](./file.locations.html#openldap).
+[Locations of configuration and log files of major components](./file.locations.html#openldap).
 
 * LDAP backups are stored under `/var/vmail/backup/ldap/[YEAR]/[MONTH]` by
   default, for example, `/var/vmail/backup/ldap/2015/05/`. And it's compressed

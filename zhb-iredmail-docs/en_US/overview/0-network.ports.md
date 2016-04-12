@@ -39,20 +39,28 @@ external network is blocked by firewall (iptables, pf).
 * 995: POP3S (Secure POP3 over SSL). Deprecated, recommended to use port 110 with STARTTLS.
 * 143: IMAP service, insecure connection. Supports STARTTLS for secure connection.
 * 993: IMAPS (Secure IMAP over SSL). Deprecated,  recommended to use port 143 with STARTTLS.
-* 2000: managesieve service. (Refuse connections from external network in iptables be default)
+* 4190: managesieve service. (Refuse connections from external network in iptables by default). Note: in old iRedMail releases, it's port 2000, it's deprecated and not even listed in `/etc/services` file.
 
 ## Amavisd-new
 
-* 10024: main port used for Postfix to inject incoming/outgoing
-  emails for spam/virus scanning, DKIM signing/verification, etc.
+* 10024: port used for inbound messages, includes spam/virus scanning, DKIM
+  verification, applying spam policy.
+* 10026: port used for outbound messages, includes spam/virus scanning, DKIM
+  signing, apply spam policy.
 * 9998: port used to manage quarantined emails.
 
 All ports are listening on `127.0.0.1` by default.
+
+## iRedAPD (Postfix policy server)
+
+* 7777: default listen port. Listening on IP address `127.0.0.1` by default,
+  offers greylisting, whitelisting, blacklists, throttling, and other features.
 
 ## Policyd or Cluebringer (Postfix policy server)
 
 * 10031: default listen port. Listening on IP address `127.0.0.1` by default.
 
-## iRedAPD (Postfix policy server)
+!!! note
 
-* 7777: default listen port. Listening on IP address `127.0.0.1` by default.
+    Policyd and Cluebringer were removed since iRedMail-0.9.3, they're replaced
+    by iRedAPD.

@@ -1,8 +1,8 @@
 body{
     margin: 0 auto;
-    font-family: Georgia, Palatino, serif;
+    font-family: 'PT Sans', Georgia, Palatino, serif;
     line-height: 1;
-    max-width: 70%;
+    max-width: 75%;
     padding: 30px 0px 100px 0px;
 }
 h1, h2, h3, h4, h5 {
@@ -19,11 +19,19 @@ h2 { font-size: 36px; padding-top: 24px;}
 h3 { font-size: 24px; }
 h4 { font-size: 21px; }
 h5 { font-size: 18px; }
+
+h1 code { font-size: 40px; }
+h2 code { font-size: 36px; }
+h3 code { font-size: 24px; }
+h4 code { font-size: 21px; }
+h5 code { font-size: 18px; }
+
 a {
     color: #0099ff;
     margin: 0;
     padding: 0;
     vertical-align: baseline;
+    text-decoration: none;
 }
 a:hover {
     text-decoration: none;
@@ -64,8 +72,8 @@ aside {
     /*width: 390px;*/
 }
 blockquote {
-    border-left:.5em solid #eee;
-    padding: 0 2em;
+    border-left: 0.5em solid #eee;
+    padding: 0 1em;
     margin-left:0;
     font-style: italic;
     /*max-width: 476px;*/
@@ -245,6 +253,9 @@ button::-moz-focus-inner {
   border: 0;
 }
 
+/* Customizations */
+h2, h3, h4, h5 { padding-top: 20px; }
+
 pre, code {
     background: #f5f5f5;
     border: 1px solid #ccc;
@@ -305,3 +316,55 @@ th { font-style: bold; text-align: left; }
 /*
 code.bash { background-color: green; color: white; }
 */
+pre { margin-left: 30px; }
+p, ul, ol { font-size: 17px; }
+li { line-height: 26px; }
+
+/*
+.note {
+    background: #e7f2fa;
+    padding: 12px;
+    line-height: 24px;
+    margin-bottom: 24px;
+}
+.note .admonition-title {
+    background: #6ab0de;
+}
+.note p:last-child {
+    margin-bottom: 0;
+}
+*/
+
+.note, .attention, .caution, .danger, .error, .hint, .important, .tip, .warning, .seealso, .admonition-todo {
+	padding: 12px;
+	line-height: 24px;
+	margin-bottom: 24px;
+	background: #e7f2fa;
+}
+
+.admonition-title {
+	font-weight: bold;
+	display: block;
+	color: #fff;
+	margin: -12px;
+	padding: 6px 12px;
+	margin-bottom: 12px
+}
+
+/*
+.caution    .admonition-title,
+.danger     .admonition-title,
+.error      .admonition-title,
+.hint       .admonition-title,
+.important  .admonition-title,
+.tip        .admonition-title,
+.seealso    .admonition-title,
+.admonition-todo .admonition-title
+*/
+
+.note       .admonition-title { background: #6ab0de; }
+.warning    .admonition-title { background: #f0b37e; }
+.attention  .admonition-title { display: none; }
+.attention  { background: #e7f2fa; }
+.warning    { background: #FFFFE1; }
+.attention p { margin-top: 4px; }

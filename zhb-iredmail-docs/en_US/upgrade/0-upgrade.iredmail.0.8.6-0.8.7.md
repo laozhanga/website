@@ -2,9 +2,12 @@
 
 [TOC]
 
-## ChangeLog
+!!! note "Paid Remote Upgrade Support"
 
-> We provide remote upgrade service, check [the price](../support.html) and [contact us](../contact.html).
+    We offer remote upgrade support if you don't want to get your hands dirty,
+    check [the details](../support.html) and [contact us](../contact.html).
+
+## ChangeLog
 
 * 2014-05-18: Update SQL commands to sync value of removed columns to new column 'domain.settings'.
 * 2014-05-14: Mention Roundcube setting change after you enable SMTP SASL authentication only over TLS in Postfix.
@@ -42,7 +45,7 @@ latest stable release immediately: [How to upgrade Roundcube](http://trac.roundc
 ### Upgrade iRedAPD (Postfix policy server) to the latest 1.4.3
 
 Please follow below tutorial to upgrade iRedAPD to the latest stable release:
-[How to upgrade iRedAPD-1.4.0 or later versions to the latest stable release](./upgrade.iredapd.html)
+[Upgrade iRedAPD to the latest stable release](./upgrade.iredapd.html)
 
 ### Upgrade iRedAdmin (open source edition) to the latest stable release
 
@@ -249,10 +252,11 @@ mysql> USE vmail;
 mysql> UPDATE domain SET transport='lmtp:unix:private/dovecot-lmtp' WHERE domain='abc.com';
 ```
 
-__IMPORTANT NOTE__: it requires new LDAP value or SQL column for mail users
-mentioned in this upgrade tutorial (LDAP: `enabledService=lmtp`, SQL:
-`mailbox.enablelmtp=1`), so please finish this upgrade tutorial first, then
-you're safe to use LMTP.
+!!! note
+
+    It requires new LDAP value or SQL column for mail users mentioned later in
+    this tutorial (LDAP: `enabledService=lmtp`, SQL: `mailbox.enablelmtp=1`),
+    so please finish this upgrade tutorial first, then you're safe to use LMTP.
 
 ### [OPTIONAL] Fixed issue: Postfix cannot resolve client IP address to DNS name on RHEL/CentOS
 

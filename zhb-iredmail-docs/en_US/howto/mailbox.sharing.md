@@ -1,16 +1,16 @@
 # Mailbox sharing (Sharing IMAP folder with other users)
 
-> Since iRedMail-`0.7.0`, mailbox sharing related settings are configured in
-> Dovecot but not enabled, what you need to do is enabling "acl" plugin as
-> mentioned below.
+!!! note
 
-> Since iRedMail-`0.9.0`, mailbox sharing are enabled by default, you don't need
-> to modify any config file.
-
-> Do not mistake "shared folders" for "public folders". For shared folders,
-> users must select which folder they want to share and with who, using an
-> interface, like IMAP command line or the ones available with Roundcube
-> webmail or SOGo and SOGo connectors.
+    * Since iRedMail-`0.9.0`, mailbox sharing are enabled by default, you don't
+      need to modify any config file.
+    * Since iRedMail-`0.7.0`, mailbox sharing related settings are configured
+      in Dovecot but not enabled, what you need to do is enabling `acl` plugin
+      as mentioned below.
+    * Do not mistake "shared folders" for "public folders". For shared folders,
+      users must select which folder they want to share and with who, using an
+      interface, like IMAP command line or the ones available with Roundcube
+      webmail or SOGo and SOGo connectors.
 
 ## Enable mailbox sharing
 
@@ -45,9 +45,11 @@ Restarting Dovecot service is required.
 
 ## Test shared folder
 
-Example: share from@domain.ltd's `Sent` folder to user `testing@domain.ltd`.
+Example: share `from@domain.ltd`'s `Sent` folder to user `testing@domain.ltd`.
 
-> WARNING: Do not forget the dot before IMAP command.
+!!! warning
+
+    Do not forget the dot before each IMAP command.
 
 ```
 # telnet localhost 143                # <- Type this.
@@ -98,3 +100,7 @@ mysql> SELECT * FROM share_folder;
 * Roundcubemail has official plugin `acl` to manage mailbox sharing.
 * SOGo groupware supports mailbox sharing by default: right-click IMAP folder, choose `Sharing`.
 * [Imap-ACL-Extension for Thunderbird](https://addons.mozilla.org/en-US/thunderbird/addon/imap-acl-extension/), manage acls/permissions for shared mailboxes/folders on imap servers.
+
+## See Also
+
+* [How to create and manage public folder](./public.folder.html)

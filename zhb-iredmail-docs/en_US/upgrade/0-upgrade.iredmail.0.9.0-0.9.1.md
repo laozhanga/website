@@ -2,9 +2,12 @@
 
 [TOC]
 
-## ChangeLog
+!!! note "Paid Remote Upgrade Support"
 
-> We provide remote upgrade service, check [the price](../support.html) and [contact us](../contact.html).
+    We offer remote upgrade support if you don't want to get your hands dirty,
+    check [the details](../support.html) and [contact us](../contact.html).
+
+## ChangeLog
 
 * 2015-05-15: Initial public.
 
@@ -56,7 +59,7 @@ Notes:
 * If you're going to update PHP to 5.6, you should add below settings in
   Roundcube config file (`config/config.inc.php`) to avoid ssl certificate issue.
   If you don't know the location of this config file, check our tutorial here:
-  [Locations of configuration and log files of mojor components](./file.locations.html#roundcube-webmail).
+  [Locations of configuration and log files of major components](./file.locations.html#roundcube-webmail).
 
 ```
 // Required if you're running PHP 5.6
@@ -78,7 +81,7 @@ $config['smtp_conn_options'] = array(
 ### Upgrade iRedAPD (Postfix policy server) to the latest 1.5.0
 
 Please follow below tutorial to upgrade iRedAPD to the latest stable release:
-[How to upgrade iRedAPD-1.4.0 or later versions to the latest stable release](./upgrade.iredapd.html)
+[Upgrade iRedAPD to the latest stable release](./upgrade.iredapd.html)
 
 Detailed release notes are available here: [iRedAPD release notes](./iredapd.releases.html).
 
@@ -486,9 +489,9 @@ pass_attrs      = mail=user,userPassword=password,allowNets=allow_nets
 
 Restarting Dovecot service is required.
 
-Sample usage: allow user `user@domain.com` to login from IP `172.16.244.1` and
-network `192.168.1.0/24`:
-
+> Sample usage: allow user `user@domain.com` to login from IP `172.16.244.1`
+> and network `192.168.1.0/24`:
+>
 ```
 dn: mail=user@domain.com,ou=Users,domainName=domain.com,o=domains,dc=xx,dc=xx
 objectClass: mailUser
@@ -496,8 +499,8 @@ mail: user@domain.com
 allowNets: 192.168.1.10,192.168.1.0/24
 ...
 ```
-
-To remove this restriction, just remove attribute `allowNets` for this user.
+>
+>To remove this restriction, just remove attribute `allowNets` for this user.
 
 ### Fixed: not backup SOGo database
 
@@ -535,7 +538,7 @@ greylisting on them is helpless.
 
 ```
 # cd /tmp
-# wget https://bitbucket.org/zhb/iredmail/raw/default/iRedMail/samples/cluebringer/greylisting-whitelist.sql
+# wget https://bitbucket.org/zhb/iredmail/raw/40b98d7dde0178d54498e170c8b5165c0316dc96/iRedMail/samples/cluebringer/greylisting-whitelist.sql
 ```
 
 * Login to MySQL database and import this file:
@@ -586,15 +589,15 @@ password_query = SELECT password, allow_nets FROM mailbox WHERE username='%u' AN
 
 Restarting Dovecot service is required.
 
-Sample usage: allow user `user@domain.com` to login from IP `172.16.244.1` and
-network `192.168.1.0/24`:
-
+> Sample usage: allow user `user@domain.com` to login from IP `172.16.244.1`
+> and network `192.168.1.0/24`:
+>
 ```
 sql> USE vmail;
 sql> UPDATE mailbox SET allow_nets='172.16.244.1,192.168.1.0/24' WHERE username='user@domain.com`;
 ```
-
-To remove this restriction, just set `mailbox.allow_nets` to `NULL`, not empty string.
+>
+>To remove this restriction, just set `mailbox.allow_nets` to `NULL`, not empty string.
 
 ### Fixed: user+extension@domain.com doesn't work with per-domain catch-all
 
@@ -654,7 +657,7 @@ greylisting on them is helpless.
 
 ```
 # cd /tmp
-# wget https://bitbucket.org/zhb/iredmail/raw/default/iRedMail/samples/cluebringer/greylisting-whitelist.sql
+# wget https://bitbucket.org/zhb/iredmail/raw/40b98d7dde0178d54498e170c8b5165c0316dc96/iRedMail/samples/cluebringer/greylisting-whitelist.sql
 ```
 
 * Login to MySQL database and import this file:
@@ -705,15 +708,15 @@ password_query = SELECT password, allow_nets FROM mailbox WHERE username='%u' AN
 
 Restarting Dovecot service is required.
 
-Sample usage: allow user `user@domain.com` to login from IP `172.16.244.1` and
-network `192.168.1.0/24`:
-
+> Sample usage: allow user `user@domain.com` to login from IP `172.16.244.1`
+> and network `192.168.1.0/24`:
+>
 ```
 sql> \c vmail;
 sql> UPDATE mailbox SET allow_nets='172.16.244.1,192.168.1.0/24' WHERE username='user@domain.com`;
 ```
-
-To remove this restriction, just set `mailbox.allow_nets` to `NULL`, not empty string.
+>
+> To remove this restriction, just set `mailbox.allow_nets` to `NULL`, not empty string.
 
 ### Fixed: user+extension@domain.com doesn't work with per-domain catch-all
 
@@ -773,7 +776,7 @@ greylisting on them is helpless.
 
 ```
 # cd /tmp
-# wget https://bitbucket.org/zhb/iredmail/raw/default/iRedMail/samples/cluebringer/greylisting-whitelist.sql
+# wget https://bitbucket.org/zhb/iredmail/raw/40b98d7dde0178d54498e170c8b5165c0316dc96/iRedMail/samples/cluebringer/greylisting-whitelist.sql
 ```
 
 * Switch to PostgreSQL daemon user, then execute SQL commands to import it:

@@ -7,10 +7,8 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="install-sogo-groupware-on-centos-6-with-iredmail-openldap-backend">Install SOGo groupware on CentOS 6 with iRedMail (OpenLDAP backend)</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="install-sogo-groupware-on-centos-6-with-iredmail-openldap-backend">Install SOGo groupware on CentOS 6 with iRedMail (OpenLDAP backend)</h1>
 <div class="toc">
 <ul>
 <li><a href="#install-sogo-groupware-on-centos-6-with-iredmail-openldap-backend">Install SOGo groupware on CentOS 6 with iRedMail (OpenLDAP backend)</a><ul>
@@ -28,6 +26,7 @@
 <li><a href="#add-required-cron-jobs">Add required cron jobs</a></li>
 <li><a href="#access-sogo-from-web-browser">Access SOGo from web browser</a></li>
 <li><a href="#configure-your-mail-clients-or-mobile-devices-to-use-caldavcarddav-services">Configure your mail clients or mobile devices to use CalDav/CardDAV services</a></li>
+<li><a href="#references">References</a></li>
 </ul>
 </li>
 </ul>
@@ -90,6 +89,11 @@ create them manually.</p>
 for you, just replace MySQL username/password for sogo SQL database and LDAP
 basedn, bind dn/passwordthen in this file, then it's done.</p>
 <p>With below config file, SOGo will listen on address <code>127.0.0.1</code>, port <code>20000</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Sample config file below may be out of date, please check the <a href="https://bitbucket.org/zhb/iredmail/src/default/iRedMail/samples/sogo/sogo.conf">latest one
+in iRedMail source code repository</a>.</p>
+</div>
 <pre><code>{
     // Official SOGo documents:
     //  - http://www.sogo.nu/english/support/documentation.html
@@ -361,7 +365,22 @@ command: <code>crontab -l -u sogo</code></p>
 word <code>SOGo</code> is case-sensitive), you can login with your email account credential.</p>
 <h2 id="configure-your-mail-clients-or-mobile-devices-to-use-caldavcarddav-services">Configure your mail clients or mobile devices to use CalDav/CardDAV services</h2>
 <p>Please check our documents <a href="./index.html#configure-mail-client-applications">here</a>
-to configure your mail clients or mobile devices.</p><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+to configure your mail clients or mobile devices.</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="http://sogo.nu">SOGo web site</a></li>
+<li>
+<p>Outlook plugins:</p>
+<ul>
+<li>
+<p><a href="https://github.com/aluxnimm/outlookcaldavsynchronizer">Outlook CalDav Synchronizer</a></p>
+<blockquote>
+<p>Outlook Plugin, which synchronizes events, tasks and contacts(beta) between Outlook and Google, SOGo, Horde or any other CalDAV or CardDAV server. Supported Outlook versions are 2016, 2013, 2010 and 2007.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

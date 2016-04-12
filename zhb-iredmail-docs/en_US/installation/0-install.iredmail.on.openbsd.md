@@ -4,12 +4,14 @@
 
 ## System Requirements
 
-__IMPORTANT WARNING__: iRedMail is designed to be deployed on a FRESH server system,
-which means your server does __NOT__ have mail related components installed,
-e.g. MySQL, OpenLDAP, Postfix, Dovecot, Amavisd, etc. iRedMail will install
-and configure them for you automatically. Otherwise it may override your
-existing files/configurations althought it will backup files before modifing,
-and it may not be working as expected.
+!!! warning
+
+    iRedMail is designed to be deployed on a __FRESH__ server system, which
+    means your server does __NOT__ have mail related components installed,
+    e.g. MySQL, OpenLDAP, Postfix, Dovecot, Amavisd, etc. iRedMail will install
+    and configure them for you automatically. Otherwise it may override your
+    existing files/configurations althought it will backup files before
+    modifying, and it may not be working as expected.
 
 To install iRedMail on OpenBSD, you need:
 
@@ -26,19 +28,17 @@ To install iRedMail on OpenBSD, you need:
     * man[XX].tgz
     * xbase[XX].tgz
 
-Notes:
+!!! note
 
-* All binary packages will be installed with command `pkg_add -i`. It will
-  prompt you to choose different versions of binary packages, please choose
-  the one described below:
+    * All binary packages will be installed with command `pkg_add -i`. It will
+      prompt you to choose different versions of binary packages, please choose
+      the one described below:
 
-    * choose `p5-Mail-SPF`, NOT `p5-Mail-SPF-Query`
+        * choose `p5-Mail-SPF`, NOT `p5-Mail-SPF-Query`
 
-* Nginx is used as web server.
-* PF is enabled by default, with basic rules for ssh and mail services.
-* System built-in [`spamd(8)`](http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man8/spamd.8) is enabled by default for greylisting,
-  whitelisting, blacklisting.
-* OpenSMTPd are disabled by default, replaced by Postfix.
+    * Nginx is used as web server.
+    * PF is enabled by default, with basic rules for ssh and mail services.
+    * OpenSMTPd are disabled by default, replaced by Postfix.
 
 ## Preparations
 
@@ -122,15 +122,20 @@ Install Bash shell, it's required by iRedMail.
 
 ## Start iRedMail installer
 
-> For Chinese users: Our domain name "iredmail.org" is blocked in China mainland since Jun 04, 2011, please replace all 'iredmail.org' by its IP address "106.187.51.47" (without quotes) in /root/iRedMail-x.y.z/pkgs/get_all.sh BEFORE executing "iRedMail.sh". This is a Linode VPS hosted in Tokyo, Japan.
-
 It's now ready to start iRedMail installer, it will ask you several simple
-questions, that's all steps to setup a full-featured mail server.
+questions, that's all required to setup a full-featured mail server.
 
 ```
 # cd /root/iRedMail-x.y.z/
 # bash iRedMail.sh
 ```
+
+!!! note "To Chinese users"
+
+    Our domain name `iredmail.org` is blocked in mainland
+    China since Jun 04, 2011, please run command below to finish the installation:
+
+    `IREDMAIL_MIRROR='http://42.159.241.31' bash iRedMail.sh`
 
 ## Screenshots of installation:
 
@@ -145,9 +150,11 @@ questions, that's all steps to setup a full-featured mail server.
 * Choose backend used to store mail accounts. You can manage mail accounts
 with iRedAdmin, our web-based iRedMail admin panel.
 
-__IMPORTANT NOTE__: There's no big difference between available backends, so
-it's strongly recommended to choose the one you're familiar with for easier
-management and maintenance after installation.
+!!! note
+
+    There's no big difference between available backends, so
+    it's strongly recommended to choose the one you're familiar with for easier
+    management and maintenance after installation.
 
 ![](../images/installation/iredmail/backend.png)
 
@@ -162,12 +169,11 @@ Password of LDAP root dn.
 
 ![](../images/installation/iredmail/pw_of_ldap_root_dn.png)
 
-* Set password of MySQL or PostgreSQL admin user.
+!!! note "To MySQL/MariaDB/PostgreSQL users"
 
-__NOTE__: MySQL is used to store data of other applications (e.g. Roundcube
-webmail, Cluebringer, Amavisd-new) if you choose OpenLDAP or MySQL as backend.
-
-![](../images/installation/iredmail/pw_of_mysql_root_user.png)
+    If you choose to store mail accounts in MySQL/MariaDB/PostgreSQL, iRedMail
+    installer will generate a random, strong password for you. You can find it
+    in file `iRedMail.tips`.
 
 * Add your first mail domain name
 
@@ -208,22 +214,28 @@ Configuration completed.
 
 ## Important things you __MUST__ know after installation
 
+> The weakest part of a mail server is user's weak password. Spammers don't
+> want to hack your server, they just want to send spam from your server.
+> Please __ALWAYS ALWAYS ALWAYS__ force users to use a strong password.
+
 * Read file `/root/iRedMail-x.y.z/iRedMail.tips` first, it contains:
 
     * URLs, usernames and passwords of web-based applications
     * Location of mail service related software configuration files. You can
       also check this tutorial instead:
-      [Locations of configuration and log files of mojor components](./file.locations.html).
+      [Locations of configuration and log files of major components](./file.locations.html).
     * Some other important and sensitive information
 
 * [Setup DNS records for your mail server](./setup.dns.html)
 * [How to configure your mail clients](./index.html#configure-mail-client-applications)
-
-* It's highly recommended to purchase a SSL cert to avoid annonying warning
+* It's highly recommended to get a SSL cert to avoid annonying warning
   message in web browser or mail clients when accessing mailbox via
-  HTTPS/IMAPS/POP3/SMTPS. Or, you can use
-  [free SSL cert offerred by StartSSL.com](http://www.startssl.com/?app=1).
-  We have a document for you to [use a bought SSL certificate](http://www.iredmail.org/docs/use.a.bought.ssl.certificate.html).
+  HTTPS/IMAPS/POP3/SMTPS. [Let's Encrypt offers __FREE__ SSL certificate](https://letsencrypt.org).
+  We have a document for you to
+  [use a SSL certificate](http://www.iredmail.org/docs/use.a.bought.ssl.certificate.html).
+* If you need to bulk create mail users, check our document for
+  [OpenLDAP](./ldap.bulk.create.mail.users.html) and
+  [MySQL/MariaDB/PostgreSQL](./sql.bulk.create.mail.users.html).
 * If you're running a busy mail server, we have [some suggestions for better
   performance](./performance.tuning.html).
 
@@ -233,12 +245,15 @@ After installation successfully completed, you can access web-based programs
 if you choose to install them. Replace `your_server` below by your real server
 hostname or IP address.
 
-* __Roundcube webmail__: [https://your_server/mail/](https://your_server/mail/)
-* __Web admin panel (iRedAdmin)__: [httpS://your_server/iredadmin/](httpS://your_server/iredadmin/)
-* __Awstats__: [httpS://your_server/awstats/awstats.pl?config=web](httpS://your_server/awstats/awstats.pl?config=web) (or ?config=smtp)
+* __Roundcube webmail__: <https://your_server/mail/>
+* __SOGo Groupware__: <https://your_server/SOGo>
+* __Web admin panel (iRedAdmin)__: <httpS://your_server/iredadmin/>
+* __Awstats__: <httpS://your_server/awstats/awstats.pl?config=web> (or `?config=smtp` for SMTP log)
 
 ## Get technical support
 
-Please post all issues, feedbacks, feature requests, suggestions in our [online
-support forum](http://www.iredmail.org/forum/), it's more responsible than you
-expected.
+* You are welcome to post issues, feedbacks, feature requests, suggestions in
+  our [online support forum](../forum/), it's more
+  responsible than you expected.
+* We offer paid professional support service too, check our web site for more
+  details: [Get Professional Support from iRedMail Team](../support.html).

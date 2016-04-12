@@ -7,10 +7,8 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="upgrade-iredmail-from-090-to-091">Upgrade iRedMail from 0.9.0 to 0.9.1</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="upgrade-iredmail-from-090-to-091">Upgrade iRedMail from 0.9.0 to 0.9.1</h1>
 <div class="toc">
 <ul>
 <li><a href="#upgrade-iredmail-from-090-to-091">Upgrade iRedMail from 0.9.0 to 0.9.1</a><ul>
@@ -60,10 +58,12 @@
 </li>
 </ul>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Paid Remote Upgrade Support</p>
+<p>We offer remote upgrade support if you don't want to get your hands dirty,
+check <a href="../support.html">the details</a> and <a href="../contact.html">contact us</a>.</p>
+</div>
 <h2 id="changelog">ChangeLog</h2>
-<blockquote>
-<p>We provide remote upgrade service, check <a href="../support.html">the price</a> and <a href="../contact.html">contact us</a>.</p>
-</blockquote>
 <ul>
 <li>2015-05-15: Initial public.</li>
 </ul>
@@ -107,7 +107,7 @@ tutorial to upgrade Roundcube webmail to the latest stable release:
 <li>If you're going to update PHP to 5.6, you should add below settings in
   Roundcube config file (<code>config/config.inc.php</code>) to avoid ssl certificate issue.
   If you don't know the location of this config file, check our tutorial here:
-  <a href="./file.locations.html#roundcube-webmail">Locations of configuration and log files of mojor components</a>.</li>
+  <a href="./file.locations.html#roundcube-webmail">Locations of configuration and log files of major components</a>.</li>
 </ul>
 <pre><code>// Required if you're running PHP 5.6
 $config['imap_conn_options'] = array(
@@ -127,7 +127,7 @@ $config['smtp_conn_options'] = array(
 
 <h3 id="upgrade-iredapd-postfix-policy-server-to-the-latest-150">Upgrade iRedAPD (Postfix policy server) to the latest 1.5.0</h3>
 <p>Please follow below tutorial to upgrade iRedAPD to the latest stable release:
-<a href="./upgrade.iredapd.html">How to upgrade iRedAPD-1.4.0 or later versions to the latest stable release</a></p>
+<a href="./upgrade.iredapd.html">Upgrade iRedAPD to the latest stable release</a></p>
 <p>Detailed release notes are available here: <a href="./iredapd.releases.html">iRedAPD release notes</a>.</p>
 <p>Note:</p>
 <p>iRedAPD-1.5.0 is able to log rejection and other non-DUNNO actions in iRedAdmin
@@ -481,8 +481,11 @@ from specified IP/networks.</p>
 </code></pre>
 
 <p>Restarting Dovecot service is required.</p>
-<p>Sample usage: allow user <code>user@domain.com</code> to login from IP <code>172.16.244.1</code> and
-network <code>192.168.1.0/24</code>:</p>
+<blockquote>
+<p>Sample usage: allow user <code>user@domain.com</code> to login from IP <code>172.16.244.1</code>
+and network <code>192.168.1.0/24</code>:
+</p>
+</blockquote>
 <pre><code>dn: mail=user@domain.com,ou=Users,domainName=domain.com,o=domains,dc=xx,dc=xx
 objectClass: mailUser
 mail: user@domain.com
@@ -490,7 +493,9 @@ allowNets: 192.168.1.10,192.168.1.0/24
 ...
 </code></pre>
 
+<blockquote>
 <p>To remove this restriction, just remove attribute <code>allowNets</code> for this user.</p>
+</blockquote>
 <h3 id="fixed-not-backup-sogo-database">Fixed: not backup SOGo database</h3>
 <p>Note: this step is not applicable if you don't use SOGo groupware.</p>
 <p>Open backup script <code>/var/vmail/backup/backup_mysql.sh</code>, append SOGo SQL
@@ -515,7 +520,7 @@ greylisting on them is helpless.</p>
 <li>Download SQL template file:</li>
 </ul>
 <pre><code># cd /tmp
-# wget https://bitbucket.org/zhb/iredmail/raw/default/iRedMail/samples/cluebringer/greylisting-whitelist.sql
+# wget https://bitbucket.org/zhb/iredmail/raw/40b98d7dde0178d54498e170c8b5165c0316dc96/iRedMail/samples/cluebringer/greylisting-whitelist.sql
 </code></pre>
 
 <ul>
@@ -560,13 +565,18 @@ mysql&gt; ALTER TABLE mailbox ADD COLUMN `allow_nets` TEXT DEFAULT NULL;
 </code></pre>
 
 <p>Restarting Dovecot service is required.</p>
-<p>Sample usage: allow user <code>user@domain.com</code> to login from IP <code>172.16.244.1</code> and
-network <code>192.168.1.0/24</code>:</p>
+<blockquote>
+<p>Sample usage: allow user <code>user@domain.com</code> to login from IP <code>172.16.244.1</code>
+and network <code>192.168.1.0/24</code>:
+</p>
+</blockquote>
 <pre><code>sql&gt; USE vmail;
 sql&gt; UPDATE mailbox SET allow_nets='172.16.244.1,192.168.1.0/24' WHERE username='user@domain.com`;
 </code></pre>
 
+<blockquote>
 <p>To remove this restriction, just set <code>mailbox.allow_nets</code> to <code>NULL</code>, not empty string.</p>
+</blockquote>
 <h3 id="fixed-userextensiondomaincom-doesnt-work-with-per-domain-catch-all">Fixed: user+extension@domain.com doesn't work with per-domain catch-all</h3>
 <p>With iRedMail-0.9.0 and earlier versions, if you have per-domain catch-all
 enabled, email sent to <code>user+extension@domain.com</code> will be delivered to
@@ -612,7 +622,7 @@ greylisting on them is helpless.</p>
 <li>Download SQL template file:</li>
 </ul>
 <pre><code># cd /tmp
-# wget https://bitbucket.org/zhb/iredmail/raw/default/iRedMail/samples/cluebringer/greylisting-whitelist.sql
+# wget https://bitbucket.org/zhb/iredmail/raw/40b98d7dde0178d54498e170c8b5165c0316dc96/iRedMail/samples/cluebringer/greylisting-whitelist.sql
 </code></pre>
 
 <ul>
@@ -657,13 +667,18 @@ sql&gt; ALTER TABLE mailbox ADD COLUMN allow_nets TEXT DEFAULT NULL;
 </code></pre>
 
 <p>Restarting Dovecot service is required.</p>
-<p>Sample usage: allow user <code>user@domain.com</code> to login from IP <code>172.16.244.1</code> and
-network <code>192.168.1.0/24</code>:</p>
+<blockquote>
+<p>Sample usage: allow user <code>user@domain.com</code> to login from IP <code>172.16.244.1</code>
+and network <code>192.168.1.0/24</code>:
+</p>
+</blockquote>
 <pre><code>sql&gt; \c vmail;
 sql&gt; UPDATE mailbox SET allow_nets='172.16.244.1,192.168.1.0/24' WHERE username='user@domain.com`;
 </code></pre>
 
+<blockquote>
 <p>To remove this restriction, just set <code>mailbox.allow_nets</code> to <code>NULL</code>, not empty string.</p>
+</blockquote>
 <h3 id="fixed-userextensiondomaincom-doesnt-work-with-per-domain-catch-all_1">Fixed: user+extension@domain.com doesn't work with per-domain catch-all</h3>
 <p>With iRedMail-0.9.0 and earlier versions, if you have per-domain catch-all
 enabled, email sent to <code>user+extension@domain.com</code> will be delivered to
@@ -709,7 +724,7 @@ greylisting on them is helpless.</p>
 <li>Download SQL template file:</li>
 </ul>
 <pre><code># cd /tmp
-# wget https://bitbucket.org/zhb/iredmail/raw/default/iRedMail/samples/cluebringer/greylisting-whitelist.sql
+# wget https://bitbucket.org/zhb/iredmail/raw/40b98d7dde0178d54498e170c8b5165c0316dc96/iRedMail/samples/cluebringer/greylisting-whitelist.sql
 </code></pre>
 
 <ul>
@@ -727,7 +742,7 @@ $ psql -d cluebringer
 sql&gt; \i /tmp/greylisting-whitelist.sql;
 </code></pre>
 
-<p>That's all.</p><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+<p>That's all.</p><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

@@ -7,21 +7,22 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="mailbox-sharing-sharing-imap-folder-with-other-users">Mailbox sharing (Sharing IMAP folder with other users)</h1>
-<blockquote>
-<p>Since iRedMail-<code>0.7.0</code>, mailbox sharing related settings are configured in
-Dovecot but not enabled, what you need to do is enabling "acl" plugin as
-mentioned below.</p>
-<p>Since iRedMail-<code>0.9.0</code>, mailbox sharing are enabled by default, you don't need
-to modify any config file.</p>
-<p>Do not mistake "shared folders" for "public folders". For shared folders,
-users must select which folder they want to share and with who, using an
-interface, like IMAP command line or the ones available with Roundcube
-webmail or SOGo and SOGo connectors.</p>
-</blockquote>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="mailbox-sharing-sharing-imap-folder-with-other-users">Mailbox sharing (Sharing IMAP folder with other users)</h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li>Since iRedMail-<code>0.9.0</code>, mailbox sharing are enabled by default, you don't
+  need to modify any config file.</li>
+<li>Since iRedMail-<code>0.7.0</code>, mailbox sharing related settings are configured
+  in Dovecot but not enabled, what you need to do is enabling <code>acl</code> plugin
+  as mentioned below.</li>
+<li>Do not mistake "shared folders" for "public folders". For shared folders,
+  users must select which folder they want to share and with who, using an
+  interface, like IMAP command line or the ones available with Roundcube
+  webmail or SOGo and SOGo connectors.</li>
+</ul>
+</div>
 <h2 id="enable-mailbox-sharing">Enable mailbox sharing</h2>
 <p>To enable mailbox sharing, please make sure you have plugin <code>acl</code> enabled
 in Dovecot config file <code>/etc/dovecot/dovecot.conf</code> like below:</p>
@@ -53,10 +54,11 @@ protocol imap {
 
 <p>Restarting Dovecot service is required.</p>
 <h2 id="test-shared-folder">Test shared folder</h2>
-<p>Example: share from@domain.ltd's <code>Sent</code> folder to user <code>testing@domain.ltd</code>.</p>
-<blockquote>
-<p>WARNING: Do not forget the dot before IMAP command.</p>
-</blockquote>
+<p>Example: share <code>from@domain.ltd</code>'s <code>Sent</code> folder to user <code>testing@domain.ltd</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do not forget the dot before each IMAP command.</p>
+</div>
 <pre><code># telnet localhost 143                # &lt;- Type this.
 * OK [...] Dovecot ready.
 
@@ -110,7 +112,11 @@ mysql&gt; SELECT * FROM share_folder;
 </li>
 <li>SOGo groupware supports mailbox sharing by default: right-click IMAP folder, choose <code>Sharing</code>.</li>
 <li><a href="https://addons.mozilla.org/en-US/thunderbird/addon/imap-acl-extension/">Imap-ACL-Extension for Thunderbird</a>, manage acls/permissions for shared mailboxes/folders on imap servers.</li>
-</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+</ul>
+<h2 id="see-also">See Also</h2>
+<ul>
+<li><a href="./public.folder.html">How to create and manage public folder</a></li>
+</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

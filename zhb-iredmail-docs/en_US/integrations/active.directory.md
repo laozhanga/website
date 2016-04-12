@@ -6,7 +6,7 @@ __NOTES__:
 
 * iRedAdmin-Pro doesn't work with Active Directory, so if you choose to
   authenticate mail users against Active Directory, you have to manage mail
-  accounts with Active Directory management tools, don't buy iRedAdmin-Pro.
+  accounts with Active Directory management tools.
 
 * This tutorial has been verified on Windows 2000, 2003, 2008, 2012 server, if
   you tested it on other versions and works well, please let us know.
@@ -27,6 +27,8 @@ Since AD uses different LDAP schema, you will lose some iRedMail special feature
 
 * Per-user, per-domain service control with LDAP (e.g. enable/disable
   POP3/IMAP/SMTP services).
+* Advanced mail polices implemented by iRedAPD which relies on iRedMail
+  LDAP scheme.
 
 ## Requirements
 
@@ -254,6 +256,14 @@ __NOTE__: `postmap` return nothing if:
 1. mail group doesn't exist
 1. mail group doesn't have any members
 
+### Remove iRedAPD integration in Postfix
+
+iRedAPD relies on iRedMail LDAP scheme, so it's useless if you integrate
+iRedMail with Active Directory. We should remove the integration in Postfix
+to save some system resource.
+
+To disable iRedAPD, please read tutorial: [Manage iRedAPD](./manage.iredapd.html).
+
 ## Enable Active Directory integration in Dovecot
 
 To query AD instead of local LDAP server, we have to modify Dovecot config file
@@ -316,16 +326,16 @@ address book setting added by iRedMail, and add new setting for AD like below:
 ```php
 #
 # "sql" is personal address book stored in roundcube database.
-# "example.com" is new LDAP address book with AD, we will create it below.
+# "global_ldap_abook" is the new LDAP address book for AD, we will create it below.
 #
-$config['autocomplete_addressbooks'] = array("sql", "example.com");
+$config['autocomplete_addressbooks'] = array("sql", "global_ldap_abook");
 
 #
 # Global LDAP Address Book with AD.
 #
 $config['ldap_public']["global_ldap_abook"] = array(
-    'name'          => 'Global LDAP Address Book',
-    'hosts'         => array("ad.example.com"),      // <- Set AD hostname or IP address here.
+    'name'          => 'Global Address Book',
+    'hosts'         => array("ad.example.com"), // <- Set AD hostname or IP address here.
     'port'          => 389,
     'use_tls'       => false,   // <- Set to true if you want to use LDAP over TLS.
     'ldap_version'  => '3',
@@ -333,9 +343,9 @@ $config['ldap_public']["global_ldap_abook"] = array(
     'user_specific' => false,
 
     'base_dn'       => "cn=users,dc=example,dc=com", // <- Set base dn in AD
-    'bind_dn'       => "vmail",                      // <- bind dn
-    'bind_pass'     => "password_of_vmail",          // <- bind password
-    'writable'      => false,                        // <- Do not allow mail user write data back to AD.
+    'bind_dn'       => "vmail",             // <- bind dn
+    'bind_pass'     => "password_of_vmail", // <- bind password
+    'writable'      => false,               // <- Do not allow mail user write data back to AD.
 
     'search_fields' => array('mail', 'cn', 'sAMAccountName', 'displayname', 'sn', 'givenName'),
 
@@ -370,13 +380,20 @@ $config['ldap_public']["global_ldap_abook"] = array(
     ),
     'sort'          => 'cn',
     'scope'         => 'sub',
-    //'filter'        => "(&(objectclass=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))",
-    'filter'        => "(mail=*@*)",
+    'filter'        => "(&(objectclass=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))",
     'fuzzy_search'  => true,
-    'vlv'           => false,   // Enable Virtual List View to more efficiently fetch paginated data (if server supports it)
-    'sizelimit'     => '0',     // Enables you to limit the count of entries fetched. Setting this to 0 means no limit.
-    'timelimit'     => '0',     // Sets the number of seconds how long is spend on the search. Setting this to 0 means no limit.
-    'referrals'     => false,  // Sets the LDAP_OPT_REFERRALS option. Mostly used in multi-domain Active Directory setups
+    'vlv'           => false,   // Enable Virtual List View to more
+                                // efficiently fetch paginated data
+                                // (if server supports it)
+    'sizelimit'     => '0',     // Enables you to limit the count of
+                                // entries fetched. Setting this to 0
+                                // means no limit.
+    'timelimit'     => '0',     // Sets the number of seconds how long
+                                // is spend on the search. Setting this
+                                // to 0 means no limit.
+    'referrals'     => false,   // Sets the LDAP_OPT_REFERRALS option.
+                                // Mostly used in multi-domain Active
+                                // Directory setups
 );
 ```
 

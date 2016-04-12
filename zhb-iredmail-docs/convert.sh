@@ -22,7 +22,7 @@ strip_name_prefix()
 }
 
 # Available translations
-all_languages='en_US'
+all_languages='en_US zh_CN'
 
 # Chapter directories in specified order
 all_chapter_dirs="overview \
@@ -35,6 +35,9 @@ all_chapter_dirs="overview \
                   cluster \
                   troubleshooting \
                   faq"
+
+# Additional directories which stores scripts or other non-Markdown files.
+additional_dirs=""
 
 # Compile all Markdown files.
 if echo "$@" | grep -q -- '--all' &>/dev/null; then
@@ -55,8 +58,10 @@ for lang in ${all_languages}; do
 
     # Directory used to store converted html files.
     OUTPUT_DIR="${ROOTDIR}/html"
+    CSS_FILE='./css/markdown.css'
     if [ X"${lang}" != X'en_US' ]; then
         OUTPUT_DIR="${ROOTDIR}/html/${lang}"
+        CSS_FILE='../css/markdown.css'
     fi
 
     # Markdown file used to store index of chapters/articles.
@@ -79,7 +84,7 @@ for lang in ${all_languages}; do
     #   - article title: _title.md
     for chapter_dir in ${all_chapter_dirs}; do
         if [ ! -d ${chapter_dir} ]; then
-            break
+            continue
         fi
 
         # Get articles
@@ -100,6 +105,7 @@ for lang in ${all_languages}; do
             echo -e "### ${_chapter_title}" >> ${INDEX_MD}
 
             if [ -f ${_summary_md} ]; then
+                echo '' >> ${INDEX_MD}
                 cat ${_summary_md} >> ${INDEX_MD}
 
                 # Insert an empty line to not mess up other formats like list.
@@ -124,6 +130,13 @@ for lang in ${all_languages}; do
             # Get title in markdown file: '# title'
             _article_title="$(head -1 ${article_file} | awk -F'# ' '{print $2}')"
 
+            #
+            # Get title in markdown file: 'Title: title'
+            #_article_title="$(grep '^Title: ' ${article_file} | head -1 | awk -F'Title: ' '{print $2}')"
+            #
+            # Get title in markdown file: '<h1>title</h1>'
+            #_article_title="$(head -1 ${article_file} | awk -F'[<|>]' '{print $3}')"
+
             if [ X"${hide_article_in_index}" == X'NO' ]; then
                 echo "* [${_article_title}](${article_html_file})" >> ${INDEX_MD}
             fi
@@ -144,7 +157,8 @@ for lang in ${all_languages}; do
                                ${OUTPUT_DIR} \
                                output_filename="${article_html_file}" \
                                title="${_article_title}" \
-                               add_index_link='yes'
+                               add_index_link='yes' \
+                               css="${CSS_FILE}"
 
                 if [ X"$?" == X'0' ]; then
                     echo -e ' [DONE]'
@@ -163,15 +177,22 @@ for lang in ${all_languages}; do
         _links_md="${chapter_dir}/_links.md"
 
         if [ -f ${_links_md} ]; then
+            echo '' >> ${INDEX_MD}
             cat ${_links_md} >> ${INDEX_MD}
+            echo '' >> ${INDEX_MD}
         fi
+    done
+
+    # Copy additional directories.
+    for d in ${additional_dirs}; do
+        cp -rf ${d} ${OUTPUT_DIR} &>/dev/null
     done
 
     echo ''
     echo "* ${article_counter} files total for ${lang}."
 
     echo "* Converting ${INDEX_MD} for index page."
-    ${CMD_CONVERT} ${INDEX_MD} ${OUTPUT_DIR} title="iRedMail Documentations"
+    ${CMD_CONVERT} ${INDEX_MD} ${OUTPUT_DIR} title="iRedMail Documentations" css="${CSS_FILE}"
 
     # Cleanup and reset variables
     rm -f ${INDEX_MD}

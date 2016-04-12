@@ -7,10 +7,8 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="sign-dkim-signature-on-outgoing-emails-for-new-mail-domain">Sign DKIM signature on outgoing emails for new mail domain</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="sign-dkim-signature-on-outgoing-emails-for-new-mail-domain">Sign DKIM signature on outgoing emails for new mail domain</h1>
 <div class="toc">
 <ul>
 <li><a href="#sign-dkim-signature-on-outgoing-emails-for-new-mail-domain">Sign DKIM signature on outgoing emails for new mail domain</a><ul>
@@ -26,7 +24,7 @@
 <p>Don't know what DKIM is? Check our tutorial here:
  <a href="./setup.dns.html#dkim-record-for-your-mail-domain-name">What is a DKIM DNS record</a>.</p>
 <p>Don't know where Amavisd config file is? check this tutorial:
-<a href="file.locations.html#amavisd">Locations of configuration and log files of mojor components</a>.</p>
+<a href="file.locations.html#amavisd">Locations of configuration and log files of major components</a>.</p>
 </blockquote>
 <p>iRedMail configures Amavisd to sign outgoing emails for the first mail domain
 you added during iRedMail installation. If you added new mail domain, you
@@ -69,17 +67,18 @@ line like below:</p>
 a new DKIM key and ask your customer to add DKIM DNS record. Refer to our
 tutorial to <a href="setup.dns.html#dkim-record-for-your-mail-domain-name">add DKIM DNS record</a>.</p>
 <ul>
-<li>Generate new DKIM key for new domain.</li>
+<li>Generate new DKIM key (key length <code>1024</code>) for new domain.</li>
 </ul>
-<pre><code class="shell"># amavisd-new genrsa /var/lib/dkim/new_domain.com.pem 2048
+<pre><code class="shell"># amavisd-new genrsa /var/lib/dkim/new_domain.com.pem 1024
 </code></pre>
 
-<p><code>2048</code> is key length.</p>
-<p>Note: if you're running CentOS, you may need to specify its config file on
-command line. For example:</p>
-<pre><code># amavisd -c /etc/amavisd/amavisd.conf genrsa /var/lib/dkim/new_domain.com.pem 2048
-</code></pre>
-
+<blockquote>
+<ul>
+<li>if you're running CentOS, you may need to specify its config file on
+  command line. For example:</li>
+</ul>
+<p><code># amavisd -c /etc/amavisd/amavisd.conf genrsa /var/lib/dkim/new_domain.com.pem 1024</code></p>
+</blockquote>
 <ul>
 <li>Find below setting in Amavisd config file <code>amavisd.conf</code>:</li>
 </ul>
@@ -112,7 +111,11 @@ command line. For example:</p>
 <ul>
 <li>Restart Amavisd service.</li>
 </ul>
-<p>Again, don't forget to ask your customer to add DKIM DNS record.</p>
+<p>Again, don't forget to ask your customer to add DKIM DNS record. The value of
+DKIM record can be checked with command below:</p>
+<pre><code class="shell"># amavisd-new showkeys
+</code></pre>
+
 <h2 id="use-one-dkim-key-for-all-mail-domains-without-updating-amavisd-config-file">Use one DKIM key for all mail domains without updating Amavisd config file</h2>
 <p>For compatibility with dkim_milter the signing domain can include a '*'
 as a wildcard - this is not recommended as this way amavisd could produce
@@ -143,7 +146,7 @@ signatures with no published public key, avoid!</p>
 <h2 id="references">References</h2>
 <ul>
 <li>Amavisd official document: <a href="http://www.ijs.si/software/amavisd/amavisd-new-docs.html#dkim">Setting up DKIM mail signing and verification</a></li>
-</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

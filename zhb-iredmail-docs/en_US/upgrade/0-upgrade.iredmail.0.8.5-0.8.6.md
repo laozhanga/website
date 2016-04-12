@@ -2,7 +2,16 @@
 
 [TOC]
 
-__IMPORTANT NOTES__: If you're running Policyd-1.8, please stay with it right now. Be patient and wait for our upgrade tutorial if you want to upgrade to Cluebringer. P.S. Policyd doesn't provide upgrade tutorial officially.
+!!! note "Paid Remote Upgrade Support"
+
+    We offer remote upgrade support if you don't want to get your hands dirty,
+    check [the details](../support.html) and [contact us](../contact.html).
+
+!!! note
+
+    Policyd doesn't provide upgrade tutorial officially, so
+    if you're running Policyd-1.8, please stay with it right now. Be patient
+    and wait for our upgrade tutorial if you want to upgrade to Cluebringer.
 
 ## ChangeLog
 
@@ -38,7 +47,7 @@ latest stable release immediately: [How to upgrade Roundcube](http://trac.roundc
 ### Upgrade iRedAPD (Postfix policy server) to the latest stable release
 
 Please follow below tutorial to upgrade iRedAPD to the latest stable release:
-[How to upgrade iRedAPD-1.4.0 or later versions to the latest stable release](./upgrade.iredapd.html)
+[Upgrade iRedAPD to the latest stable release](./upgrade.iredapd.html)
 
 ### Upgrade iRedAdmin (open source edition) to the latest stable release
 

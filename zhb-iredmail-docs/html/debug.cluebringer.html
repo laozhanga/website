@@ -7,10 +7,14 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="turn-on-debug-mode-in-cluebringer">Turn on debug mode in Cluebringer</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="turn-on-debug-mode-in-cluebringer">Turn on debug mode in Cluebringer</h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Cluebringer has been removed from iRedMail since iRedMail-0.9.3, if you're
+still running Cluebringer, please follow our tutorial to migrate to
+iRedAPD: <a href="./cluebringer.to.iredapd.html">Migrate from Cluebringer to iRedAPD</a>.</p>
+</div>
 <p>To turn on debug mode in Cluebringer, please increase its log level in
 Cluebringer config file, set what it should log, and restart Cluebringer
 service.</p>
@@ -27,7 +31,7 @@ log_detail=modules,tracking,policies
 </code></pre>
 
 <p>Cluebringer is configured to log to <code>/var/log/cbpolicyd.log</code> by default, so
-please monitor this file to check detailed debug log.</p><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+please monitor this file to check detailed debug log.</p><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

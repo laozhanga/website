@@ -7,10 +7,8 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="completely-disable-amavisd-clamav-spamassassin">Completely disable Amavisd + ClamAV + SpamAssassin</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="completely-disable-amavisd-clamav-spamassassin">Completely disable Amavisd + ClamAV + SpamAssassin</h1>
 <div class="toc">
 <ul>
 <li><a href="#completely-disable-amavisd-clamav-spamassassin">Completely disable Amavisd + ClamAV + SpamAssassin</a><ul>
@@ -47,20 +45,27 @@
 <h3 id="completely-disable-all-features">Completely disable all features</h3>
 <p>If you want to completely disable spam and virus scanning services, steps:</p>
 <ul>
-<li>Comment out below two lines in Postfix config file <code>/etc/postfix/main.cf</code>, then restart Postfix service.</li>
+<li>Comment out below two lines in Postfix config file <code>/etc/postfix/main.cf</code>:</li>
 </ul>
-<pre><code class="perl">content_filter = smtp-amavis:[127.0.0.1]:10024
+<pre><code class="cfg">content_filter = smtp-amavis:[127.0.0.1]:10024
 receive_override_options = no_address_mappings  # &lt;- it's ok if you don't have this line
 </code></pre>
 
 <ul>
+<li>Comment out below line in Postfix config file <code>/etc/postfix/master.cf</code>,</li>
+</ul>
+<pre><code class="cfg">  -o content_filter=smtp-amavis:[127.0.0.1]:10026
+</code></pre>
+
+<ul>
+<li>Restarting Postfix service is required.</li>
 <li>Disable network services: Amavisd, ClamAV.</li>
 </ul>
 <p>Notes:</p>
 <ul>
 <li>ClamAV and SpamAssassin will be invoked by Amavisd, so if you disable Amavisd, those two are disabled too.</li>
 <li>SpamAssassin doesn't have daemon service running in iRedMail solution, so there's no need to stop SpamAssassin service.</li>
-</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

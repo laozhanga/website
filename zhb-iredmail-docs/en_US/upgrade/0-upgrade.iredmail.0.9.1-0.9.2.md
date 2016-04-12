@@ -2,10 +2,14 @@
 
 [TOC]
 
+!!! note "Paid Remote Upgrade Support"
+
+    We offer remote upgrade support if you don't want to get your hands dirty,
+    check [the details](../support.html) and [contact us](../contact.html).
+
 ## ChangeLog
 
-> We provide remote upgrade service, check [the price](../support.html) and [contact us](../contact.html).
-
+* 2015-08-19: Mention that ssl cert file name on old iRedMail releases is `iRedMail_CA.pem`, not `iRedMail.crt`.
 * 2015-06-03: Fixed: `SSLOpenSSLConfCmd` is used on Ubuntu 15.04 and later releases, not on other Linux/BSD distributions.
 
 ----
@@ -89,7 +93,9 @@ Applicable to all Linux/BSD distributions:
 
 If you're running Apache older than version 2.4.8, please append the DHparams
 generated above to the end of the certificate file. Note: if you use a bought
-SSL certificate, append it to your cert file.
+SSL certificate, append it to your cert file. __Note__: if you upgraded
+iRedMail from an old release, the file name will be `iRedMail_CA.pem` instead
+of `iRedMail.crt`.
 
 * On RHEL/CentOS: ```# cat /etc/pki/tls/dhparams.pem >> /etc/pki/tls/certs/iRedMail.crt```
 * Debian/Ubuntu: ```# cat /etc/ssl/dhparams.pem >> /etc/ssl/certs/iRedMail.crt```
@@ -173,7 +179,7 @@ Reloading or restarting Postfix service is required:
 ### Upgrade iRedAPD (Postfix policy server) to the latest 1.6.0
 
 Please follow below tutorial to upgrade iRedAPD to the latest stable release:
-[How to upgrade iRedAPD-1.4.0 or later versions to the latest stable release](./upgrade.iredapd.html)
+[Upgrade iRedAPD to the latest stable release](./upgrade.iredapd.html)
 
 Detailed release notes are available here: [iRedAPD release notes](./iredapd.releases.html).
 
@@ -294,8 +300,9 @@ __Note: this step is required if you're running SOGo on RHEL/CentOS, Debian/Ubun
 
 SOGo team released new stable version v2.3.0 on Jun 2, it requires system
 admin to run a shell script to update SQL structure manually if you're currently
-running an old version of SOGo.
-http://www.sogo.nu/files/docs/SOGo%20Installation%20Guide.pdf
+running an old version of SOGo. We suggest you read SOGo official upgrade
+tutorial in `Upgrading` section of
+[Installation Guide](http://www.sogo.nu/files/docs/SOGo%20Installation%20Guide.pdf).
 
 SOGo-2.3.0 ships this update script, please find it with your package management
 tool like `yum`, `dpkg`.
@@ -315,23 +322,23 @@ Find the update script shipped in SOGo-2.3.0 and run it:
 
 ```
 # rpm -ql sogo | grep 'sql-update-2.2.17'
-/usr/share/doc/sogo-2.3.0/sql-update-2.1.17_to_2.3.0-mysql.sh   # <- for MySQL
-/usr/share/doc/sogo-2.3.0/sql-update-2.1.17_to_2.3.0.sh         # <- for PostgreSQL
+/usr/share/doc/sogo-2.3.0/sql-update-2.2.17_to_2.3.0-mysql.sh   # <- for MySQL
+/usr/share/doc/sogo-2.3.0/sql-update-2.2.17_to_2.3.0.sh         # <- for PostgreSQL
 ```
 
 * on Debian/Ubuntu:
 
 ```
 # dpkg -L sogo | grep 'sql-update-2.2.17'
-/usr/share/doc/sogo/sql-update-2.1.17_to_2.3.0-mysql.sh     # <- for MySQL
-/usr/share/doc/sogo/sql-update-2.1.17_to_2.3.0.sh           # <- for PostgreSQL
+/usr/share/doc/sogo/sql-update-2.2.17_to_2.3.0-mysql.sh     # <- for MySQL
+/usr/share/doc/sogo/sql-update-2.2.17_to_2.3.0.sh           # <- for PostgreSQL
 ```
 
 Please pick the one for your SQL server. here we use the one for MySQL
 backend on CentOS for example:
 
 ```
-# bash /usr/share/doc/sogo-2.3.0/sql-update-2.1.17_to_2.3.0-mysql.sh
+# bash /usr/share/doc/sogo-2.3.0/sql-update-2.2.17_to_2.3.0-mysql.sh
 Username (root): root                                
 Hostname (127.0.0.1): 
 Database (root): sogo
@@ -351,15 +358,15 @@ update SQL database and exit silently.
 
 ### [OPTIONAL] Update one Fail2ban filter regular expression to help catch DoS attacks to SMTP service
 
-1. Open file `/etc/fail2ban/filter.d/postfix.iredmail.conf` or
-`/usr/local/etc/fail2ban/filter.d/postfix.iredmail.conf` (on FreeBSD), find
-below line under `[Definition]` section:
+* Open file `/etc/fail2ban/filter.d/postfix.iredmail.conf` or
+  `/usr/local/etc/fail2ban/filter.d/postfix.iredmail.conf` (on FreeBSD), find
+  below line under `[Definition]` section:
 
 ```
             lost connection after AUTH from (.*)\[<HOST>\]
 ```
 
-Update above line to below one:
+* Update above line to below one:
 
 ```
             lost connection after (AUTH|UNKNOWN|EHLO) from (.*)\[<HOST>\]

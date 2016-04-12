@@ -7,10 +7,8 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="turn-on-debug-mode-in-iredapd">Turn on debug mode in iRedAPD</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="turn-on-debug-mode-in-iredapd">Turn on debug mode in iRedAPD</h1>
 <p>To turn on debug mode in iRedAPD, please set its log level to <code>debug</code> in
 iRedAPD config file <code>/opt/iredapd/settings.py</code>, then restart iRedAPD
 service.</p>
@@ -18,8 +16,13 @@ service.</p>
 log_level = 'debug'
 </code></pre>
 
-<p>iRedAPD is configured to log to <code>/var/log/iredapd.log</code> by default, so
-please monitor this file to check detailed debug log.</p><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+<h3 id="log-file">Log File</h3>
+<p>Log file is configured in <code>/opt/iredapd/settings.py</code>, parameter <code>log_file =</code>.
+Please monitor its log file to check detailed debug log.</p>
+<ul>
+<li>iRedAPD-1.7.0 and later: <code>/var/log/iredapd/iredapd.log</code></li>
+<li>iRedAPD-1.6.0 and earlier: <code>/var/log/iredapd.log</code></li>
+</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

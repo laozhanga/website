@@ -7,10 +7,8 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="install-iredmail-on-openbsd">Install iRedMail on OpenBSD</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="install-iredmail-on-openbsd">Install iRedMail on OpenBSD</h1>
 <div class="toc">
 <ul>
 <li><a href="#install-iredmail-on-openbsd">Install iRedMail on OpenBSD</a><ul>
@@ -31,12 +29,15 @@
 </ul>
 </div>
 <h2 id="system-requirements">System Requirements</h2>
-<p><strong>IMPORTANT WARNING</strong>: iRedMail is designed to be deployed on a FRESH server system,
-which means your server does <strong>NOT</strong> have mail related components installed,
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>iRedMail is designed to be deployed on a <strong>FRESH</strong> server system, which
+means your server does <strong>NOT</strong> have mail related components installed,
 e.g. MySQL, OpenLDAP, Postfix, Dovecot, Amavisd, etc. iRedMail will install
 and configure them for you automatically. Otherwise it may override your
-existing files/configurations althought it will backup files before modifing,
-and it may not be working as expected.</p>
+existing files/configurations althought it will backup files before
+modifying, and it may not be working as expected.</p>
+</div>
 <p>To install iRedMail on OpenBSD, you need:</p>
 <ul>
 <li>A <strong>FRESH</strong>, working OpenBSD system. Supported releases are listed on
@@ -55,7 +56,8 @@ and it may not be working as expected.</p>
 </ul>
 </li>
 </ul>
-<p>Notes:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <ul>
 <li>
 <p>All binary packages will be installed with command <code>pkg_add -i</code>. It will
@@ -69,10 +71,9 @@ and it may not be working as expected.</p>
 <p>Nginx is used as web server.</p>
 </li>
 <li>PF is enabled by default, with basic rules for ssh and mail services.</li>
-<li>System built-in <a href="http://www.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man8/spamd.8"><code>spamd(8)</code></a> is enabled by default for greylisting,
-  whitelisting, blacklisting.</li>
 <li>OpenSMTPd are disabled by default, replaced by Postfix.</li>
 </ul>
+</div>
 <h2 id="preparations">Preparations</h2>
 <h3 id="set-a-fully-qualified-domain-name-fqdn-hostname-on-your-server">Set a fully qualified domain name (FQDN) hostname on your server</h3>
 <p>No matter your server is a testing machine or production server, it's strongly
@@ -142,15 +143,18 @@ near you on OpenBSD web site:
 </code></pre>
 
 <h2 id="start-iredmail-installer">Start iRedMail installer</h2>
-<blockquote>
-<p>For Chinese users: Our domain name "iredmail.org" is blocked in China mainland since Jun 04, 2011, please replace all 'iredmail.org' by its IP address "106.187.51.47" (without quotes) in /root/iRedMail-x.y.z/pkgs/get_all.sh BEFORE executing "iRedMail.sh". This is a Linode VPS hosted in Tokyo, Japan.</p>
-</blockquote>
 <p>It's now ready to start iRedMail installer, it will ask you several simple
-questions, that's all steps to setup a full-featured mail server.</p>
+questions, that's all required to setup a full-featured mail server.</p>
 <pre><code># cd /root/iRedMail-x.y.z/
 # bash iRedMail.sh
 </code></pre>
 
+<div class="admonition note">
+<p class="admonition-title">To Chinese users</p>
+<p>Our domain name <code>iredmail.org</code> is blocked in mainland
+China since Jun 04, 2011, please run command below to finish the installation:</p>
+<p><code>IREDMAIL_MIRROR='http://42.159.241.31' bash iRedMail.sh</code></p>
+</div>
 <h2 id="screenshots-of-installation">Screenshots of installation:</h2>
 <ul>
 <li>Welcome and thanks for your use</li>
@@ -164,9 +168,12 @@ questions, that's all steps to setup a full-featured mail server.</p>
 <li>Choose backend used to store mail accounts. You can manage mail accounts
 with iRedAdmin, our web-based iRedMail admin panel.</li>
 </ul>
-<p><strong>IMPORTANT NOTE</strong>: There's no big difference between available backends, so
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There's no big difference between available backends, so
 it's strongly recommended to choose the one you're familiar with for easier
 management and maintenance after installation.</p>
+</div>
 <p><img alt="" src="../images/installation/iredmail/backend.png" /></p>
 <ul>
 <li>If you choose to store mail accounts in OpenLDAP, iRedMail installer will
@@ -176,12 +183,12 @@ ask you two questions about OpenLDAP.</li>
 <p><img alt="" src="../images/installation/iredmail/ldap_suffix.png" /></p>
 <p>Password of LDAP root dn.</p>
 <p><img alt="" src="../images/installation/iredmail/pw_of_ldap_root_dn.png" /></p>
-<ul>
-<li>Set password of MySQL or PostgreSQL admin user.</li>
-</ul>
-<p><strong>NOTE</strong>: MySQL is used to store data of other applications (e.g. Roundcube
-webmail, Cluebringer, Amavisd-new) if you choose OpenLDAP or MySQL as backend.</p>
-<p><img alt="" src="../images/installation/iredmail/pw_of_mysql_root_user.png" /></p>
+<div class="admonition note">
+<p class="admonition-title">To MySQL/MariaDB/PostgreSQL users</p>
+<p>If you choose to store mail accounts in MySQL/MariaDB/PostgreSQL, iRedMail
+installer will generate a random, strong password for you. You can find it
+in file <code>iRedMail.tips</code>.</p>
+</div>
 <ul>
 <li>Add your first mail domain name</li>
 </ul>
@@ -216,6 +223,11 @@ automatically. Type <code>y</code> or <code>Y</code> and press <code>Enter</code
 </code></pre>
 
 <h2 id="important-things-you-must-know-after-installation">Important things you <strong>MUST</strong> know after installation</h2>
+<blockquote>
+<p>The weakest part of a mail server is user's weak password. Spammers don't
+want to hack your server, they just want to send spam from your server.
+Please <strong>ALWAYS ALWAYS ALWAYS</strong> force users to use a strong password.</p>
+</blockquote>
 <ul>
 <li>
 <p>Read file <code>/root/iRedMail-x.y.z/iRedMail.tips</code> first, it contains:</p>
@@ -223,23 +235,22 @@ automatically. Type <code>y</code> or <code>Y</code> and press <code>Enter</code
 <li>URLs, usernames and passwords of web-based applications</li>
 <li>Location of mail service related software configuration files. You can
   also check this tutorial instead:
-  <a href="./file.locations.html">Locations of configuration and log files of mojor components</a>.</li>
+  <a href="./file.locations.html">Locations of configuration and log files of major components</a>.</li>
 <li>Some other important and sensitive information</li>
 </ul>
 </li>
 <li>
 <p><a href="./setup.dns.html">Setup DNS records for your mail server</a></p>
 </li>
-<li>
-<p><a href="./index.html#configure-mail-client-applications">How to configure your mail clients</a></p>
-</li>
-<li>
-<p>It's highly recommended to purchase a SSL cert to avoid annonying warning
+<li><a href="./index.html#configure-mail-client-applications">How to configure your mail clients</a></li>
+<li>It's highly recommended to get a SSL cert to avoid annonying warning
   message in web browser or mail clients when accessing mailbox via
-  HTTPS/IMAPS/POP3/SMTPS. Or, you can use
-  <a href="http://www.startssl.com/?app=1">free SSL cert offerred by StartSSL.com</a>.
-  We have a document for you to <a href="http://www.iredmail.org/docs/use.a.bought.ssl.certificate.html">use a bought SSL certificate</a>.</p>
-</li>
+  HTTPS/IMAPS/POP3/SMTPS. <a href="https://letsencrypt.org">Let's Encrypt offers <strong>FREE</strong> SSL certificate</a>.
+  We have a document for you to
+  <a href="http://www.iredmail.org/docs/use.a.bought.ssl.certificate.html">use a SSL certificate</a>.</li>
+<li>If you need to bulk create mail users, check our document for
+  <a href="./ldap.bulk.create.mail.users.html">OpenLDAP</a> and
+  <a href="./sql.bulk.create.mail.users.html">MySQL/MariaDB/PostgreSQL</a>.</li>
 <li>If you're running a busy mail server, we have <a href="./performance.tuning.html">some suggestions for better
   performance</a>.</li>
 </ul>
@@ -249,13 +260,18 @@ if you choose to install them. Replace <code>your_server</code> below by your re
 hostname or IP address.</p>
 <ul>
 <li><strong>Roundcube webmail</strong>: <a href="https://your_server/mail/">https://your_server/mail/</a></li>
+<li><strong>SOGo Groupware</strong>: <a href="https://your_server/SOGo">https://your_server/SOGo</a></li>
 <li><strong>Web admin panel (iRedAdmin)</strong>: <a href="httpS://your_server/iredadmin/">httpS://your_server/iredadmin/</a></li>
-<li><strong>Awstats</strong>: <a href="httpS://your_server/awstats/awstats.pl?config=web">httpS://your_server/awstats/awstats.pl?config=web</a> (or ?config=smtp)</li>
+<li><strong>Awstats</strong>: <a href="httpS://your_server/awstats/awstats.pl?config=web">httpS://your_server/awstats/awstats.pl?config=web</a> (or <code>?config=smtp</code> for SMTP log)</li>
 </ul>
 <h2 id="get-technical-support">Get technical support</h2>
-<p>Please post all issues, feedbacks, feature requests, suggestions in our <a href="http://www.iredmail.org/forum/">online
-support forum</a>, it's more responsible than you
-expected.</p><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+<ul>
+<li>You are welcome to post issues, feedbacks, feature requests, suggestions in
+  our <a href="../forum/">online support forum</a>, it's more
+  responsible than you expected.</li>
+<li>We offer paid professional support service too, check our web site for more
+  details: <a href="../support.html">Get Professional Support from iRedMail Team</a>.</li>
+</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

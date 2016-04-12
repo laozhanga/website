@@ -1,10 +1,12 @@
 # Enable DNSBL service in Postfix to reduce spam
 
-> Important note: if you're running a high-traffic mail server, you'd better
-> setup a local DNS server to cache DNS queries, because free RBL services
-> like zen.spamhaus.org may improperly reply if your server exceed the 
-> DNS query limit. Also, mail service higly relies on DNS queries, so a local
-> DNS server speeds up the mail flow.
+!!! note "Important Note"
+
+    If you're running a high-traffic mail server, you'd better setup a local
+    DNS server to cache DNS queries, because free RBL services like
+    `zen.spamhaus.org` may improperly reply if your server exceed the DNS
+    query limit. Also, mail service higly relies on DNS queries, so a local
+    DNS server speeds up the mail flow.
 
 You can enable additional DNSBL services in Postfix to reduce spam. We use
 `zen.spamhaus.org` for example below.
@@ -15,7 +17,10 @@ You can enable additional DNSBL services in Postfix to reduce spam. We use
 Final setting looks like below:
 
 ```
-smtpd_recipient_restrictions = ..., reject_unauth_destination, reject_rbl_client zen.spamhaus.org
+smtpd_recipient_restrictions =
+    ...
+    reject_unauth_destination
+    reject_rbl_client zen.spamhaus.org
 ```
 
 It must be placed after `reject_unauth_destination`. You can add more DNSBL
@@ -23,6 +28,16 @@ services after `reject_unauth_destination`, and they will be queried in the
 specified order.
 
 * Restart or reload Postfix service is required.
+
+!!! note "Another popular DNSBL server"
+
+    Another popular DNSBL server address is `b.barracudacentral.org`. For more
+    details, please read its web site:
+    [Barracuda Reputation Block List (BRBL)](http://www.barracudacentral.org/rbl)
+
+## See also
+
+* [Enable postscreen service](./enable.postscreen.html)
 
 ## References
 

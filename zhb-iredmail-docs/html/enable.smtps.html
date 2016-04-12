@@ -7,17 +7,20 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="enable-smtps-service-smtp-over-ssl-port-465">Enable SMTPS service (SMTP over SSL, port 465)</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="enable-smtps-service-smtp-over-ssl-port-465">Enable SMTPS service (SMTP over SSL, port 465)</h1>
 <div class="toc">
 <ul>
 <li><a href="#enable-smtps-service-smtp-over-ssl-port-465">Enable SMTPS service (SMTP over SSL, port 465)</a><ul>
 <li><a href="#why-iredmail-doesnt-enable-smtps-smtp-over-ssl-by-default">Why iRedMail doesn't enable SMTPS (SMTP over SSL) by default</a></li>
 <li><a href="#why-enable-smtps-since-its-depreciated">Why enable SMTPS since it's depreciated</a></li>
 <li><a href="#how-to-enable-smtps">How to enable SMTPS</a></li>
-<li><a href="#open-port-465-in-iptables">Open port 465 in iptables</a></li>
+<li><a href="#open-port-465-in-firewall">Open port 465 in firewall</a><ul>
+<li><a href="#on-rhelcentos">On RHEL/CentOS</a></li>
+<li><a href="#on-debianubuntu">on Debian/Ubuntu</a></li>
+<li><a href="#on-openbsd">on OpenBSD</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -35,41 +38,69 @@ Quote from <a href="http://en.wikipedia.org/wiki/SMTPS">wikipedia.org</a></p>
 </blockquote>
 <h3 id="how-to-enable-smtps">How to enable SMTPS</h3>
 <p>To enable SMTPS, you should configure Postfix to listen on port 465 first, then open port 465 in iptables.</p>
-<p>Please find below lines in Postfix config file <code>/etc/postfix/master.cf</code> (Linux/OpenBSD) or <code>/usr/local/etc/postfix/master.cf</code> (FreeBSD):</p>
-<pre><code>#smtps     inet  n       -       n       -       -       smtpd
-#  -o smtpd_tls_wrappermode=yes
-#  -o smtpd_sasl_auth_enable=yes
-#  -o smtpd_client_restrictions=permit_sasl_authenticated,reject
-#  -o milter_macro_daemon_name=ORIGINATING
-</code></pre>
-<p>Uncomment first 4 lines, but leave the last one commented out (because iRedMail doesn't use Postfix milter at all):</p>
-<pre><code>smtps     inet  n       -       n       -       -       smtpd
+<p>Please append below lines in Postfix config file <code>/etc/postfix/master.cf</code> (Linux/OpenBSD) or <code>/usr/local/etc/postfix/master.cf</code> (FreeBSD):</p>
+<pre><code>465     inet  n       -       n       -       -       smtpd
+  -o syslog_name=postfix/smtps
   -o smtpd_tls_wrappermode=yes
   -o smtpd_sasl_auth_enable=yes
   -o smtpd_client_restrictions=permit_sasl_authenticated,reject
-#  -o milter_macro_daemon_name=ORIGINATING
+  -o content_filter=smtp-amavis:[127.0.0.1]:10026
 </code></pre>
+
 <p>Restart Postfix service to enable SMTPS.</p>
-<h3 id="open-port-465-in-iptables">Open port 465 in iptables</h3>
-<p>On RHEL/CentOS, please update iptables rule file <code>/etc/sysconfig/iptables</code>, add one rule (third line in below code) for port 465, then restart iptables service.</p>
-<pre><code># File: /etc/sysconfig/iptables
+<p><strong>WARNING</strong>: Please make sure you have Amavisd listening on port 10026 (and 10024, 9998).</p>
+<h3 id="open-port-465-in-firewall">Open port <code>465</code> in firewall</h3>
+<h4 id="on-rhelcentos">On RHEL/CentOS</h4>
+<ul>
+<li>on RHEL/CentOS 6, please update iptables rule file <code>/etc/sysconfig/iptables</code>, add one rule (third line in below code) for port 465, then restart iptables service.</li>
+</ul>
+<pre><code># Part of file: /etc/sysconfig/iptables
 -A INPUT -p tcp --dport 25 -j ACCEPT
 -A INPUT -p tcp --dport 587 -j ACCEPT
 -A INPUT -p tcp --dport 465 -j ACCEPT
 </code></pre>
+
+<ul>
+<li>on RHEL/CentOS 7, please add file <code>/etc/firewalld/services/smtps.xml</code>, with content below</li>
+</ul>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;service&gt;
+  &lt;short&gt;Enable SMTPS&lt;/short&gt;
+  &lt;description&gt;Enable SMTPS.&lt;/description&gt;
+  &lt;port protocol=&quot;tcp&quot; port=&quot;465&quot;/&gt;
+&lt;/service&gt;
+</code></pre>
+
+<p>Update file <code>/etc/firewalld/zones/iredmail.xml</code>, enable smtps service by
+inserting line <code>&lt;service name="smtps"/&gt;</code> inside <code>&lt;zone&gt;&lt;/zone&gt;</code> block like
+below:</p>
+<pre><code>&lt;zone&gt;
+    ...
+    &lt;service name=&quot;smtps&quot;/&gt;
+&lt;/zone&gt;
+</code></pre>
+
+<p>Restart firewalld service:</p>
+<pre><code># firewall-cmd --complete-reload
+</code></pre>
+
+<h4 id="on-debianubuntu">on Debian/Ubuntu</h4>
 <p>On Debian/Ubuntu, if you use iptables rule file provided by iRedMail, please update <code>/etc/default/iptables</code>, add one rule (third line in below code) for port 465, then restart iptables service.</p>
-<pre><code>File: /etc/sysconfig/iptables
+<pre><code># Part of file: /etc/default/iptables
 -A INPUT -p tcp --dport 25 -j ACCEPT
 -A INPUT -p tcp --dport 587 -j ACCEPT
 -A INPUT -p tcp --dport 465 -j ACCEPT
 </code></pre>
-<p>On OpenBSD, please append service 'smtps' in <code>/etc/pf.conf</code>, parameter <code>mail_services=</code>:</p>
-<pre><code>File: /etc/pf.conf
-mail_services="{www, https, submission, imap, imaps, pop3, pop3s, ssh, smtps}"
+
+<h4 id="on-openbsd">on OpenBSD</h4>
+<p>On OpenBSD, please append service <code>smtps</code> in <code>/etc/pf.conf</code>, parameter <code>mail_services=</code>:</p>
+<pre><code># Part of file: /etc/pf.conf
+mail_services=&quot;{www, https, submission, imap, imaps, pop3, pop3s, ssh, smtps}&quot;
 </code></pre>
+
 <p>Reload PF rule file:</p>
 <pre><code># pfctl -f /etc/pf.conf
-</code></pre><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+</code></pre><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

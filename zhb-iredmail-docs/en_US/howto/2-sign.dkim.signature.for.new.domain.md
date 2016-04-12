@@ -7,7 +7,7 @@
 
 
 > Don't know where Amavisd config file is? check this tutorial:
-> [Locations of configuration and log files of mojor components](file.locations.html#amavisd).
+> [Locations of configuration and log files of major components](file.locations.html#amavisd).
 
 iRedMail configures Amavisd to sign outgoing emails for the first mail domain
 you added during iRedMail installation. If you added new mail domain, you
@@ -56,20 +56,16 @@ If you or your customer prefer to use their own DKIM key, you can generate
 a new DKIM key and ask your customer to add DKIM DNS record. Refer to our
 tutorial to [add DKIM DNS record](setup.dns.html#dkim-record-for-your-mail-domain-name).
 
-* Generate new DKIM key for new domain.
+* Generate new DKIM key (key length `1024`) for new domain.
 
 ```shell
-# amavisd-new genrsa /var/lib/dkim/new_domain.com.pem 2048
+# amavisd-new genrsa /var/lib/dkim/new_domain.com.pem 1024
 ```
 
-`2048` is key length.
-
-Note: if you're running CentOS, you may need to specify its config file on
-command line. For example:
-
-```
-# amavisd -c /etc/amavisd/amavisd.conf genrsa /var/lib/dkim/new_domain.com.pem 2048
-```
+> * if you're running CentOS, you may need to specify its config file on
+>   command line. For example:
+> 
+> `# amavisd -c /etc/amavisd/amavisd.conf genrsa /var/lib/dkim/new_domain.com.pem 1024`
 
 * Find below setting in Amavisd config file `amavisd.conf`:
 
@@ -106,7 +102,12 @@ Add one line after `"mydomain.com"` line like below:
 
 * Restart Amavisd service.
 
-Again, don't forget to ask your customer to add DKIM DNS record.
+Again, don't forget to ask your customer to add DKIM DNS record. The value of
+DKIM record can be checked with command below:
+
+```shell
+# amavisd-new showkeys
+```
 
 ## Use one DKIM key for all mail domains without updating Amavisd config file
 

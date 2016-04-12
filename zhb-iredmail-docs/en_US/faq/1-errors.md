@@ -41,14 +41,16 @@ Check [manual page of Postfix configuration file](http://www.postfix.org/postcon
 Removing `reject_sender_login_mismatch` and restarting Postfix service fixes
 this issue.
 
-> If you want to allow some users to send as other users, or allow all users
-> to send as their alias addresses, or allow member of mail list/alias to send
-> as mail list/alias, you should try iRedAPD plugin `reject_sender_login_mismatch`
-> instead (requires iRedAPD-1.4.4 or later releases).
->
-> Read comments in file `/opt/iredapd/plugins/reject_sender_login_mismatch.py`,
-> then enable it in iRedAPD config file `/opt/iredapd/settings.py` (`plugins = `),
-> restart iRedAPD service. That's all.
+!!! note
+
+    If you want to allow some users to send as other users, or allow all users
+    to send as their alias addresses, or allow member of mail list/alias to send
+    as mail list/alias, you should try iRedAPD plugin `reject_sender_login_mismatch`
+    instead (requires iRedAPD-1.4.4 or later releases).
+
+    Read comments in file `/opt/iredapd/plugins/reject_sender_login_mismatch.py`,
+    then enable it in iRedAPD config file `/opt/iredapd/settings.py` (`plugins = `),
+    restart iRedAPD service. That's all.
 
 ### unreasonable virtual_alias_maps map expansion size for user@domain.com
 
@@ -77,16 +79,18 @@ Reference: [Postfix Configuration Parameters](http://www.postfix.org/postconf.5.
 
 This error means Amavisd service is not running, please try to start it first.
 
-* RHEL/CentOS/FreeBSD/OpenBSD: ```# service amavisd restart```
+* RHEL/CentOS/FreeBSD: ```# service amavisd restart```
 * Debian/Ubuntu: ```# service amavis restart```
+* OpenBSD: `# /etc/rc.d/amavisd restart` or `# rcctl restart amavisd`
 
 After restarted amavisd service, please check its
 [log file](./file.locations.html#amavisd) to make sure it's running.
 
 Notes:
 
-* At least 1GB memory is required for a low traffic mail server. If your
-  server doesn't have enough memory, Amavisd may stop running automatically after
-  running for a while. If it's just a testing server, you can follow
-  [our tutorial](./completely.disable.amavisd.clamav.spamassassin.html)
-  to disable some features of Amavisd to keep it running, or disable it completely.
+* At least 2GB memory is required for a low traffic mail server. If your
+  server doesn't have enough memory, Amavisd and ClamAV may be not able to
+  start, or stop running automatically after running for a while. If it's just
+  a testing server, you can follow
+  [our tutorial](./completely.disable.amavisd.clamav.spamassassin.html) to
+  disable some features of Amavisd to keep it running, or disable it completely.

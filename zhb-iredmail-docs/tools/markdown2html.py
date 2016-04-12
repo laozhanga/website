@@ -12,7 +12,7 @@ import web
 import markdown
 
 # Markdown extensions
-MD_EXTENSIONS = ['toc', 'meta', 'extra', 'footnotes']
+MD_EXTENSIONS = ['toc', 'meta', 'extra', 'footnotes', 'admonition']
 
 # Get file name
 filename = sys.argv[1]
@@ -58,23 +58,24 @@ html = """\
 # Link to iRedMail.org
 html += """
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
     """
 
 # Add link to index page in article pages.
 if 'add_index_link' in cmd_opts:
-    html += """
-        // <a href="./index.html">Document Index</a>
-    """
+    html += """&nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a>"""
 
 html += """</div>"""
+
+# Convert to unicode first.
+html = web.safeunicode(html)
 
 # Read markdown file and render as HTML body
 # Handle unicode characters with web.safeunicode
 orig_content = web.safeunicode(open(filename).read())
 html += markdown.markdown(orig_content, extensions=MD_EXTENSIONS)
 
-html += """<p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it."""
+html += """<p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it."""
 
 
 html += """\

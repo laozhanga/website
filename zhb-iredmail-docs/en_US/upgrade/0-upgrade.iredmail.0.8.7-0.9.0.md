@@ -2,11 +2,18 @@
 
 [TOC]
 
+!!! note "Paid Remote Upgrade Support"
+
+    We offer remote upgrade support if you don't want to get your hands dirty,
+    check [the details](../support.html) and [contact us](../contact.html).
+
 ## ChangeLog
 
-> We provide remote upgrade service, check [the price](../support.html) and [contact us](../contact.html).
-
-* 2015-01-05: [All backends] [OPTIONAL] Enable global sieve script in Dovecot to move spam to Junk folder by default.
+* 2015-08-19: [All backends] If `@lookup_sql_dsn` is disabled in Amavisd, you
+              can use SQL username/password defined in `@storage_sql_dsn`
+              instead.
+* 2015-01-05: [All backends] [OPTIONAL] Enable global sieve script in Dovecot
+              to move spam to Junk folder by default.
 
 ----
 
@@ -44,15 +51,15 @@ latest stable release immediately: [How to upgrade Roundcube](http://trac.roundc
 ### Upgrade iRedAPD (Postfix policy server) to the latest 1.4.4
 
 Please follow below tutorial to upgrade iRedAPD to the latest stable release:
-[How to upgrade iRedAPD-1.4.0 or later versions to the latest stable release](./upgrade.iredapd.html)
+[Upgrade iRedAPD to the latest stable release](./upgrade.iredapd.html)
 
-Important notes: 
+!!! note "Important Notes"
 
-* in iRedMail-0.9.0 and future iRedMail releases, we will use white/blacklists
-  stored in Amavisd database in Amavisd (after-queue) and iRedAPD (before-queue),
-  so you must enable iRedAPD plugin `amavisd_wblist`.
-* it's strongly recommended to enable plugin `reject_null_sender` (as first
-  plugin listed in iRedAPD parameter `plugins =`) to prevent spam.
+    * in iRedMail-0.9.0 and future iRedMail releases, we will use
+      white/blacklists stored in Amavisd database in Amavisd (after-queue) and
+      iRedAPD (before-queue), so you must enable iRedAPD plugin `amavisd_wblist`.
+    * it's strongly recommended to enable plugin `reject_null_sender` (as first
+      plugin listed in iRedAPD parameter `plugins =`) to prevent spam.
 
 iRedAPD-1.4.4 fixes several issues and brings some new features:
 
@@ -88,15 +95,16 @@ Suggested order of above 3 plugins are (if you enabled them):
 plugins = ['reject_null_sender', 'reject_sender_login_mismatch', 'amavisd_wblist', ...]
 ```
 
-Important notes:
+!!! note "Important Notes"
 
-* If you want to manage white/blacklists with the latest iRedAdmin-Pro, you
-  have to enable plugin `amavisd_wblist`.
+    * If you want to manage white/blacklists with the latest iRedAdmin-Pro, you
+      have to enable plugin `amavisd_wblist`.
 
-* Plugin `amavisd_wblist` and `amavisd_message_size_limit` requires additional
-  database related settings in iRedAPD config file, please set correct values
-  for them. You can find SQL database settings in Amavisd config file,
-  in parameter `@lookup_sql_dsn =`.
+    * Plugin `amavisd_wblist` and `amavisd_message_size_limit` requires additional
+      database related settings in iRedAPD config file, please set correct values
+      for them. You can find SQL database settings in Amavisd config file,
+      in parameter `@lookup_sql_dsn =`, if `@lookup_sql_dsn` is disabled, you can
+      find them in `@storage_sql_dsn =`.
 
 ```
 amavisd_db_server = '127.0.0.1'
@@ -138,15 +146,15 @@ Restarting Apache service is required.
 
 #### Disable SSLv3 in Postfix
 
-Please execute below commands to disable SSLv3 in Postfix:
+Please execute commands below to disable SSLv3 in Postfix:
 
 ```
-# postconf -e smtpd_tls_protocols='!SSLv2 !SSLv3'
-# postconf -e smtp_tls_protocols='!SSLv2 !SSLv3'
-# postconf -e lmtp_tls_protocols='!SSLv2 !SSLv3'
-# postconf -e smtpd_tls_mandatory_protocols='!SSLv2 !SSLv3'
-# postconf -e smtp_tls_mandatory_protocols='!SSLv2 !SSLv3'
-# postconf -e lmtp_tls_mandatory_protocols='!SSLv2 !SSLv3'
+postconf -e smtpd_tls_protocols='!SSLv2 !SSLv3'
+postconf -e smtp_tls_protocols='!SSLv2 !SSLv3'
+postconf -e lmtp_tls_protocols='!SSLv2 !SSLv3'
+postconf -e smtpd_tls_mandatory_protocols='!SSLv2 !SSLv3'
+postconf -e smtp_tls_mandatory_protocols='!SSLv2 !SSLv3'
+postconf -e lmtp_tls_mandatory_protocols='!SSLv2 !SSLv3'
 ```
 
 Restarting Postfix service is required.
@@ -224,10 +232,12 @@ Please apply below steps to fix above issues:
 
 * Restart Postfix service.
 
-__IMPORTANT NOTE__: If you want to disable `content_filter=` in Postfix, please
-comment out `receive_override_options=` in Postfix config file `main.cf` too,
-otherwise canonical address mapping, virtual alias map expansion, address
-masquerading, and automatic BCC (blind carbon-copy) recipients will not work.
+!!! note
+
+    If you want to disable `content_filter=` in Postfix, please
+    comment out `receive_override_options=` in Postfix config file `main.cf` too,
+    otherwise canonical address mapping, virtual alias map expansion, address
+    masquerading, and automatic BCC (blind carbon-copy) recipients will not work.
 </strike>
 
 ### Fix improper file permission of Amavisd config file

@@ -7,17 +7,16 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="enable-dnsbl-service-in-postfix-to-reduce-spam">Enable DNSBL service in Postfix to reduce spam</h1>
-<blockquote>
-<p>Important note: if you're running a high-traffic mail server, you'd better
-setup a local DNS server to cache DNS queries, because free RBL services
-like zen.spamhaus.org may improperly reply if your server exceed the 
-DNS query limit. Also, mail service higly relies on DNS queries, so a local
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="enable-dnsbl-service-in-postfix-to-reduce-spam">Enable DNSBL service in Postfix to reduce spam</h1>
+<div class="admonition note">
+<p class="admonition-title">Important Note</p>
+<p>If you're running a high-traffic mail server, you'd better setup a local
+DNS server to cache DNS queries, because free RBL services like
+<code>zen.spamhaus.org</code> may improperly reply if your server exceed the DNS
+query limit. Also, mail service higly relies on DNS queries, so a local
 DNS server speeds up the mail flow.</p>
-</blockquote>
+</div>
 <p>You can enable additional DNSBL services in Postfix to reduce spam. We use
 <code>zen.spamhaus.org</code> for example below.</p>
 <ul>
@@ -26,7 +25,10 @@ DNS server speeds up the mail flow.</p>
 <code>reject_rbl_client zen.spamhaus.org</code> to parameter <code>smtpd_recipient_restrictions</code>.
 Final setting looks like below:</li>
 </ul>
-<pre><code>smtpd_recipient_restrictions = ..., reject_unauth_destination, reject_rbl_client zen.spamhaus.org
+<pre><code>smtpd_recipient_restrictions =
+    ...
+    reject_unauth_destination
+    reject_rbl_client zen.spamhaus.org
 </code></pre>
 
 <p>It must be placed after <code>reject_unauth_destination</code>. You can add more DNSBL
@@ -34,6 +36,16 @@ services after <code>reject_unauth_destination</code>, and they will be queried 
 specified order.</p>
 <ul>
 <li>Restart or reload Postfix service is required.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Another popular DNSBL server</p>
+<p>Another popular DNSBL server address is <code>b.barracudacentral.org</code>. For more
+details, please read its web site:
+<a href="http://www.barracudacentral.org/rbl">Barracuda Reputation Block List (BRBL)</a></p>
+</div>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="./enable.postscreen.html">Enable postscreen service</a></li>
 </ul>
 <h2 id="references">References</h2>
 <ul>
@@ -44,7 +56,7 @@ specified order.</p>
 <li><a href="https://www.spamhaus.org/organization/dnsblusage/">Spamhaus DNSBL Usage Terms</a></li>
 </ul>
 </li>
-</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

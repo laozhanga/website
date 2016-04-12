@@ -1,5 +1,7 @@
 # Allow insecure POP3/IMAP/SMTP connections without STARTTLS
 
+[TOC]
+
 With default iRedMail setting, all clients are forced to use POP3/IMAP/SMTP
 services over STARTTLS for secure connections. If your mail clients
 try to access mailbox via protocol POP3/IMAP without TLS support, you will
@@ -8,6 +10,14 @@ get error message like below:
 ```
 Plaintext authentication disallowed on non-secure (SSL/TLS) connections
 ```
+
+This tutorial describes how to allow insecure connection for daily use.
+
+!!! note
+
+    If you just have 1 or few network devices like printer, firewall need to
+    send email with insecure connection, please follow this tutorial instead:
+    [Allow internal network devices to send email with insecure connection](./additional.smtp.port.html).
 
 ## Allow insecure POP3/IMAP connections
 

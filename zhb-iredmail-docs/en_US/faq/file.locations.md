@@ -1,6 +1,30 @@
-# Locations of configuration and log files of mojor components
+# Locations of configuration and log files of major components
 
 [TOC]
+
+## SSL certificate
+
+The self-signed SSL certificate generated during iRedMail installation:
+
+* on RHEL/CentOS:
+
+    * `/etc/pki/tls/certs/iRedMail.crt`
+    * Private key: `/etc/pki/tls/private/iRedMail.key`
+
+* on Debian/Ubuntu:
+
+    * `/etc/ssl/certs/iRedMail.crt`
+    * Private key: `/etc/ssl/private/iRedMail.key`
+
+* on FreeBSD:
+
+    * `/etc/ssl/certs/iRedMail.crt`
+    * Private key: `/etc/ssl/private/iRedMail.key`
+
+* on OpenBSD:
+
+    * `/etc/ssl/iRedMail.crt`
+    * Private key: `/etc/ssl/iRedMail.key`
 
 ## Apache
 
@@ -120,11 +144,12 @@ empty, please check normal syslog log file `/var/log/messages` or
 
 Main config file:
 
-* on RHEL/CentOS: `/etc/my.cnf.
+* on RHEL/CentOS: `/etc/my.cnf`.
 * on Debian/Ubuntu, it's `/etc/mysql/my.cnf`. If you're running MariaDB, it's
   `/etc/mysql/mariadb.conf.d/mysqld.cnf`.
 * on FreeBSD: `/var/db/mysql/my.cnf`.
-* on OpenBSD: `/etc/my.cnf.
+* on OpenBSD: `/etc/my.cnf`.
+
 
 ## Amavisd
 
@@ -158,7 +183,7 @@ Init script:
 
 * RHEL/CentOS: `/etc/init.d/cbpolicyd`
 * Debian/Ubuntu: `/etc/init.d/postfix-cluebringer`
-* FreeBSD: `/usr/local/etc/rc.d/cluebringer`
+* FreeBSD: `/usr/local/etc/rc.d/policyd2`
 * OpenBSD: N/A. we don't have Cluebringer installed on OpenBSD.
 
 ## Fail2ban
@@ -174,27 +199,36 @@ FreeBSD system is `/usr/local/etc/fail2ban/`.
 
 ## Roundcube webmail
 
-Roundcube webmail is installed under below directory by default:
+* Root Directory. Roundcube webmail is installed under below directory by default:
 
-* RHEL/CentOS: `/var/www/roundcubemail`. It's a symbol link to
-  `/var/www/roundcubemail-x.y.z`.
-* Debian/Ubuntu: `/usr/share/apache2/roundcubemail`. It's a symbol link of
-  `/usr/share/apache2/roundcubemail-x.y.z/`.
-* FreeBSD: `/usr/local/www/roundcube`.
-* OpenBSD: `/var/www/roundcubemail`. It's a symbol link to
-  `/var/www/roundcubemail-x.y.z/`.
+    * RHEL/CentOS: `/var/www/roundcubemail`. It's a symbol link to
+      `/var/www/roundcubemail-x.y.z`.
+    * Debian/Ubuntu: `/usr/share/apache2/roundcubemail`. It's a symbol link of
+      `/usr/share/apache2/roundcubemail-x.y.z/`.
+    * FreeBSD: `/usr/local/www/roundcube`.
+    * OpenBSD: `/var/www/roundcubemail`. It's a symbol link to
+      `/var/www/roundcubemail-x.y.z/`.
 
-Config files:
+* Config files:
 
-* Main config file is `config/config.inc.php` under Roundcube webmail
-  directory.
+    * Main config file is `config/config.inc.php` under Roundcube webmail
+      directory.
 
-    If you're running old Roundcube webmail (0.9.x and earlier
-    releases), it has two separate config files: `config/db.inc.php` and
-    `config/main.inc.php`.
+        If you're running old Roundcube webmail (0.9.x and earlier
+        releases), it has two separate config files: `config/db.inc.php` and
+        `config/main.inc.php`.
 
-* Config files of plugins are placed under plugin directory. for example,
-  config file of `password` plugin is `plugins/password/config.inc.php`.
+    * Config files of plugins are placed under plugin directory. for example,
+      config file of `password` plugin is `plugins/password/config.inc.php`.
+
+!!! warning
+
+    Roundcube stores all default settings in `config/defaults.inc.php`, please do
+    not modify it, instead, you should copy the settings you want to modify from
+    `config/defaults.inc.php` to `config/config.inc.php`, then modify the one in
+    `config/config.inc.php`.
+
+* Log file. Roundcube is configured to log to [Postfix log](#postfix) file by default.
 
 ## SOGo Groupware
 
@@ -203,7 +237,11 @@ Config files:
 
 ## iRedAPD
 
-Main config file is `/opt/iredapd/settings.py` on all Linux/BSD distributions.
+* Main config file is `/opt/iredapd/settings.py` on all Linux/BSD distributions.
+* Log file:
+
+    * With iRedAPD-1.7.0 and later releases, log file is `/var/log/iredapd/iredapd.log`.
+    * With iRedAPD-1.6.0 and older releases, log file is `/var/log/iredapd.log`.
 
 ## iRedAdmin
 

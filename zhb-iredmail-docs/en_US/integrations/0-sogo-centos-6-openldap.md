@@ -70,6 +70,11 @@ basedn, bind dn/passwordthen in this file, then it's done.
 
 With below config file, SOGo will listen on address `127.0.0.1`, port `20000`.
 
+!!! note
+
+    Sample config file below may be out of date, please check the [latest one
+    in iRedMail source code repository](https://bitbucket.org/zhb/iredmail/src/default/iRedMail/samples/sogo/sogo.conf).
+
 ```
 {
     // Official SOGo documents:
@@ -365,3 +370,13 @@ word `SOGo` is case-sensitive), you can login with your email account credential
 
 Please check our documents [here](./index.html#configure-mail-client-applications)
 to configure your mail clients or mobile devices.
+
+
+## References
+
+* [SOGo web site](http://sogo.nu)
+* Outlook plugins:
+
+    * [Outlook CalDav Synchronizer](https://github.com/aluxnimm/outlookcaldavsynchronizer)
+
+        > Outlook Plugin, which synchronizes events, tasks and contacts(beta) between Outlook and Google, SOGo, Horde or any other CalDAV or CardDAV server. Supported Outlook versions are 2016, 2013, 2010 and 2007.

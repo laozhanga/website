@@ -7,10 +7,8 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="integrate-microsoft-active-directory-in-iredmail">Integrate Microsoft Active Directory in iRedMail</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="integrate-microsoft-active-directory-in-iredmail">Integrate Microsoft Active Directory in iRedMail</h1>
 <div class="toc">
 <ul>
 <li><a href="#integrate-microsoft-active-directory-in-iredmail">Integrate Microsoft Active Directory in iRedMail</a><ul>
@@ -21,6 +19,7 @@
 <li><a href="#create-user-account-in-ad-used-for-ldap-query">Create user account in AD, used for LDAP query</a></li>
 <li><a href="#enable-ldap-query-with-ad-in-postfix">Enable LDAP query with AD in Postfix</a></li>
 <li><a href="#verify-ldap-query-with-ad-in-postfix">Verify LDAP query with AD in Postfix</a></li>
+<li><a href="#remove-iredapd-integration-in-postfix">Remove iRedAPD integration in Postfix</a></li>
 </ul>
 </li>
 <li><a href="#enable-active-directory-integration-in-dovecot">Enable Active Directory integration in Dovecot</a></li>
@@ -35,7 +34,7 @@
 <li>
 <p>iRedAdmin-Pro doesn't work with Active Directory, so if you choose to
   authenticate mail users against Active Directory, you have to manage mail
-  accounts with Active Directory management tools, don't buy iRedAdmin-Pro.</p>
+  accounts with Active Directory management tools.</p>
 </li>
 <li>
 <p>This tutorial has been verified on Windows 2000, 2003, 2008, 2012 server, if
@@ -57,6 +56,8 @@
 <ul>
 <li>Per-user, per-domain service control with LDAP (e.g. enable/disable
   POP3/IMAP/SMTP services).</li>
+<li>Advanced mail polices implemented by iRedAPD which relies on iRedMail
+  LDAP scheme.</li>
 </ul>
 <h2 id="requirements">Requirements</h2>
 <p>To integrate Microsoft Active Directory with iRedMail, you should have:</p>
@@ -262,6 +263,11 @@ user@example.com
 <li>mail group doesn't exist</li>
 <li>mail group doesn't have any members</li>
 </ol>
+<h3 id="remove-iredapd-integration-in-postfix">Remove iRedAPD integration in Postfix</h3>
+<p>iRedAPD relies on iRedMail LDAP scheme, so it's useless if you integrate
+iRedMail with Active Directory. We should remove the integration in Postfix
+to save some system resource.</p>
+<p>To disable iRedAPD, please read tutorial: <a href="./manage.iredapd.html">Manage iRedAPD</a>.</p>
 <h2 id="enable-active-directory-integration-in-dovecot">Enable Active Directory integration in Dovecot</h2>
 <p>To query AD instead of local LDAP server, we have to modify Dovecot config file
 <code>/etc/dovecot/dovecot-ldap.conf</code> like below:</p>
@@ -313,16 +319,16 @@ address book setting added by iRedMail, and add new setting for AD like below:</
 </ul>
 <pre><code class="php">#
 # &quot;sql&quot; is personal address book stored in roundcube database.
-# &quot;example.com&quot; is new LDAP address book with AD, we will create it below.
+# &quot;global_ldap_abook&quot; is the new LDAP address book for AD, we will create it below.
 #
-$config['autocomplete_addressbooks'] = array(&quot;sql&quot;, &quot;example.com&quot;);
+$config['autocomplete_addressbooks'] = array(&quot;sql&quot;, &quot;global_ldap_abook&quot;);
 
 #
 # Global LDAP Address Book with AD.
 #
 $config['ldap_public'][&quot;global_ldap_abook&quot;] = array(
-    'name'          =&gt; 'Global LDAP Address Book',
-    'hosts'         =&gt; array(&quot;ad.example.com&quot;),      // &lt;- Set AD hostname or IP address here.
+    'name'          =&gt; 'Global Address Book',
+    'hosts'         =&gt; array(&quot;ad.example.com&quot;), // &lt;- Set AD hostname or IP address here.
     'port'          =&gt; 389,
     'use_tls'       =&gt; false,   // &lt;- Set to true if you want to use LDAP over TLS.
     'ldap_version'  =&gt; '3',
@@ -330,9 +336,9 @@ $config['ldap_public'][&quot;global_ldap_abook&quot;] = array(
     'user_specific' =&gt; false,
 
     'base_dn'       =&gt; &quot;cn=users,dc=example,dc=com&quot;, // &lt;- Set base dn in AD
-    'bind_dn'       =&gt; &quot;vmail&quot;,                      // &lt;- bind dn
-    'bind_pass'     =&gt; &quot;password_of_vmail&quot;,          // &lt;- bind password
-    'writable'      =&gt; false,                        // &lt;- Do not allow mail user write data back to AD.
+    'bind_dn'       =&gt; &quot;vmail&quot;,             // &lt;- bind dn
+    'bind_pass'     =&gt; &quot;password_of_vmail&quot;, // &lt;- bind password
+    'writable'      =&gt; false,               // &lt;- Do not allow mail user write data back to AD.
 
     'search_fields' =&gt; array('mail', 'cn', 'sAMAccountName', 'displayname', 'sn', 'givenName'),
 
@@ -367,20 +373,27 @@ $config['ldap_public'][&quot;global_ldap_abook&quot;] = array(
     ),
     'sort'          =&gt; 'cn',
     'scope'         =&gt; 'sub',
-    //'filter'        =&gt; &quot;(&amp;(objectclass=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))&quot;,
-    'filter'        =&gt; &quot;(mail=*@*)&quot;,
+    'filter'        =&gt; &quot;(&amp;(objectclass=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))&quot;,
     'fuzzy_search'  =&gt; true,
-    'vlv'           =&gt; false,   // Enable Virtual List View to more efficiently fetch paginated data (if server supports it)
-    'sizelimit'     =&gt; '0',     // Enables you to limit the count of entries fetched. Setting this to 0 means no limit.
-    'timelimit'     =&gt; '0',     // Sets the number of seconds how long is spend on the search. Setting this to 0 means no limit.
-    'referrals'     =&gt; false,  // Sets the LDAP_OPT_REFERRALS option. Mostly used in multi-domain Active Directory setups
+    'vlv'           =&gt; false,   // Enable Virtual List View to more
+                                // efficiently fetch paginated data
+                                // (if server supports it)
+    'sizelimit'     =&gt; '0',     // Enables you to limit the count of
+                                // entries fetched. Setting this to 0
+                                // means no limit.
+    'timelimit'     =&gt; '0',     // Sets the number of seconds how long
+                                // is spend on the search. Setting this
+                                // to 0 means no limit.
+    'referrals'     =&gt; false,   // Sets the LDAP_OPT_REFERRALS option.
+                                // Mostly used in multi-domain Active
+                                // Directory setups
 );
 </code></pre>
 
 <h2 id="additions-documents">Additions documents</h2>
 <ul>
 <li>If your mail domain name is different than Windows Active Directory domain: <a href="http://www.iredmail.org/forum/topic3165-integration-with-windows-domain.html">http://www.iredmail.org/forum/topic3165-integration-with-windows-domain.html</a></li>
-</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

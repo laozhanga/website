@@ -6,14 +6,16 @@
 
 * This tutorial describes how to create a FreeBSD Jail with ezjail, then
   install the latest iRedMail in Jail.
-* We use hostname `mx.example.com` and IP address `172.16.122.244` for our Jail server.
+* We use hostname `mx.example.com` and IP address `172.16.244.254` for our Jail server.
 
 Notes:
 
-* This tutorial was tested with FreeBSD 9 and the latest ports tree, but it
-  should work on FreeBSD 8 and 10 too.
+* This tutorial was tested with FreeBSD 10 and the latest ports tree, but it
+  should work on FreeBSD 9 and other releases.
 * All backends available in iRedMail (OpenLDAP, MySQL/MariaDB, PostgreSQL) were
   tested, work like a charm. :)
+* For more details about ezjail, please check FreeBSD Handbook:
+  [Managing Jails with ezjail](https://www.freebsd.org/doc/handbook/jails-ezjail.html).
 
 ## System Requirements
 
@@ -21,32 +23,13 @@ __IMPORTANT WARNING__: iRedMail is designed to be deployed on a FRESH server sys
 which means your server does __NOT__ have mail related components installed,
 e.g. MySQL, OpenLDAP, Postfix, Dovecot, Amavisd, etc. iRedMail will install
 and configure them for you automatically. Otherwise it may override your
-existing files/configurations althought it will backup files before modifing,
+existing files/configurations althought it will backup files before modifying,
 and it may not be working as expected.
 
 * The latest stable release of iRedMail. You can download it here: http://www.iredmail.org/download.html
 * Port `sysutils/ezjail` for FreeBSD.
 
 ## Preparations
-
-### Set a proper hostname and IP address for Jail server
-
-We use hostname `mx.example.com` and internal IP address `172.16.122.244` for
-example. We created an alias IP address on network interface `em0`, so we have
-below setting in `/etc/rc.conf` for this IP address like below:
-
-```
-# Part of file: /etc/rc.conf
-
-ifconfig_em0_alias0="inet 172.16.122.244 netmask 255.255.255.0"
-
-# Settings for our Jail: mx.example.com.
-jail_mx_example_com_hostname="mx.example.com"
-jail_mx_example_com_ip="172.16.122.244"
-
-# Required by PostgreSQL, otherwise initializing database will fail.
-jail_mx_example_com_parameters='allow.sysvipc=1'
-```
 
 ### Install sysutils/ezjail and add required settings
 
@@ -57,21 +40,11 @@ jail_mx_example_com_parameters='allow.sysvipc=1'
 # make install clean
 ```
 
-* Enable Jail by adding below setting in `/etc/rc.conf`:
+* Enable ezjail service by appending below line in `/etc/rc.conf`:
 
 ```
-# Part of file: /etc/rc.conf
-
 # Start ezjail while system start up
 ezjail_enable="YES"
-```
-
-* [OPTIONAL] Allow to use `ping` command inside Jail by adding below line in
-  `/etc/sysctl.conf`:
-
-```
-# Part of file: /etc/sysctl.conf
-security.jail.allow_raw_sockets=1
 ```
 
 * Rebooting system is required after changing `/etc/rc.conf`.
@@ -82,42 +55,26 @@ security.jail.allow_raw_sockets=1
 
 ### Create Jail
 
-* After server reboot, create the base jail that all jails we created later will use:
+* After server reboot, populate the Jail with FreeBSD-RELEASE
 
 ```
 # ezjail-admin install -p
 ```
 
-* Create Jail for domain name `mx.example.com`, bound to internal IP address
-  `172.16.122.244`. All files are placed under `/jails/mx.example.com`:
+* Create Jail
+
+    * hostname `mx.example.com`
+    * bound IP address `172.16.244.254` to network interface `em0`
+    * Jail is placed under `/jails/mx.example.com`
 
 ```
-# ezjail-admin create -r /jails/mx.example.com mx.example.com 172.16.122.244
-```
-
-* Set hostname of Jail in `/jails/mx.example.com/etc/rc.conf`:
-
-```
-# File: /jails/mx.example.com/etc/rc.conf
-hostname="mx.example.com"
-```
-
-* [OPTIONAL] Share /usr/ports/distfiles/ with Jail by adding below line in
-  `/etc/fstab.mx_example_com`:
-
-    * NOTE: Jail will set ports tree directory to `/var/ports` instead of
-      `/usr/ports` in `/jails/mx.example.com/etc/make.conf`, you can either
-      use this default setting or change it to `/usr/ports`.
-
-```
-# Part of file: /etc/fstab.mx_example.com
-/usr/ports/distfiles /jails/mx.example.com/basejail/usr/ports/distfiles nullfs rw 0 0
+# ezjail-admin create -r /jails/mx.example.com mx.example.com 'em0|172.16.244.254'
 ```
 
 * Start Jail.
 
 ```
-# /usr/local/etc/rc.d/ezjail restart
+# service ezjail restart
 ```
 
 * List all Jails:
@@ -126,7 +83,7 @@ hostname="mx.example.com"
 # ezjail-admin list
 STA JID  IP               Hostname                          Root Directory
 --- ---- ---------------- --------------------------------- ------------------------
-DS  1    172.16.122.244   mx.example.com                    /jails/mx.example.com
+DS  1    172.16.244.254   mx.example.com                    /jails/mx.example.com
 ```
 
 ## Install iRedMail
@@ -141,28 +98,37 @@ We can now enter this Jail with below command:
 
 ```
 # File: /etc/resolv.conf
-nameserver 172.16.122.2
+nameserver 172.16.244.2
 ```
 
 * In Jail, install binary package `bash-static`, it's required by iRedMail.
 
 ```
+# -- For FreeBSD 9 or earlier releases --
 # pkg_add -r bash-static
+
+# -- For FreeBSD 10 or later releases --
+# pkg install bash-static
 ```
 
 ## Start iRedMail installer
 
-> For Chinese users: Our domain name "iredmail.org" is blocked in China mainland since Jun 04, 2011, please replace all 'iredmail.org' by its IP address "106.187.51.47" (without quotes) in /root/iRedMail-x.y.z/pkgs/get_all.sh BEFORE executing "iRedMail.sh". This is a Linode VPS hosted in Tokyo, Japan.
-
-
 It's now ready to start iRedMail installer inside Jail, it will ask you several simple
-questions, that's all steps to setup a full-featured mail server.
+questions, that's all required to setup a full-featured mail server.
 
 ```
 # bash          # <- start bash shell, REQUIRED
 # cd /root/iRedMail/
-# LOCAL_ADDRESS='172.16.122.244' bash iRedMail.sh
+# LOCAL_ADDRESS='172.16.244.254' bash iRedMail.sh
 ```
+
+!!! note "Note to Chinese users"
+
+    Our domain name `iredmail.org` has been blocked in mainland China for
+    years (since Jun 04, 2011), please run command below to finish the
+    installation:
+
+    `IREDMAIL_MIRROR='http://42.159.241.31' bash iRedMail.sh`
 
 ## Screenshots of installation:
 
@@ -177,9 +143,11 @@ questions, that's all steps to setup a full-featured mail server.
 * Choose backend used to store mail accounts. You can manage mail accounts
 with iRedAdmin, our web-based iRedMail admin panel.
 
-__IMPORTANT NOTE__: There's no big difference between available backends, so
-it's strongly recommended to choose the one you're familiar with for easier
-management and maintenance after installation.
+!!! note
+
+    There's no big difference between available backends, so
+    it's strongly recommended to choose the one you're familiar with for easier
+    management and maintenance after installation.
 
 ![](../images/installation/iredmail/backend.png)
 
@@ -194,12 +162,11 @@ Password of LDAP root dn.
 
 ![](../images/installation/iredmail/pw_of_ldap_root_dn.png)
 
-* Set password of MySQL or PostgreSQL admin user.
+!!! note "To MySQL/MariaDB/PostgreSQL users"
 
-__NOTE__: MySQL is used to store data of other applications (e.g. Roundcube
-webmail, Cluebringer, Amavisd-new) if you choose OpenLDAP or MySQL as backend.
-
-![](../images/installation/iredmail/pw_of_mysql_root_user.png)
+    If you choose to store mail accounts in MySQL/MariaDB/PostgreSQL, iRedMail
+    installer will generate a random, strong password for you. You can find it
+    in file `iRedMail.tips`.
 
 * Add your first mail domain name
 
@@ -240,21 +207,28 @@ Configuration completed.
 
 ## Important things you __MUST__ know after installation
 
+> The weakest part of a mail server is user's weak password. Spammers don't
+> want to hack your server, they just want to send spam from your server.
+> Please __ALWAYS ALWAYS ALWAYS__ force users to use a strong password.
+
 * Read file `/root/iRedMail-x.y.z/iRedMail.tips` first, it contains:
 
     * URLs, usernames and passwords of web-based applications
     * Location of mail service related software configuration files. You can
       also check this tutorial instead:
-      [Locations of configuration and log files of mojor components](./file.locations.html).
+      [Locations of configuration and log files of major components](./file.locations.html).
     * Some other important and sensitive information
 
 * [Setup DNS records for your mail server](./setup.dns.html)
 * [How to configure your mail clients](./index.html#configure-mail-client-applications)
-* It's highly recommended to purchase a SSL cert to avoid annonying warning
+* It's highly recommended to get a SSL cert to avoid annonying warning
   message in web browser or mail clients when accessing mailbox via
-  HTTPS/IMAPS/POP3/SMTPS. Or, you can use
-  [free SSL cert offerred by StartSSL.com](http://www.startssl.com/?app=1).
-  We have a document for you to [use a bought SSL certificate](http://www.iredmail.org/docs/use.a.bought.ssl.certificate.html).
+  HTTPS/IMAPS/POP3/SMTPS. [Let's Encrypt offers __FREE__ SSL certificate](https://letsencrypt.org).
+  We have a document for you to
+  [use a SSL certificate](http://www.iredmail.org/docs/use.a.bought.ssl.certificate.html).
+* If you need to bulk create mail users, check our document for
+  [OpenLDAP](./ldap.bulk.create.mail.users.html) and
+  [MySQL/MariaDB/PostgreSQL](./sql.bulk.create.mail.users.html).
 * If you're running a busy mail server, we have [some suggestions for better
   performance](./performance.tuning.html).
 
@@ -264,12 +238,50 @@ After installation successfully completed, you can access web-based programs
 if you choose to install them. Replace `your_server` below by your real server
 hostname or IP address.
 
-* __Roundcube webmail__: [https://your_server/mail/](https://your_server/mail/)
-* __Web admin panel (iRedAdmin)__: [httpS://your_server/iredadmin/](httpS://your_server/iredadmin/)
-* __Awstats__: [httpS://your_server/awstats/awstats.pl?config=web](httpS://your_server/awstats/awstats.pl?config=web) (or ?config=smtp)
+* __Roundcube webmail__: <https://your_server/mail/>
+* __SOGo Groupware__: <https://your_server/SOGo>
+* __Web admin panel (iRedAdmin)__: <httpS://your_server/iredadmin/>
+* __Awstats__: <httpS://your_server/awstats/awstats.pl?config=web> (or `?config=smtp` for SMTP log)
 
 ## Get technical support
 
 Please post all issues, feedbacks, feature requests, suggestions in our [online
 support forum](http://www.iredmail.org/forum/), it's more responsible than you
 expected.
+
+## Some Tips for FreeBSD Jail
+
+### Allow `ping` in Jail
+
+* Appending below line in `/etc/sysctl.conf` to allow to use `ping` command
+  inside Jail:
+
+```
+security.jail.allow_raw_sockets=1
+```
+
+* Update `/usr/local/etc/ezjail/mx_example_com` to allow `ping` inside Jail:
+
+```
+export jail_mx_example_com_parameters="allow.raw_sockets=1"
+```
+
+### Share `/usr/ports/distfiles` with Jail
+
+To share `/usr/ports/distfiles/` with Jail, please append below line in
+  `/etc/fstab.mx_example_com`:
+
+> Jail will set ports tree directory to `/var/ports` instead of
+> `/usr/ports` in `/jails/mx.example.com/etc/make.conf` by default, you can
+> either use this default setting or change it to `/usr/ports`.
+
+```
+# Part of file: /etc/fstab.mx_example.com
+/usr/ports/distfiles /jails/mx.example.com/basejail/var/ports/distfiles nullfs rw 0 0
+```
+
+Create directory `/usr/jails/basejail/var/ports/distfiles`:
+
+```
+# mkdir /usr/jails/basejail/var/ports/distfiles
+```

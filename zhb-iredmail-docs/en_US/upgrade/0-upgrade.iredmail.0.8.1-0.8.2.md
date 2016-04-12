@@ -2,9 +2,12 @@
 
 [TOC]
 
-## ChangeLog
+!!! note "Paid Remote Upgrade Support"
 
-> We provide remote upgrade service, check [the price](../support.html) and [contact us](../contact.html).
+    We offer remote upgrade support if you don't want to get your hands dirty,
+    check [the details](../support.html) and [contact us](../contact.html).
+
+## ChangeLog
 
 * 2012-09-21: Add link of upgrading iRedAdmin open source edition.
 * 2012-09-21: Add link of upgrading iRedAPD.
@@ -40,7 +43,7 @@ latest stable release immediately: [How to upgrade Roundcube](http://trac.roundc
 ### Upgrade iRedAPD (Postfix policy server) to the latest stable release
 
 Please follow below tutorial to upgrade iRedAPD to the latest stable release:
-[How to upgrade iRedAPD-1.4.0 or later versions to the latest stable release](./upgrade.iredapd.html)
+[Upgrade iRedAPD to the latest stable release](./upgrade.iredapd.html)
 
 ### Upgrade iRedAdmin (open source edition) to the latest stable release
 
@@ -51,8 +54,8 @@ latest stable release: [Upgrade iRedAdmin to the latest stable release](./migrat
 
 Please remove below two settings in SpamAssassin config file:
 
-    * On Linux and OpenBSD, it's `/etc/mail/spamassassin/local.cf`.
-    * On FreeBSD, it's `/usr/local/etc/mail/spamassassin/local.cf`.
+* On Linux and OpenBSD, it's `/etc/mail/spamassassin/local.cf`.
+* On FreeBSD, it's `/usr/local/etc/mail/spamassassin/local.cf`.
 
 ```
 # Part of file: etc/mail/spamassassin/local.cf

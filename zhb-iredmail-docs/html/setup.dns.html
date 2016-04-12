@@ -1,19 +1,17 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Setup DNS records for your iRedMail server</title>
+        <title>Setup DNS records for your iRedMail server (A, PTR, MX, SPF, DKIM)</title>
         <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
     </head>
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="setup-dns-records-for-your-iredmail-server">Setup DNS records for your iRedMail server</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="setup-dns-records-for-your-iredmail-server-a-ptr-mx-spf-dkim">Setup DNS records for your iRedMail server (A, PTR, MX, SPF, DKIM)</h1>
 <div class="toc">
 <ul>
-<li><a href="#setup-dns-records-for-your-iredmail-server">Setup DNS records for your iRedMail server</a><ul>
+<li><a href="#setup-dns-records-for-your-iredmail-server-a-ptr-mx-spf-dkim">Setup DNS records for your iRedMail server (A, PTR, MX, SPF, DKIM)</a><ul>
 <li><a href="#a-record-for-server-hostname">A record for server hostname</a><ul>
 <li><a href="#what-is-an-a-record">What is an A record</a></li>
 <li><a href="#how-to-setup-an-a-record">How to setup an A Record</a></li>
@@ -40,6 +38,7 @@
 <li><a href="#how-to-setup-the-dkim-record">How to setup the DKIM record</a></li>
 </ul>
 </li>
+<li><a href="#optional-register-your-mail-domain-in-google-postmaster-tools">[OPTIONAL] Register your mail domain in Google Postmaster Tools</a></li>
 <li><a href="#references">References</a></li>
 </ul>
 </li>
@@ -218,8 +217,9 @@ tell amavisd the correct path of its config file. For example:</p>
 </code></pre>
 
 <ul>
-<li>Copy output of above command into one line, like below. It will be the value
-  of DKIM DNS record.</li>
+<li>Copy output of command above into one line like below, remove all quotes, but
+  keep <code>;</code>. <strong>we just need strings inside the <code>()</code> block</strong>, it's the value of
+  DKIM DNS record.</li>
 </ul>
 <pre><code>v=DKIM1; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDYArsr2BKbdhv9efugBy...
 </code></pre>
@@ -229,13 +229,29 @@ can handle this kind of multi-line format, so you can paste it in your domain
 zone file directly.</p>
 <ul>
 <li>
-<p>Add a <code>TXT</code> type DNS record, set value to the line you copied above:
-<code>v=DKIM1; p=...</code>.</p>
+<p>Add <code>TXT</code> type DNS record for domain name <code>dkim._domainkey.mydomain.com</code>,
+  set value to the line you copied above: <code>v=DKIM1; p=...</code>.</p>
+<blockquote>
+<p>WARNING: A usual mistake is adding this DKIM record to domain name
+<code>mydomain.com</code>, this is wrong. Please make sure you added to domain name
+<code>dkim._domainkey.mydomain.com</code>.</p>
+</blockquote>
 </li>
 <li>
-<p>After you added this in DNS, type below command to verify it:</p>
+<p>After you added this in DNS, verify it with <code>dig</code> or <code>nslookup</code>:</p>
 </li>
 </ul>
+<pre><code>$ dig -t txt dkim._domainkey.mydomain.com
+
+$ nslookup -type=txt dkim._domainkey.foodmall.com
+</code></pre>
+
+<p>Sample output:</p>
+<pre><code>dkim._domainkey.mydomain.com. 600 IN TXT    &quot;v=DKIM1\;p=...&quot;
+
+</code></pre>
+
+<p>And verify it with Amavisd:</p>
 <pre><code class="shell"># amavisd testkeys
 TESTING: dkim._domainkey.mydomain.com       =&gt; pass
 </code></pre>
@@ -243,12 +259,37 @@ TESTING: dkim._domainkey.mydomain.com       =&gt; pass
 <p>If it shows <code>pass</code>, it works.</p>
 <p><strong>Note</strong>: If you use DNS service provided by ISP, new DNS record might take
 some hours to be available.</p>
+<p>If you want to re-generate DKIM key, or need to generate one for new mail
+domain, please check our another tutorial:
+<a href="./sign.dkim.signature.for.new.domain.html">Sign DKIM signature on outgoing emails for new mail domain</a>.</p>
+<h2 id="optional-register-your-mail-domain-in-google-postmaster-tools">[OPTIONAL] Register your mail domain in Google Postmaster Tools</h2>
+<p>Google Postmaster Tools web site: <a href="https://postmaster.google.com">https://postmaster.google.com</a>, and
+<a href="https://support.google.com/mail/answer/6258950">Postmaster Tools FAQs</a>.</p>
+<p>It's very simple: just register your mail domain there, and they'll give you a
+text record for your DNS so that they can validate the ownership of the domain.</p>
+<p>Why use Google Postmaster Tools? Quote from
+<a href="https://support.google.com/mail/answer/6227174">Google Postmaster Tools help page</a>:</p>
+<blockquote>
+<p>If you send a large volume of emails to Gmail users, you can use Postmaster Tools to see:</p>
+<ul>
+<li>If users are marking your emails as spam</li>
+<li>Whether you’re following Gmail's best practices</li>
+<li>Why your emails might not be delivered</li>
+<li>If your emails are being sent securely</li>
+</ul>
+</blockquote>
+<p>It <em><strong>MIGHT</strong></em> also help to get you out of the <code>Junk</code> mailbox.</p>
+<p>If you have trouble in sending email to Gmail (or Google Apps), Google offers
+some information on best practices to ensure that their mail is delivered to
+Gmail users: <a href="https://support.google.com/mail/answer/81126?hl=en">Bulk Senders Guidelines</a>.</p>
+<p>You may also submit this form to contact Google:
+<a href="https://support.google.com/mail/contact/bulk_send_new?rd=1">Bulk Sender Contact Form</a></p>
 <h2 id="references">References</h2>
 <ul>
 <li><a href="http://en.wikipedia.org/wiki/MX_record">http://en.wikipedia.org/wiki/MX_record</a></li>
 <li><a href="http://www.openspf.org/">http://www.openspf.org/</a></li>
 <li><a href="http://www.dkim.org/">http://www.dkim.org/</a></li>
-</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

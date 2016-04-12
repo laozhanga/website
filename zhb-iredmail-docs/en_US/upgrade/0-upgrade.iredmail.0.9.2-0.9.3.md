@@ -2,20 +2,22 @@
 
 [TOC]
 
-__This is still a DRAFT document, do NOT apply it.__
+!!! note "Paid Remote Upgrade Support"
+
+    We offer remote upgrade support if you don't want to get your hands dirty,
+    check [the details](../support.html) and [contact us](../contact.html).
 
 ## ChangeLog
 
-> We provide remote upgrade service, check [the price](../support.html) and [contact us](../contact.html).
-
-* 2015-08-08: [SQL backends] Add new SQL columns in `vmail` database: `alias.is_alias`, `alias.alias_to`.
-* 2015-07-31: SOGo: The Dovecot Master User used by SOGo doesn't work due to incorrect username.
-* 2015-07-31: [LDAP] Fixed: Dovecot Master User doesn't work with ACL plugin.
-* 2015-07-06: Add new SQL table `outbound_wblist` in `amavisd` database.
-* 2015-07-06: Amavisd: Fix incorrect setting which signs DKIM on inbound messages.
-* 2015-07-03: Dovecot: Fix incorrect quota warning priorities.
-* 2015-06-30: Dovecot-2.2: Add more special folders as alias folders.
-* 2015-06-09: [OPTIONAL] Fixed: Not preserve the case of `${extension}` while delivering message to mailbox.
+* 2016-01-21: Fix incorrect permission on new sql table `amavisd.outbound_wblist`.
+* 2016-01-14: Mention updating backup script to backup iRedAPD SQL database.
+* 2015-12-23: Run `a2enmod headers` on Debian/Ubuntu to make sure required Apache module is enabled.
+* 2015-12-16: Mention how to enable greylisting in iRedAPD.
+* 2015-12-14: New section: `Upgrade iRedAdmin (open source edition) to the latest stable release`.
+* 2015-12-14: New section: `Migrate from Cluebringer to iRedAPD`.
+* 2015-12-14: Fix duplicate folder name in section `Dovecot-2.2: Add more special folders as alias folders`.
+----
+* 2015-12-14: Initial release.
 
 ## General (All backends should apply these steps)
 
@@ -34,21 +36,94 @@ so that you can know which version of iRedMail you're running. For example:
 ### Upgrade iRedAPD (Postfix policy server) to the latest 1.7.0
 
 Please follow below tutorial to upgrade iRedAPD to the latest stable release:
-[How to upgrade iRedAPD-1.4.0 or later versions to the latest stable release](./upgrade.iredapd.html)
+[Upgrade iRedAPD to the latest stable release](./upgrade.iredapd.html)
 
-Detailed release notes are available here: [iRedAPD release notes](./iredapd.releases.html).
+__Notes__:
+
+* iRedAPD-1.7.0 doesn't enable greylisting by default, please enable
+   plugin `greylisting` in iRedAPD config file (`/opt/iredapd/settings.py`),
+   then execute SQL command below to enable server-wide greylisting:
+
+```
+sql> USE iredapd;
+sql> INSERT INTO greylisting (account, priority, sender, sender_priority, active) VALUES ('@.', 0, '@.', 0, 1);
+```
+
+* iRedAPD-1.7.0 creates a new SQL database `iredapd`, please update your
+   backup script to backup this database. The backup script was set up by
+   iRedMail during installation, default path is
+   `/var/vmail/backup/backup_mysql.sh` (For OpenLDAP and MySQL/MariaDB
+   backends) or `/var/vmail/backup/backup_pgsql.sh` (For PostgreSQL backend).
+   For example:
+
+```
+DATABASES='... iredapd'
+```
+
+Detailed release notes are available [here](./iredapd.releases.html).
+
+### Migrate from Cluebringer to iRedAPD
+
+> NOTE: If your server doesn't have Cluebringer installed, please ignore this step.
+
+In iRedMail-0.9.3, Cluebringer has been removed and replaced by iRedAPD.
+Cluebringer is not under active development and no new release since 2013 (the
+latest stable release doesn't support IPv6). iRedAPD offers greylisting and
+throttling supports, please follow tutorial below to migrate greylisting and
+throttling settings from Cluebringer to iRedAPD:
+
+* [Migrate from Cluebringer to iRedAPD](./cluebringer.to.iredapd.html)
+
+> Note: We also plan to completely remove code of Policyd/Cluebringer support
+> in next iRedAdmin-Pro release.
+
+### Upgrade iRedAdmin (open source edition) to the latest stable release
+
+Please follow this tutorial to upgrade iRedAdmin open source edition to the
+latest stable release:
+[Upgrade iRedAdmin to the latest stable release](./migrate.or.upgrade.iredadmin.html)
 
 ### Upgrade Roundcube webmail to the latest stable release
 
 Please follow Roundcube official tutorial to upgrade Roundcube webmail to the
 latest stable release immediately: [How to upgrade Roundcube](http://trac.roundcube.net/wiki/Howto_Upgrade)
 
-### Amavisd: Fix incorrect setting which signs DKIM on inbound messages
+Note: package `rsync` must be installed on your server before upgrading.
 
-In iRedMail-0.9.2 and earlier releases, Amavisd will signing DKIM on inbound
-message, this is wrong. Please follow steps below to fix it.
+### Postfix: Add additional aliases
 
-With below changes, Amavisd will aply policy bank 'ORIGINATING' to emails
+ClamAV may detect virus in email, notification will be sent to system account
+`virusalert`.
+
+Steps to add alias accounts:
+
+* For Linux and OpenBSD: please open file `/etc/postfix/aliases`, if you
+  already have line `virusalert: root`, please ignore this step. if not, please
+  run commands below to add it.
+
+```shell
+perl -pi -e 's/(virusalert:.*)/#${1}/g' /etc/postfix/aliases
+echo -e '\nvirusalert: root' >> /etc/postfix/aliases
+postalias /etc/postfix/aliases
+```
+
+* For FreeBSD: please open file `/usr/local/etc/postfix/aliases`, if you
+  already have line `virusalert: root`, please ignore this step. if not, please
+  run commands below to add it.
+
+```shell
+perl -pi -e 's/(virusalert:.*)/#${1}/g' /etc/postfix/aliases
+echo -e '\nvirusalert: root' >> /usr/local/etc/postfix/aliases
+postalias /usr/local/etc/postfix/aliases
+```
+
+### Amavisd: Fix incorrect setting which treats external sender as internal user
+
+In iRedMail-0.9.2 and earlier releases, Amavisd was incorrectly configured
+which causes it treats external sender as internal user, and it (incorrectly)
+signs DKIM on inbound message. This is wrong. Please follow steps below to fix it.
+
+With below changes, Amavisd will apply policy bank 'ORIGINATING' to emails
 submitted through submission (port 587) by smtp authenticated user. This way
 we clearly separate emails submitted by authenticated users and inbound message
 sent by others, and Amavisd won't sign DKIM on inbound message anymore.
@@ -79,7 +154,11 @@ quarantined mails.
 
 * Comment out below line in Amavisd config file:
 
-    __WARNING: Do NOT remove `originating => 1,` in other `$policy_bank` blocks.__
+> WARNING:
+>
+> There're several `$originating =1;` in amavisd config file, but there's only
+> one of them is __NOT__ defined inside any `$policy_bank = {}` block, and this
+> is the one we need to comment out.
 
 ```
 $originating = 1;
@@ -97,8 +176,8 @@ $originating = 1;
 
 * Open Postfix config file `/etc/postfix/master.cf` (Linux/OpenBSD) or
   `/usr/local/etc/postfix/master.cf` (FreeBSD), update transport `submission`
-  to use `content_filter=smtp-amavis:[127.0.0.1]:10026` as content filter like
-  below:
+  to uncomment `content_filter=smtp-amavis:[127.0.0.1]:10026` line, so that we
+  can use Amavisd with policy bank `ORIGINATING` as content filter. like below:
 
 ```
 submission inet n       -       n       -       -       smtpd
@@ -181,14 +260,14 @@ Add below alias folders inside the same `namespace {}` block:
         special_use = \Trash
     }
 
-    mailbox "Deleted Messages" {
+    mailbox "Deleted Items" {
         auto = no
         special_use = \Trash
     }
 
     # Archive
     mailbox Archive {
-        auto = subscribe
+        auto = no
         special_use = \Archive
     }
     mailbox Archives {
@@ -198,6 +277,173 @@ Add below alias folders inside the same `namespace {}` block:
 ```
 
 Restart Dovecot service is required.
+
+### Roundcube webmail: Add daily cron job to cleanup Roundcube SQL database
+
+It's recommended to setup a daily cron job to keep Roundcube SQL database slick
+and clean, it removes all records that are marked as deleted.
+
+Please edit `root`'s cron job with command below:
+```
+# crontab -e -u root
+```
+
+Then add cron job below:
+
+* RHEL/CentOS:
+
+```
+# Cleanup Roundcube SQL database.
+2   2   *   *   *   php /var/www/roundcubemail/bin/cleandb.sh >/dev/null
+```
+
+* Debian/Ubuntu:
+
+```
+# Cleanup Roundcube SQL database.
+2   2   *   *   *   php /opt/www/roundcubemail/bin/cleandb.sh >/dev/null
+```
+
+__WARNING__: with old iRedMail release, Roundcube directory is
+`/usr/share/apache2/roundcubemail`, please make sure you're using the correct
+one on your server.
+
+* FreeBSD:
+
+```
+# Cleanup Roundcube SQL database.
+2   2   *   *   *   php /usr/local/www/roundcube/bin/cleandb.sh >/dev/null
+```
+
+* OpenBSD:
+
+```
+# Cleanup Roundcube SQL database.
+2   2   *   *   *   php /var/www/roundcubemail/bin/cleandb.sh >/dev/null
+```
+
+### Web server: Enable HSTS (HTTP Strict Transport Security) support
+
+HTTP Strict Transport Security (often abbreviated as HSTS) is a security
+feature that lets a web site tell browsers that it should only be communicated
+with using HTTPS, instead of using HTTP.
+
+For more details, please read this article:
+[HTTP Strict Transport Security](https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security)
+
+<h4>Apache</h4>
+
+For Apache, please edit its config file which manages SSL related settings,
+and append below settings right after `SSLEngine on` line:
+
+* On RHEL/CentOS, it's `/etc/httpd/conf.d/ssl.conf`.
+* On Debian/Ubuntu, it's `/etc/apache2/sites-enabled/default-ssl` or `default-ssl.conf`.
+* On FreeBSD: it's `/usr/local/etc/apache24/extra/httpd-ssl.conf`.
+
+```
+# Use HTTP Strict Transport Security to force client to use secure connections only.
+# Reference:
+# https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security
+# Module mod_headers is required. 15768000 seconds = 6 months.
+Header always set Strict-Transport-Security "max-age=15768000"
+```
+
+On Debian 8 and Ubuntu, run command below to make sure Apache module `headers`
+is enabled:
+
+```
+a2enmod headers
+service apache2 restart
+```
+
+<h4>Nginx</h4>
+
+For Nginx, please edit its config file which manages SSL related settings,
+and append below settings right after `ssl on` line:
+
+* On Linux and OpenBSD, it's `/etc/nginx/conf.d/default.conf`.
+* On FreeBSD, it's `/usr/local/etc/nginx/conf.d/default.conf`.
+
+```
+# Use HTTP Strict Transport Security to force client to use secure connections only.
+# Reference:
+# https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security
+add_header Strict-Transport-Security "max-age=15768000"
+```
+
+### SOGo: Fix improper settings in Apache/Nginx config file
+
+iRedMail-0.9.2 has improper settings in Apache/Nginx config files:
+
+* when you try to view attachment in email, it will redirect the URL to
+  `https://127.0.0.1/...`.
+* iOS mobile devices will try to access web url
+  `https://.../.well-known/carddav`, but it's not defined in Apache/Nginx
+  config files.
+
+<h4>Apache</h4>
+
+<h5>1: Comment out incorrect settings</h5>
+
+For Apache: Please make sure below settings are commented out in Apache
+config file, then restart Apache service.
+
+* On RHEL/CentOS, it's `/etc/httpd/conf.d/SOGo.conf`.
+* On Debian/Ubuntu, it's `/etc/apache2/conf-available/SOGo.conf`.
+* FreeBSD: iRedMail-0.9.2 and earlier releases doesn't support SOGo
+  on FreeBSD, so it's not appliable on FreeBSD.
+
+```
+#RequestHeader set "x-webobjects-server-port" "443"
+#RequestHeader set "x-webobjects-server-name" "yourhostname"
+#RequestHeader set "x-webobjects-server-url" "https://yourhostname"
+```
+
+<h5>2: Redirect /.well-known/carddav access to SOGo</h5>
+
+Find below line in `SOGo.conf`:
+
+```
+  RewriteRule ^/.well-known/caldav/?$ /SOGo/dav [R=301]
+```
+
+Add a new line right after above line:
+
+```
+  RewriteRule ^/.well-known/caldav/?$ /SOGo/dav [R=301]
+  RewriteRule ^/.well-known/carddav/?$ /SOGo/dav [R=301]
+```
+
+Restarting Apache service is required.
+
+<h4>Nginx</h4>
+
+<h5>1: Comment out incorrect settings</h5>
+
+For Nginx: Please make sure below settings are commented out in Nginx config
+file, then restart or reload Nginx service.
+
+* On Linux and OpenBSD, it's `/etc/nginx/conf.d/default.conf`.
+* On FreeBSD, it's `/usr/local/etc/nginx/conf.d/default.conf`.
+
+```
+#proxy_set_header x-webobjects-remote-host 127.0.0.1;
+#proxy_set_header x-webobjects-server-name $server_name;
+#proxy_set_header x-webobjects-server-url $scheme://$host;
+```
+
+<h5>2: Redirect /.well-known/carddav access to SOGo</h5>
+
+iRedMail doesn't have `/.well-known` redirection in Nginx by default, so
+please add lines below in the `server { listen 443; ...}` block,
+in file `default.conf`:
+
+```
+rewrite ^/.well-known/caldav    /SOGo/dav permanent;
+rewrite ^/.well-known/carddav   /SOGo/dav permanent;
+```
+
+Restarting Nginx service is required.
 
 ### SOGo: The Dovecot Master User used by SOGo doesn't work due to incorrect username.
 
@@ -240,6 +486,106 @@ sogo_sieve_master@not-exist.com:...
 
 That's all.
 
+### SOGo: cron jobs which run every minute must be grouped in one job.
+
+Note: this is applicable to iRedMail server which has SOGo groupware installed
+and running.
+
+iRedMail sets up 3 cron jobs for SOGo, 2 of them are running every minute. You
+can check the cron jobs with command below. Note:
+
+* SOGo daemon user is `sogo` on all Linux distributions.
+* SOGo daemon user is `_sogo` on OpenBSD.
+* with iRedMail-0.9.2 and earlier releases, there's no SOGo support on FreeBSD.
+
+```
+# crontab -u sogo -l
+
+*   *   *   *   *   /usr/sbin/sogo-tool expire-sessions 30
+*   *   *   *   *   /usr/sbin/sogo-ealarms-notify
+```
+
+It always complains with error message like below:
+
+> sogo-tool[27443] Failed to create lock directory '/var/lib/sogo/GNUstep/Defaults/.lck/.GNUstepDefaults.lck'
+
+> sogo-ealarms-notify[27790] Warning ... someone broke our lock (/var/lib/sogo/GNUstep/Defaults/.lck/.GNUstepDefaults.lck) ... and may have interfered with updating defaults data in file.
+
+According to
+[SOGo mailing list](http://marc.info/?l=sogo-users&m=144307619805703&w=2),
+replied by SOGo developer __Christian Mack__, `This is a known problem, but
+harmless, as the lock is not really needed here. The work around is to use one
+cron entry only for both (jobs).`
+
+Please edit the cron job with command below:
+
+```
+# crontab -u sogo -e
+```
+
+Then group those 2 jobs into one cron job like below (note, use semicolon `;`
+to separate jobs):
+
+```
+*   *   *   *   *   /usr/sbin/sogo-tool expire-sessions 30; /usr/sbin/sogo-ealarms-notify
+```
+
+That's all.
+
+### SOGo: Use correct sieve folder encoding
+
+SOGo uses `UTF-7` as sieve folder encoding by default, this is improper, we
+must use `UTF-8` instead, otherwise mail folder names with non-ASCII characters
+cannot be correctly created or displayed.
+
+To fix this, please add below setting in SOGo config file `/etc/sogo/sogo.conf`
+(Linux/OpenBSD) or `/usr/local/etc/sogo/sogo.conf` (FreeBSD):
+
+```
+    SOGoSieveFolderEncoding = UTF-8;
+```
+
+Restarting SOGo service is required.
+
+### [RHEL/CentOS 7] Remove `daemonze =` line in `/etc/uwsgi.ini`
+
+NOTE: this is required by RHEL/CentOS 7, and not applicable to other Linux/BSD
+distributions.
+
+`daemonze =` line set in `/etc/uwsgi.ini` is required by RHEL/CentOS 6, but
+not RHEL/CentOS 7, and it will cause `uwsgi` service fail. Please __remove or
+comment out this line__ and restart `uwsgi` service.
+
+### [RHEL/CentOS 7] Fix incorrect default firewall zone name
+
+NOTE: this is required by RHEL/CentOS 7, and not applicable to other Linux/BSD
+distributions.
+
+iRedMail-0.9.2 and earlier versions won't set default firewall zone if you
+didn't choose to restart firewall immediately, so after iRedMail installation,
+you must set the default firewall zone manually with steps below.
+
+* Open file `/etc/firewalld/firewalld.conf`, find parameter `DefaultZone=`. If
+  it's not set by iRedMail installer, it will be `DefaultZone=public`:
+
+```
+DefaultZone=public
+```
+
+* Please replace `public` by `iredmail`, it will open ports required by ssh and
+  mail services. The zone file is `/etc/firewalld/zones/iredmail.xml`, please
+  make sure you have correct ssh port number in this file.
+
+```
+DefaultZone=iredmail
+```
+
+* Reload firewall rules with command below:
+
+```
+firewall-cmd --complete-reload
+```
+
 ### [OPTIONAL] Fixed: Not preserve the case of `${extension}` while delivering message to mailbox
 
 With iRedMail-0.9.2 and earlier releases, email sent to user
@@ -262,9 +608,116 @@ dovecot unix    -       n       n       -       -      pipe
     flags=DRh ...
 ```
 
-* Save your change and restart Postfix service.
+### [OPTIONAL] Fail2ban: Update regular expression to catch postscreen log
+
+We added one new regular expression to catch postscreen log to help reduce
+spam, please follow steps below to add it.
+
+Open file `/etc/fail2ban/filter.d/postfix.iredmail.conf` or
+`/usr/local/etc/fail2ban/filter.d/postfix.iredmail.conf` (on FreeBSD), append
+below line under `[Definition]` section:
+
+```
+            reject: RCPT from (.*)\[<HOST>\]:([0-9]{4,5}:)? 550
+```
+
+Restarting Fail2ban service is required.
+
+### [OPTIONAL] Postfix: Remove one non-spam HELO identity in helo restriction
+
+iRedMail ships a Postfix HELO rule file, `/etc/postfix/helo_access.pcre`, it
+contains some HELO identities which were treated as spammers by analizing
+Postfix log files, and one of them, `bezeqint.net` is not spammer and we should
+remove it.
+
+Please find below line in `/etc/postfix/helo_access.pcre` (Linux and OpenBSD)
+or `/usr/local/etc/postfix/helo_access.pcre` (FreeBSD), and remove it.
+
+```
+/(bezeqint\.net)$/ REJECT ACCESS DENIED. Your email was rejected because the sending mail server does not identify itself correctly (${1})
+```
+
+### [OPTIONAL] Postfix: add some more restriction methods
+
+> Note: this is an optional operation, not required but recommended.
+
+If you need flexible rules to restrict senders, this change will be helpful.
+for example, reject spammer whom sends emails with different domain names.
+
+Please open Postfix config file `main.cf`, add below 2 settings:
+
+* On Linux and OpenBSD, it's `/etc/postfix/main.cf`.
+* On FreeBSD, it's `/usr/local/etc/postfix/main.cf`. WARNING: in below settings,
+  all new files must be placed under `/usr/local/etc/postfix/`.
+
+```
+header_checks = pcre:/etc/postfix/header_checks
+body_checks = pcre:/etc/postfix/body_checks.pcre
+```
+
+* In `main.cf`, find parameter `smtpd_sender_restrictions =`, add a new setting
+  `check_sender_access pcre:/etc/postfix/sender_access.pcre` right after
+  `permit_sasl_authenticated` like below:
+
+```
+smtpd_sender_restrictions =
+    ...
+    permit_sasl_authenticated
+    check_sender_access pcre:/etc/postfix/sender_access.pcre
+    ...
+```
+
+* Create required files:
+
+```
+# touch /etc/postfix/{header_checks,body_checks.pcre,sender_access.pcre}
+```
+
+* Reloading or restarting Postfix service is required.
+
+Note: each time you changed the pcre file, you should reload (not restart)
+Postfix service so that Postfix can read the changes.
 
 ## OpenLDAP backend special
+
+### Fixed: improper ACL control
+
+With default OpenLDAP ACL control set by iRedMail, every mail user has
+permission to query the whole LDAP tree (although cannot query sensitive info
+like password), we'd better remove this ACL control due to security concern.
+
+* Please open OpenLDAP config file `slapd.conf`, and find below lines:
+
+    * on RHEL/CentOS: it's `/etc/openldap/slapd.conf`.
+    * on Debian/Ubuntu: it's `/etc/ldap/slapd.conf`.
+    * on FreeBSD: it's `/usr/local/etc/openldap/slapd.conf`.
+    * on OpenBSD: it's `/etc/openldap/slapd.conf`.
+
+```
+access to dn.subtree="o=domains,dc=example,dc=com"
+    by anonymous                    auth
+    by self                         write
+    by dn.exact="cn=vmail,dc=example,dc=com"   read
+    by dn.exact="cn=vmailadmin,dc=example,dc=com"  write
+    by dn.regex="mail=[^,]+,ou=Users,domainName=$1,o=domains,dc=example,dc=com$" read
+    by users                        read
+```
+
+The LDAP suffix `dc=example,dc=com` might be different on your server.
+
+* Remove the 6th line (`by dn.regex="mail=..."`), and replace the line `by users read`
+  by `by users none`.
+
+```
+access to dn.subtree="o=domains,dc=example,dc=com"
+    by anonymous                    auth
+    by self                         write
+    by dn.exact="cn=vmail,dc=example,dc=com"   read
+    by dn.exact="cn=vmailadmin,dc=example,dc=com"  write
+    by users                        none
+```
+
+* Save your change and restart OpenLDAP service.
 
 ### Fixed: Dovecot Master User doesn't work with ACL plugin
 
@@ -305,6 +758,23 @@ mysql> CREATE TABLE outbound_wblist (rid integer unsigned NOT NULL, sid integer 
 
 After table created, please restart iRedAPD service.
 
+### Add new column `delete_date` in SQL table `iredadmin.deleted_mailboxes`
+
+We need a SQL column to store the date we schedule to delete the mailbox after
+removing mail account. This new column might be used by iRedAdmin and other
+scripts used to delete mailboxes.
+
+Please connect to MySQL server as MySQL root user, create new table:
+
+```
+$ mysql -uroot -p
+sql> USE iredadmin;
+sql> ALTER TABLE deleted_mailboxes ADD COLUMN delete_date DATE DEFAULT NULL;
+sql> CREATE INDEX idx_delete_date ON deleted_mailboxes (delete_date);
+```
+
+That's it.
+
 ## MySQL/MariaDB backend special
 
 ### Add new SQL columns in `vmail` database: `alias.is_alias`, `alias.alias_to`
@@ -334,6 +804,21 @@ sql> ALTER TABLE alias ADD INDEX (is_alias);
 sql> ALTER TABLE alias ADD INDEX (alias_to);
 ```
 
+> __Sample usage__: add additional email addresses `extra@domain.com` for
+> existing user `user@domain.com`:
+> 
+```
+sql> USE vmail;
+sql> INSERT INTO alias (address, goto, is_alias, alias_to, domain)
+                VALUES ('extra@domain.com', 'user@domain.com', 1, 'user@domain.com', 'domain.com');
+```
+> 
+> Notes:
+> 
+> * Values of column `alias.goto` and `alias.alias_to` are the same.
+> * You can add as many additional email addresses as you want.
+> * In above sample, `extra@domain.com` can be an email address belong to your alias domain.
+
 ### Add new SQL table `outbound_wblist` in `amavisd` database
 
 We need a new SQL table `outbound_wblist` in `amavisd` database, it's used
@@ -349,6 +834,70 @@ mysql> CREATE TABLE outbound_wblist (rid integer unsigned NOT NULL, sid integer 
 ```
 
 After table created, please restart iRedAPD service.
+
+### Add new column `delete_date` in SQL table `vmail.deleted_mailboxes`
+
+We need a SQL column to store the date we schedule to delete the mailbox after
+removing mail account. This new column might be used by iRedAdmin and other
+scripts used to delete mailboxes.
+
+Please connect to MySQL server as MySQL root user, create new table:
+
+```
+$ mysql -uroot -p
+sql> USE vmail;
+sql> ALTER TABLE deleted_mailboxes ADD COLUMN delete_date DATE DEFAULT NULL;
+sql> CREATE INDEX idx_delete_date ON deleted_mailboxes (delete_date);
+```
+
+### [OPTIONAL] SOGo: enable isolated per-domain global address book
+
+iRedMail doesn't enable global address book by default, this step will help
+you enable isolated per-domain global address book.
+
+iRedMail creates a SQL VIEW `sogo.users` in SOGo SQL database, but it doesn't
+contain a `domain` column, if you enable global address book, every user is
+able to search ALL mail accounts hosted on iRedMail server, so we need to drop
+existing SQL VIEW, then re-create it with `domain` column for isolated
+per-domain global address book.
+
+Now connect to MySQL server as `root` user, drop existing SQL VIEW
+`sogo.users`, then re-create it:
+
+```
+$ mysql -uroot -p
+sql> USE sogo;
+sql> DROP VIEW users;
+sql> CREATE VIEW sogo.users (c_uid, c_name, c_password, c_cn, mail, domain) AS SELECT username, username, password, name, username, domain FROM vmail.mailbox WHERE active=1;
+```
+
+Open SOGo config file `/etc/sogo/sogo.conf` (Linux, OpenBSD) or
+`/usr/local/etc/sogo/sogo.conf` (FreeBSD), find the `SOGoUserSources` block
+defined for SQL backend. for example:
+
+```
+    // Authentication using SQL
+    SOGoUserSources = (
+        {
+            ...
+
+            //isAddressBook = YES;
+            //displayName = "Global Address Book";
+        }
+    );
+```
+
+Uncomment `isAddressBook` and `displayName` lines, and add two new parameters
+like below:
+
+```
+            isAddressBook = YES;
+            displayName = "Global Address Book";
+            SOGoEnableDomainBasedUID = YES;
+            DomainFieldName = "domain";
+```
+
+Restart SOGo service is required.
 
 ## PostgreSQL backend special
 
@@ -374,10 +923,25 @@ Please follow steps below to create required SQL columns:
 # su - postgres
 $ psql -d vmail
 sql> ALTER TABLE alias ADD COLUMN is_alias INT2 NOT NULL DEFAULT 0;
-sql> ALTER TABLE alias ADD COLUMN alias_to alias_to VARCHAR(255) NOT NULL DEFAULT '';
+sql> ALTER TABLE alias ADD COLUMN alias_to VARCHAR(255) NOT NULL DEFAULT '';
 sql> CREATE INDEX idx_alias_is_alias ON alias (is_alias);
 sql> CREATE INDEX idx_alias_alias_to ON alias (alias_to);
 ```
+
+> __Sample usage__: add additional email addresses `extra@domain.com` for
+> existing user `user@domain.com`:
+> 
+```
+sql> USE vmail;
+sql> INSERT INTO alias (address, goto, is_alias, alias_to, domain)
+                VALUES ('extra@domain.com', 'user@domain.com', 1, 'user@domain.com', 'domain.com');
+```
+> 
+> Notes:
+> 
+> * Values of column `alias.goto` and `alias.alias_to` are the same.
+> * You can add as many additional email addresses as you want.
+> * In above sample, `extra@domain.com` can be an email address belong to your alias domain.
 
 ### Add new SQL table `outbound_wblist` in `amavisd` database
 
@@ -387,14 +951,102 @@ to store white/blacklists for outbound message, required by iRedAPD plugin
 
 Please switch to PostgreSQL daemon user, then execute SQL commands to import it:
 
-    * On Linux, PostgreSQL daemon user is `postgres`.
-    * On FreeBSD, PostgreSQL daemon user is `pgsql`.
-    * On OpenBSD, PostgreSQL daemon user is `_postgresql`.
+* On Linux, PostgreSQL daemon user is `postgres`.
+* On FreeBSD, PostgreSQL daemon user is `pgsql`.
+* On OpenBSD, PostgreSQL daemon user is `_postgresql`.
 
 ```
 # su - postgres
-$ psql -d cluebringer -d amavisd
+$ psql -d amavisd
 sql> CREATE TABLE outbound_wblist (rid integer NOT NULL CHECK (rid >= 0), sid integer NOT NULL CHECK (sid >= 0), wb varchar(10) NOT NULL, PRIMARY KEY (rid,sid));
+sql> ALTER TABLE outbound_wblist OWNER TO 'amavisd';
 ```
 
 After table created, please restart iRedAPD service.
+
+### Add new column `delete_date` in SQL table `vmail.deleted_mailboxes`
+
+We need a SQL column to store the date we schedule to delete the mailbox after
+removing mail account. This new column might be used by iRedAdmin and other
+scripts used to delete mailboxes.
+
+Please switch to PostgreSQL daemon user, then execute SQL commands to import it:
+
+* On Linux, PostgreSQL daemon user is `postgres`.
+* On FreeBSD, PostgreSQL daemon user is `pgsql`.
+* On OpenBSD, PostgreSQL daemon user is `_postgresql`.
+
+```
+# su - postgres
+$ psql -d vmail
+sql> ALTER TABLE deleted_mailboxes ADD COLUMN delete_date DATE DEFAULT NULL;
+sql> CREATE INDEX idx_delete_date ON deleted_mailboxes (delete_date);
+```
+
+That's it.
+### [OPTIONAL] SOGo: enable isolated per-domain global address book
+
+iRedMail doesn't enable global address book by default, this step will help
+you enable isolated per-domain global address book.
+
+iRedMail creates a SQL VIEW `sogo.users` in SOGo SQL database, but it doesn't
+contain a `domain` column, if you enable global address book, every user is
+able to search ALL mail accounts hosted on iRedMail server, so we need to drop
+existing SQL VIEW, then re-create it with `domain` column for isolated
+per-domain global address book.
+
+Before we go further, we must find the SQL username/password used to query
+`vmail` SQL database in `/etc/postfix/pgsql/*.cf` (on FreeBSD, it's
+`/usr/local/etc/postfix/pgsql/*.cf`). for example:
+
+```
+hosts       = 127.0.0.1
+port        = 3306
+user        = vmail
+password    = NGtLm0jFiwwOH5AeQtTsSAkScUMdFc
+dbname      = vmail
+```
+
+We need SQL server address, port, user, password and database name.
+
+Now connect to PostgreSQL server as admin user, drop existing SQL VIEW
+`sogo.users`, and re-create it.
+
+> __WARNING__: You must replace the `vmail` database username and password by
+> the real ones found in `/etc/postfix/pgsql/*.cf`.
+
+```
+# su - postgres
+$ psql -d sogo
+sql> DROP TABLE users;
+sql> CREATE VIEW users AS SELECT * FROM dblink('host=127.0.0.1 port=5432 user=vmail password=NGtLm0jFiwwOH5AeQtTsSAkScUMdFc dbname=vmail', 'SELECT username AS c_uid, username AS c_name, password AS c_password, name AS c_cn, username AS mail, domain AS domain FROM mailbox WHERE active=1') AS users (c_uid VARCHAR(255), c_name VARCHAR(255), c_password VARCHAR(255), c_cn VARCHAR(255), mail VARCHAR(255), domain VARCHAR(255));
+sql> ALTER TABLE users OWNER TO sogo;
+```
+
+Open SOGo config file `/etc/sogo/sogo.conf` (Linux, OpenBSD) or
+`/usr/local/etc/sogo/sogo.conf` (FreeBSD), find the `SOGoUserSources` block
+defined for SQL backend. for example:
+
+```
+    // Authentication using SQL
+    SOGoUserSources = (
+        {
+            ...
+
+            //isAddressBook = YES;
+            //displayName = "Global Address Book";
+        }
+    );
+```
+
+Uncomment `isAddressBook` and `displayName` lines, and add two new parameters
+like below:
+
+```
+            isAddressBook = YES;
+            displayName = "Global Address Book";
+            SOGoEnableDomainBasedUID = YES;
+            DomainFieldName = "domain";
+```
+
+Restart SOGo service is required.

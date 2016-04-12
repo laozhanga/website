@@ -7,10 +7,8 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="backup-and-restore">Backup and restore</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="backup-and-restore">Backup and restore</h1>
 <div class="toc">
 <ul>
 <li><a href="#backup-and-restore">Backup and restore</a><ul>
@@ -58,7 +56,7 @@ defined as cron jobs with below commands:</p>
   in backup scripts, default is <code>/var/vmail/backup</code>.</li>
 <li>SQL backup is plain SQL file, LDAP backup is plain LDIF file.</li>
 <li>Backup files are compressed with <code>bzip2</code> by default, you can decompress them
-  with command <code>bunzip2</code>. for example, <code>bunzip file_name.bz2</code>.</li>
+  with command <code>bunzip2</code>. for example, <code>bunzip2 file_name.bz2</code>.</li>
 <li>It's ok to run the backup scripts manually.</li>
 </ul>
 <h3 id="backup-additional-data-manually">Backup additional data manually</h3>
@@ -66,7 +64,9 @@ defined as cron jobs with below commands:</p>
 <li>
 <p>DKIM keys. They're stored under <code>/var/lib/dkim/</code> by default. If you don't
   backup them, it's ok to generate new keys and you must update DNS record
-  (<code>dkim._domainkey.[YOUR_MAIL_DOMAIN]</code>) with new DKIM key.</p>
+  (<code>dkim._domainkey.[YOUR_MAIL_DOMAIN]</code>) with new DKIM key. Refer to another
+  document to generate DKIM key and update DNS record:
+  <a href="./sign.dkim.signature.for.new.domain.html">Sign DKIM signature on outgoing emails for new mail domain</a>.</p>
 </li>
 <li>
 <p>OpenLDAP backend:</p>
@@ -81,13 +81,13 @@ defined as cron jobs with below commands:</p>
 <h3 id="how-to-restore-sql-databases">How to restore SQL databases</h3>
 <p>You can simply restore plain SQL files backed up by above backup scripts.</p>
 <blockquote>
-<p><strong>WARNING: Do not restore database <code>mysql</code> on a new iRedMail server.</strong></p>
 <p>If you're restoring on a <strong>NEW</strong> iRedMail server, do <em>NOT</em>
-restore database <code>mysql</code> exported from old server, it contains SQL usernames
-and passwords used in many components (e.g. Postfix, Dovecot, Roundcube
-webmail) on old server. New iRedMail server already has the same SQL accounts
-with different passwords, so please do not restore <code>mysql</code> database,
-otherwise almost all services won't work due to incorrect SQL credentials.</p>
+restore the database which is named <code>mysql</code> exported from old server, it
+contains SQL usernames and passwords used in many components (e.g. Postfix,
+Dovecot, Roundcube webmail) on old server. New iRedMail server already has
+the same SQL accounts with different passwords, so please do not restore
+<code>mysql</code> database, otherwise almost all services won't work due to incorrect
+SQL credentials.</p>
 </blockquote>
 <h3 id="how-to-restore-ldap-backup">How to restore LDAP backup</h3>
 <p>Backup script runs command <code>slapcat</code> to dump whole LDAP tree as a backup, it
@@ -95,7 +95,7 @@ must be so restored with command <code>slapadd</code>.</p>
 <p>Below example shows how to restore a LDAP backup on RHEL/CentOS 6.x, files and
 directories may be different on other Linux/BSD distributions, you can find
 the correct ones in this tutorial: 
-<a href="./file.locations.html#openldap">Locations of configuration and log files of mojor components</a>.</p>
+<a href="./file.locations.html#openldap">Locations of configuration and log files of major components</a>.</p>
 <ul>
 <li>
 <p>LDAP backups are stored under <code>/var/vmail/backup/ldap/[YEAR]/[MONTH]</code> by
@@ -263,7 +263,7 @@ Starting slapd:                                            [  OK  ]
 owner on newly created bdb files immediately, then restart OpenLDAP service:</p>
 <pre><code># chown ldap:ldap /var/lib/ldap/iredmail.org/*.bdb
 # /etc/init.d/ldap restart
-</code></pre><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+</code></pre><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

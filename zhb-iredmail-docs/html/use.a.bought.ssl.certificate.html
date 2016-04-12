@@ -7,10 +7,8 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="use-a-bought-ssl-certificate">Use a bought SSL certificate</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="use-a-bought-ssl-certificate">Use a bought SSL certificate</h1>
 <div class="toc">
 <ul>
 <li><a href="#use-a-bought-ssl-certificate">Use a bought SSL certificate</a><ul>
@@ -20,6 +18,8 @@
 <li><a href="#dovecot-pop3imap-server">Dovecot (POP3/IMAP server)</a></li>
 <li><a href="#apache-web-server">Apache (web server)</a></li>
 <li><a href="#nginx-web-server">Nginx (web server)</a></li>
+<li><a href="#openldap">OpenLDAP</a></li>
+<li><a href="#mysql-mariadb">MySQL, MariaDB</a></li>
 </ul>
 </li>
 <li><a href="#reference">Reference</a></li>
@@ -35,7 +35,7 @@ annoying message, you have to buy a SSL certificate from SSL certificate
 provider. Search <code>buy ssl certificate</code> in Google will give you many SSL
 providers, choose the one you prefer.</p>
 <blockquote>
-<p><a href="http://www.startssl.com/?app=1">StartSSL.com offers free one-year certificate</a>.</p>
+<p><a href="https://letsencrypt.org">"Let's Encrypt" offers free SSL certificate</a></p>
 </blockquote>
 <h2 id="generate-ssl-private-key-and-buy-one-ssl-certificate">Generate SSL private key and buy one SSL certificate</h2>
 <p>First of all, you need to generate a new SSL certificate on your server
@@ -67,7 +67,7 @@ certificate:</p>
 <li><code>A challenge password []</code>: type a password for this ssl certificate.</li>
 <li><code>An optional company name []</code>: an optional company name.</li>
 </ul>
-<p>NOTE: Some certificates can only be used on web servers using the <code>Common Name</code>
+<p><strong>NOTE</strong>: Some certificates can only be used on web servers using the <code>Common Name</code>
 specified during enrollment. For example, a certificate for the domain
 <code>domain.com</code> will receive a warning if accessing a site named <code>www.domain.com</code>
 or <code>secure.domain.com</code>, because <code>www.domain.com</code> and <code>secure.domain.com</code> are
@@ -91,7 +91,7 @@ store them in any directory you like, recommended directories are:</p>
 </ul>
 <h2 id="configure-postfixdovecotapachenginx-to-use-bought-ssl-certificate">Configure Postfix/Dovecot/Apache/Nginx to use bought SSL certificate</h2>
 <p>We use CentOS for example in below tutorial, please adjust the file to correct
-one on your server.</p>
+one on your server according to above description.</p>
 <h3 id="postfix-smtp-server">Postfix (SMTP server)</h3>
 <p>We can use <code>postconf</code> command to update SSL related settings directly:</p>
 <pre><code>postconf -e smtpd_use_tls='yes'
@@ -164,10 +164,48 @@ certificates in the combined file:</p>
 </code></pre>
 
 <p>Restarting Nginx service is required.</p>
+<h3 id="openldap">OpenLDAP</h3>
+<blockquote>
+<p>If OpenLDAP is listening on localhost and not accessible from external
+network, this could be optional setup.</p>
+</blockquote>
+<ul>
+<li>On Red Hat and CentOS, it's defined in <code>/etc/openldap/slapd.conf</code>.</li>
+<li>On Debian and Ubuntu, it's defined in <code>/etc/ldap/slapd.conf</code>.</li>
+<li>On FreeBSD, it's defined in <code>/usr/local/etc/openldap/slapd.conf</code>.</li>
+<li>On OpenBSD, it's defined in <code>/etc/openldap/slapd.conf</code>.</li>
+</ul>
+<pre><code>TLSCACertificateFile /etc/pki/tls/certs/server.ca-bundle
+TLSCertificateFile /etc/pki/tls/certs/server.crt
+TLSCertificateKeyFile /etc/pki/tls/private/server.key
+</code></pre>
+
+<p>Restarting OpenLDAP service is required.</p>
+<h3 id="mysql-mariadb">MySQL, MariaDB</h3>
+<blockquote>
+<p>If MySQL/MariaDB is listening on localhost and not accessible from external
+network, this could be optional setup.</p>
+</blockquote>
+<ul>
+<li>On Red Hat and CentOS, it's defined in <code>/etc/my.cnf</code></li>
+<li>On Debian and Ubuntu, it's defined in <code>/etc/mysql/my.cnf</code>.<ul>
+<li>Since Ubuntu 15.04, it's defined in <code>/etc/mysql/mariadb.conf.d/mysqld.cnf</code>.</li>
+</ul>
+</li>
+<li>On FreeBSD, it's defined in <code>/usr/local/etc/my.cnf</code>.</li>
+<li>On OpenBSD, it's defined in <code>/etc/my.cnf</code>.</li>
+</ul>
+<pre><code>[mysqld]
+
+ssl-ca = /etc/pki/tls/certs/server.ca-bundle
+ssl-cert = /etc/pki/tls/certs/server.crt
+ssl-key = /etc/pki/tls/private/server.key
+</code></pre>
+
 <h2 id="reference">Reference</h2>
 <ul>
 <li><a href="http://nginx.org/en/docs/http/configuring_https_servers.html">Configuring HTTPS servers</a></li>
-</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

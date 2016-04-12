@@ -7,10 +7,8 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="change-mail-attachment-size">Change mail attachment size</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="change-mail-attachment-size">Change mail attachment size</h1>
 <div class="toc">
 <ul>
 <li><a href="#change-mail-attachment-size">Change mail attachment size</a><ul>
@@ -20,7 +18,7 @@
 <li><a href="#change-roundcube-webmail-settings-to-allow-large-attachment">Change Roundcube webmail settings to allow large attachment</a></li>
 </ul>
 </li>
-<li><a href="#change-upload-size-in-nginx">Change upload size in Nginx</a></li>
+<li><a href="#change-upload-file-size-in-nginx">Change upload file size in Nginx</a></li>
 </ul>
 </li>
 </ul>
@@ -29,9 +27,10 @@
 <h2 id="change-message-size-limit-in-postfix">Change message size limit in postfix</h2>
 <p>Postfix is MTA, so we have to change its setting to transfer mail with large
 attachment.</p>
-<p>To allow mail with 100Mb attachment, please change 'message_size_limit' setting
-like below:</p>
+<p>For example, to allow mail with 100Mb attachment, please change both
+<code>message_size_limit</code> and <code>mailbox_size_limit</code> settings like below:</p>
 <pre><code># postconf -e message_size_limit='104857600'
+# postconf -e mailbox_size_limit='104857600'
 </code></pre>
 
 <p>Restart postfix to make it work:</p>
@@ -44,6 +43,9 @@ like below:</p>
 <li>Mail will be encoded by mail user agent (Outlook, Thunderbird, etc) before
   transferred, the actual message size will be larger than 100MB, you can
   simplily increase above setting to 110Mb or 120Mb to make it work as expected.</li>
+<li>If <code>mailbox_size_limit</code> is smaller than <code>message_size_limit</code>, you will get
+  error message in Postfix log file like this: <code>fatal: main.cf configuration
+  error: mailbox_size_limit is smaller than message_size_limit</code>.</li>
 </ul>
 <p>If you use mail clients such as Outlook, thunderbird to send mails, it's now
 ok to sent large attachment with above setting.</p>
@@ -81,8 +83,8 @@ php_value    upload_max_filesize    100M
 php_value    post_max_size  100M
 </code></pre>
 
-<p>Restart Apache or Nginx web server to make it work.</p>
-<h2 id="change-upload-size-in-nginx">Change upload size in Nginx</h2>
+<p>Restart Apache or php-fpm service to make it work.</p>
+<h2 id="change-upload-file-size-in-nginx">Change upload file size in Nginx</h2>
 <p>Find setting <code>client_max_body_size</code> in Nginx config file
 <code>/etc/nginx/nginx.conf</code>, change it to a proper value to match your need.</p>
 <p>```
@@ -90,7 +92,7 @@ http {
     ...
     client_max_body_size 100m;
     ...
-}</p><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+}</p><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

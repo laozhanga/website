@@ -7,10 +7,8 @@
     <body>
     
     <div id="navigation">
-        <a href="http://www.iredmail.org" target="_blank">iRedMail web site</a>
-    
-        // <a href="./index.html">Document Index</a>
-    </div><h1 id="upgrade-iredmail-from-091-to-092">Upgrade iRedMail from 0.9.1 to 0.9.2</h1>
+    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="upgrade-iredmail-from-091-to-092">Upgrade iRedMail from 0.9.1 to 0.9.2</h1>
 <div class="toc">
 <ul>
 <li><a href="#upgrade-iredmail-from-091-to-092">Upgrade iRedMail from 0.9.1 to 0.9.2</a><ul>
@@ -41,11 +39,14 @@
 </li>
 </ul>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Paid Remote Upgrade Support</p>
+<p>We offer remote upgrade support if you don't want to get your hands dirty,
+check <a href="../support.html">the details</a> and <a href="../contact.html">contact us</a>.</p>
+</div>
 <h2 id="changelog">ChangeLog</h2>
-<blockquote>
-<p>We provide remote upgrade service, check <a href="../support.html">the price</a> and <a href="../contact.html">contact us</a>.</p>
-</blockquote>
 <ul>
+<li>2015-08-19: Mention that ssl cert file name on old iRedMail releases is <code>iRedMail_CA.pem</code>, not <code>iRedMail.crt</code>.</li>
 <li>2015-06-03: Fixed: <code>SSLOpenSSLConfCmd</code> is used on Ubuntu 15.04 and later releases, not on other Linux/BSD distributions.</li>
 </ul>
 <hr />
@@ -117,7 +118,9 @@ SSLHonorCipherOrder on
 <hr />
 <p>If you're running Apache older than version 2.4.8, please append the DHparams
 generated above to the end of the certificate file. Note: if you use a bought
-SSL certificate, append it to your cert file.</p>
+SSL certificate, append it to your cert file. <strong>Note</strong>: if you upgraded
+iRedMail from an old release, the file name will be <code>iRedMail_CA.pem</code> instead
+of <code>iRedMail.crt</code>.</p>
 <ul>
 <li>On RHEL/CentOS: <code># cat /etc/pki/tls/dhparams.pem &gt;&gt; /etc/pki/tls/certs/iRedMail.crt</code></li>
 <li>
@@ -181,7 +184,7 @@ ssl_dh_parameters_length = 2048
 
 <h3 id="upgrade-iredapd-postfix-policy-server-to-the-latest-160">Upgrade iRedAPD (Postfix policy server) to the latest 1.6.0</h3>
 <p>Please follow below tutorial to upgrade iRedAPD to the latest stable release:
-<a href="./upgrade.iredapd.html">How to upgrade iRedAPD-1.4.0 or later versions to the latest stable release</a></p>
+<a href="./upgrade.iredapd.html">Upgrade iRedAPD to the latest stable release</a></p>
 <p>Detailed release notes are available here: <a href="./iredapd.releases.html">iRedAPD release notes</a>.</p>
 <h3 id="rhelcentos-7-update-cluebringer-package-to-avoid-database-connection-failure">[RHEL/CentOS 7] Update Cluebringer package to avoid database connection failure</h3>
 <p>Note: This is applicable to only RHEL/CentOS 7.</p>
@@ -284,8 +287,9 @@ enable-threads = true
 <p><strong>Note: this step is required if you're running SOGo on RHEL/CentOS, Debian/Ubuntu.</strong></p>
 <p>SOGo team released new stable version v2.3.0 on Jun 2, it requires system
 admin to run a shell script to update SQL structure manually if you're currently
-running an old version of SOGo.
-http://www.sogo.nu/files/docs/SOGo%20Installation%20Guide.pdf</p>
+running an old version of SOGo. We suggest you read SOGo official upgrade
+tutorial in <code>Upgrading</code> section of
+<a href="http://www.sogo.nu/files/docs/SOGo%20Installation%20Guide.pdf">Installation Guide</a>.</p>
 <p>SOGo-2.3.0 ships this update script, please find it with your package management
 tool like <code>yum</code>, <code>dpkg</code>.</p>
 <ul>
@@ -306,21 +310,21 @@ tool like <code>yum</code>, <code>dpkg</code>.</p>
 <li>on RHEL/CentOS:</li>
 </ul>
 <pre><code># rpm -ql sogo | grep 'sql-update-2.2.17'
-/usr/share/doc/sogo-2.3.0/sql-update-2.1.17_to_2.3.0-mysql.sh   # &lt;- for MySQL
-/usr/share/doc/sogo-2.3.0/sql-update-2.1.17_to_2.3.0.sh         # &lt;- for PostgreSQL
+/usr/share/doc/sogo-2.3.0/sql-update-2.2.17_to_2.3.0-mysql.sh   # &lt;- for MySQL
+/usr/share/doc/sogo-2.3.0/sql-update-2.2.17_to_2.3.0.sh         # &lt;- for PostgreSQL
 </code></pre>
 
 <ul>
 <li>on Debian/Ubuntu:</li>
 </ul>
 <pre><code># dpkg -L sogo | grep 'sql-update-2.2.17'
-/usr/share/doc/sogo/sql-update-2.1.17_to_2.3.0-mysql.sh     # &lt;- for MySQL
-/usr/share/doc/sogo/sql-update-2.1.17_to_2.3.0.sh           # &lt;- for PostgreSQL
+/usr/share/doc/sogo/sql-update-2.2.17_to_2.3.0-mysql.sh     # &lt;- for MySQL
+/usr/share/doc/sogo/sql-update-2.2.17_to_2.3.0.sh           # &lt;- for PostgreSQL
 </code></pre>
 
 <p>Please pick the one for your SQL server. here we use the one for MySQL
 backend on CentOS for example:</p>
-<pre><code># bash /usr/share/doc/sogo-2.3.0/sql-update-2.1.17_to_2.3.0-mysql.sh
+<pre><code># bash /usr/share/doc/sogo-2.3.0/sql-update-2.2.17_to_2.3.0-mysql.sh
 Username (root): root                                
 Hostname (127.0.0.1): 
 Database (root): sogo
@@ -342,15 +346,17 @@ update SQL database and exit silently.</p>
 </li>
 </ul>
 <h3 id="optional-update-one-fail2ban-filter-regular-expression-to-help-catch-dos-attacks-to-smtp-service">[OPTIONAL] Update one Fail2ban filter regular expression to help catch DoS attacks to SMTP service</h3>
-<ol>
+<ul>
 <li>Open file <code>/etc/fail2ban/filter.d/postfix.iredmail.conf</code> or
-<code>/usr/local/etc/fail2ban/filter.d/postfix.iredmail.conf</code> (on FreeBSD), find
-below line under <code>[Definition]</code> section:</li>
-</ol>
+  <code>/usr/local/etc/fail2ban/filter.d/postfix.iredmail.conf</code> (on FreeBSD), find
+  below line under <code>[Definition]</code> section:</li>
+</ul>
 <pre><code>            lost connection after AUTH from (.*)\[&lt;HOST&gt;\]
 </code></pre>
 
-<p>Update above line to below one:</p>
+<ul>
+<li>Update above line to below one:</li>
+</ul>
 <pre><code>            lost connection after (AUTH|UNKNOWN|EHLO) from (.*)\[&lt;HOST&gt;\]
 </code></pre>
 
@@ -371,7 +377,7 @@ command fixes this issue.</p>
 
 <ul>
 <li>Restart Postfix service is required.</li>
-</ul><p style="text-align: center; color: grey;">Document published under a <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">CC BY-ND 3.0</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

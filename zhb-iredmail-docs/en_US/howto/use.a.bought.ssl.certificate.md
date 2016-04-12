@@ -10,7 +10,7 @@ annoying message, you have to buy a SSL certificate from SSL certificate
 provider. Search `buy ssl certificate` in Google will give you many SSL
 providers, choose the one you prefer.
 
-> [StartSSL.com offers free one-year certificate](http://www.startssl.com/?app=1).
+> ["Let's Encrypt" offers free SSL certificate](https://letsencrypt.org)
 
 ## Generate SSL private key and buy one SSL certificate
 
@@ -45,7 +45,7 @@ certificate:
 * `A challenge password []`: type a password for this ssl certificate.
 * `An optional company name []`: an optional company name.
 
-NOTE: Some certificates can only be used on web servers using the `Common Name`
+__NOTE__: Some certificates can only be used on web servers using the `Common Name`
 specified during enrollment. For example, a certificate for the domain
 `domain.com` will receive a warning if accessing a site named `www.domain.com`
 or `secure.domain.com`, because `www.domain.com` and `secure.domain.com` are
@@ -72,7 +72,7 @@ store them in any directory you like, recommended directories are:
 ## Configure Postfix/Dovecot/Apache/Nginx to use bought SSL certificate
 
 We use CentOS for example in below tutorial, please adjust the file to correct
-one on your server.
+one on your server according to above description.
 
 ### Postfix (SMTP server)
 
@@ -160,6 +160,43 @@ Then update `ssl_certificate` parameter in `/etc/nginx/conf.d/default.conf`:
 ```
 
 Restarting Nginx service is required.
+
+### OpenLDAP
+
+> If OpenLDAP is listening on localhost and not accessible from external
+> network, this could be optional setup.
+
+* On Red Hat and CentOS, it's defined in `/etc/openldap/slapd.conf`.
+* On Debian and Ubuntu, it's defined in `/etc/ldap/slapd.conf`.
+* On FreeBSD, it's defined in `/usr/local/etc/openldap/slapd.conf`.
+* On OpenBSD, it's defined in `/etc/openldap/slapd.conf`.
+
+```
+TLSCACertificateFile /etc/pki/tls/certs/server.ca-bundle
+TLSCertificateFile /etc/pki/tls/certs/server.crt
+TLSCertificateKeyFile /etc/pki/tls/private/server.key
+```
+
+Restarting OpenLDAP service is required.
+
+### MySQL, MariaDB
+
+> If MySQL/MariaDB is listening on localhost and not accessible from external
+> network, this could be optional setup.
+
+* On Red Hat and CentOS, it's defined in `/etc/my.cnf`
+* On Debian and Ubuntu, it's defined in `/etc/mysql/my.cnf`.
+    * Since Ubuntu 15.04, it's defined in `/etc/mysql/mariadb.conf.d/mysqld.cnf`.
+* On FreeBSD, it's defined in `/usr/local/etc/my.cnf`.
+* On OpenBSD, it's defined in `/etc/my.cnf`.
+
+```
+[mysqld]
+
+ssl-ca = /etc/pki/tls/certs/server.ca-bundle
+ssl-cert = /etc/pki/tls/certs/server.crt
+ssl-key = /etc/pki/tls/private/server.key
+```
 
 ## Reference
 
