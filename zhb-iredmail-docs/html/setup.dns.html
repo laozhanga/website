@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -7,7 +8,13 @@
     <body>
     
     <div id="navigation">
-    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
+    <a href="/index.html" target="_blank">
+        <img alt="iRedMail web site"
+             src="./images/logo-iredmail.png"
+             style="vertical-align: middle; height: 30px;"
+             />&nbsp;
+        <span>iRedMail</span>
+    </a>
     &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="setup-dns-records-for-your-iredmail-server-a-ptr-mx-spf-dkim">Setup DNS records for your iRedMail server (A, PTR, MX, SPF, DKIM)</h1>
 <div class="toc">
 <ul>
@@ -38,7 +45,7 @@
 <li><a href="#how-to-setup-the-dkim-record">How to setup the DKIM record</a></li>
 </ul>
 </li>
-<li><a href="#optional-register-your-mail-domain-in-google-postmaster-tools">[OPTIONAL] Register your mail domain in Google Postmaster Tools</a></li>
+<li><a href="#register-your-mail-domain-in-google-postmaster-tools">Register your mail domain in Google Postmaster Tools</a></li>
 <li><a href="#references">References</a></li>
 </ul>
 </li>
@@ -262,7 +269,8 @@ some hours to be available.</p>
 <p>If you want to re-generate DKIM key, or need to generate one for new mail
 domain, please check our another tutorial:
 <a href="./sign.dkim.signature.for.new.domain.html">Sign DKIM signature on outgoing emails for new mail domain</a>.</p>
-<h2 id="optional-register-your-mail-domain-in-google-postmaster-tools">[OPTIONAL] Register your mail domain in Google Postmaster Tools</h2>
+<h2 id="register-your-mail-domain-in-google-postmaster-tools">Register your mail domain in Google Postmaster Tools</h2>
+<p>This step is <strong>optional</strong>, but <strong>higly recommended</strong>.</p>
 <p>Google Postmaster Tools web site: <a href="https://postmaster.google.com">https://postmaster.google.com</a>, and
 <a href="https://support.google.com/mail/answer/6258950">Postmaster Tools FAQs</a>.</p>
 <p>It's very simple: just register your mail domain there, and they'll give you a
@@ -289,7 +297,10 @@ Gmail users: <a href="https://support.google.com/mail/answer/81126?hl=en">Bulk S
 <li><a href="http://en.wikipedia.org/wiki/MX_record">http://en.wikipedia.org/wiki/MX_record</a></li>
 <li><a href="http://www.openspf.org/">http://www.openspf.org/</a></li>
 <li><a href="http://www.dkim.org/">http://www.dkim.org/</a></li>
-</ul><p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.<script>
+</ul><div class="footer">
+    <p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. You can <a href="https://bitbucket.org/zhb/iredmail-docs/get/tip.tar.bz2">download the latest version</a> for offline reading. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.</p>
+</div>
+<script type="text/javascript">
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

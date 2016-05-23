@@ -100,21 +100,22 @@ hr {
 
 /* Code below this line is copyright Twitter Inc. */
 
-button, input, select, textarea {
+button, .button, input, select, textarea {
   font-size: 100%;
   margin: 0;
   vertical-align: baseline;
   vertical-align: middle;
 }
-button, input {
+button, .button, input {
   line-height: normal;
   overflow: visible;
 }
-button::-moz-focus-inner, input::-moz-focus-inner {
+button::-moz-focus-inner, .button::-moz-focus-inner, input::-moz-focus-inner {
   border: 0;
   padding: 0;
 }
 button,
+.button,
 input[type="button"],
 input[type="reset"],
 input[type="submit"] {
@@ -144,7 +145,7 @@ label,
 input,
 select,
 textarea {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'PT Sans', Georgia, Palatino, serif;
   font-size: 13px;
   font-weight: normal;
   line-height: normal;
@@ -207,10 +208,10 @@ input[type=text]:focus, input[type=password]:focus, textarea:focus {
 }
 
 /* buttons */
-button {
+button, .button {
   display: inline-block;
   padding: 4px 14px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'PT Sans', Georgia, Palatino, serif;
   font-size: 13px;
   line-height: 18px;
   -webkit-border-radius: 4px;
@@ -238,24 +239,24 @@ button {
   border-color: #0064cd #0064cd #003f81;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
 }
-button:hover {
+button:hover, .button:hover {
   color: #fff;
   background-position: 0 -15px;
   text-decoration: none;
 }
-button:active {
+button:active, .button:active {
   -webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 3px 7px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-button::-moz-focus-inner {
+button::-moz-focus-inner, .button::-moz-focus-inner {
   padding: 0;
   border: 0;
 }
 
 /* Customizations */
 h2, h3, h4, h5 { padding-top: 20px; }
-
+.footer { padding-top: 40px; }
 pre, code {
     background: #f5f5f5;
     border: 1px solid #ccc;
@@ -320,6 +321,9 @@ pre { margin-left: 30px; }
 p, ul, ol { font-size: 17px; }
 li { line-height: 26px; }
 
+.f_left { float: left; }
+.f_right { float: right; }
+
 /*
 .note {
     background: #e7f2fa;
@@ -342,6 +346,7 @@ li { line-height: 26px; }
 	background: #e7f2fa;
 }
 
+.admonition { margin-top: 20px; }
 .admonition-title {
 	font-weight: bold;
 	display: block;
@@ -368,3 +373,75 @@ li { line-height: 26px; }
 .attention  { background: #e7f2fa; }
 .warning    { background: #FFFFE1; }
 .attention p { margin-top: 4px; }
+
+/* Table */
+table { border: 1px solid black; border-collapse: collapse;}
+th { padding: 5px 10px 5px 10px; }
+td { padding: 5px 10px 5px 10px; }
+th, td { border: 1px solid black; }
+
+button, .button { font-size: 16px; padding: 5px 5px 5px 5px; }
+
+/* Style for API document */
+.api {
+	line-height: 18px;
+	padding: 3px 12px 0px 0px;
+    margin-top: 0px;
+	margin-bottom: 0px;
+}
+.api .admonition-title {
+    background-color: white;
+    padding: 0px 12px 0px 5px;
+}
+
+.api code.url { background-color: white; color: black; display: inline-block; }
+.api code.get,
+.api code.post,
+.api code.put,
+.api code.delete,
+.api code.has_params,
+.api code.has_params_throttle
+{
+    display: inline-block;
+    width: 60px;
+    text-align: center;
+}
+.api code.get { background-color: #0f6ab4; }
+.api code.post { background-color: #10a54a; }
+.api code.put { background-color: #c5862b; padding-left: 5px; padding-right: 5px;}
+.api code.delete { background-color: #a41e22; }
+.api code.upcoming { background-color: #0f6ab4; text-transform: uppercase; font-size: 12px; }
+.api code.new { background-color: #10a54a; text-transform: uppercase; }
+.api code.has_params,
+.api code.has_params_throttle {
+    background-color: #0064cd;
+    font-size: 12px;
+    float: right;
+    width: auto;
+    cursor: pointer;
+    -webkit-appearance: button;
+}
+.api code.comment {
+    color: black;
+    background-color: white;
+    border: 0px;
+    font-family: 'PT Sans', Georgia, Palatino, serif;
+    font-size: 16px;
+    font-style: normal;
+}
+
+.api table {
+    border: 0px;
+	border-collapse: collapse;
+    /*
+    width: 100%;
+    */
+    text-align: left;
+    line-height: 33px;
+    vertical-align: middle;
+    margin-bottom: 20px;
+}
+.api table thead { background-color: #ccc; }
+.api th { padding: 0px 10px 0px 10px; }
+.api td { padding: 0px 10px 0px 10px; }
+/* END style for API Document */

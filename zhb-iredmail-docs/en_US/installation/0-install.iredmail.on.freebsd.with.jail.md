@@ -134,11 +134,11 @@ questions, that's all required to setup a full-featured mail server.
 
 * Welcome and thanks for your use
 
-![](../images/installation/iredmail/welcome.png)
+![](./images/installation/welcome.png){: width="700px" }
 
 * Specify location to store all mailboxes. Default is `/var/vmail/`.
 
-![](../images/installation/iredmail/location_to_store_mailboxes.png)
+![](./images/installation/mail_storage.png){: width="700px" }
 
 * Choose backend used to store mail accounts. You can manage mail accounts
 with iRedAdmin, our web-based iRedMail admin panel.
@@ -149,18 +149,12 @@ with iRedAdmin, our web-based iRedMail admin panel.
     it's strongly recommended to choose the one you're familiar with for easier
     management and maintenance after installation.
 
-![](../images/installation/iredmail/backend.png)
+![](./images/installation/backends.png){: width="700px" }
 
 * If you choose to store mail accounts in OpenLDAP, iRedMail installer will
-ask you two questions about OpenLDAP.
+  ask to set the LDAP suffix.
 
-LDAP suffix.
-
-![](../images/installation/iredmail/ldap_suffix.png)
-
-Password of LDAP root dn.
-
-![](../images/installation/iredmail/pw_of_ldap_root_dn.png)
+![](./images/installation/ldap_suffix.png){: width="700px" }
 
 !!! note "To MySQL/MariaDB/PostgreSQL users"
 
@@ -170,7 +164,7 @@ Password of LDAP root dn.
 
 * Add your first mail domain name
 
-![](../images/installation/iredmail/first_mail_domain.png)
+![](./images/installation/first_domain.png){: width="700px" }
 
 * Set password of admin account of your first mail domain.
 
@@ -178,32 +172,18 @@ __Note__: This account is an admin account and a mail user. That means you can
 login to webmail and admin panel (iRedAdmin) with this account, login username
 is full email address.
 
-![](../images/installation/iredmail/pw_of_domain_admin.png)
+![](./images/installation/admin_pw.png){: width="700px" }
 
 * Choose optional components
 
-![](../images/installation/iredmail/optional_components.png)
+![](./images/installation/optional_components.png){: width="700px" }
 
 
-After answered above questions, iRedMail installer will ask your confirm to
-start installation. It will install and configure required packages
+After answered above questions, iRedMail installer will ask you to review and
+confirm to start installation. It will install and configure required packages
 automatically. Type `y` or `Y` and press `Enter` to start.
 
-```
-Configuration completed.
-
-*************************************************************************
-**************************** WARNING ***********************************
-*************************************************************************
-*                                                                       *
-* Please do remember to *REMOVE* configuration file after installation  *
-* completed successfully.                                               *
-*                                                                       *
-*   * /root/iRedMail-x.y.z/config
-*                                                                       *
-*************************************************************************
-<<< iRedMail >>> Continue? [Y|n]        # <- Type 'Y' or 'y' here, and press 'Enter' to continue
-```
+![](./images/installation/review.png){: width="700px" }
 
 ## Important things you __MUST__ know after installation
 
@@ -225,7 +205,7 @@ Configuration completed.
   message in web browser or mail clients when accessing mailbox via
   HTTPS/IMAPS/POP3/SMTPS. [Let's Encrypt offers __FREE__ SSL certificate](https://letsencrypt.org).
   We have a document for you to
-  [use a SSL certificate](http://www.iredmail.org/docs/use.a.bought.ssl.certificate.html).
+  [use a SSL certificate](./use.a.bought.ssl.certificate.html).
 * If you need to bulk create mail users, check our document for
   [OpenLDAP](./ldap.bulk.create.mail.users.html) and
   [MySQL/MariaDB/PostgreSQL](./sql.bulk.create.mail.users.html).

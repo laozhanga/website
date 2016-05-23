@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>iRedAdmin-Pro: RESTful API</title>
+        <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
+    </head>
+    <body>
+    
+    <div id="navigation">
+    <a href="/index.html" target="_blank">
+        <img alt="iRedMail web site"
+             src="./images/logo-iredmail.png"
+             style="vertical-align: middle; height: 30px;"
+             />&nbsp;
+        <span>iRedMail</span>
+    </a>
+    &nbsp;&nbsp;//&nbsp;&nbsp;<a href="./index.html">Document Index</a></div><h1 id="iredadmin-pro-restful-api">iRedAdmin-Pro: RESTful API</h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you need an API which has not yet been implemented, don't hesitate to
+<a href="../contact.html">contact us</a>.</p>
+</div>
+<div class="toc">
+<ul>
+<li><a href="#iredadmin-pro-restful-api">iRedAdmin-Pro: RESTful API</a><ul>
+<li><a href="#summary">Summary</a></li>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#enable-restful-api">Enable RESTful API</a></li>
+<li><a href="#sample-code-to-interact-with-iredadmin-pro-restful-api">Sample code to interact with iRedAdmin-Pro RESTful API</a></li>
+<li><a href="#apis">APIs</a><ul>
+<li><a href="#domain">Domain</a></li>
+<li><a href="#user">User</a></li>
+<li><a href="#mailing-list">Mailing List</a></li>
+<li><a href="#mail-alias">Mail Alias</a></li>
+<li><a href="#throttling">Throttling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="summary">Summary</h2>
+<p>iRedAdmin-Pro RESTful API will return message in JSON format.</p>
+<ul>
+<li>If operation succeed, iRedAdmin-Pro returns JSON data: <code>{'success': true}</code>.</li>
+<li>If operation failed, iRedAdmin-Pro returns JSON data: <code>{'success': false, 'msg': '&lt;error_reason&gt;'}</code>.</li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<ul>
+<li>At least iRedAdmin-Pro-SQL-2.4.0 or iRedAdmin-Pro-LDAP-2.6.0. Earlier releases
+  didn't offer RESTful API.</li>
+</ul>
+<h2 id="enable-restful-api">Enable RESTful API</h2>
+<p>RESTful API is disabled by default, to enable it, please add setting below in
+iRedAdmin-Pro config file <code>settings.py</code>:</p>
+<pre><code>ENABLE_RESTFUL_API = True
+</code></pre>
+
+<p>To restrict API access to few IP addresses, please also add settings below in
+iRedAdmin-Pro config file:</p>
+<pre><code># Enable restriction
+RESTRICT_API_ACCESS = True
+
+# List all IP addresses of allowed client for API access.
+RESTFUL_API_CLIENTS = ['172.16.244.1', ...]
+</code></pre>
+
+<p>Restarting Apache or uwsgi (if you're running Nginx) is required.</p>
+<h2 id="sample-code-to-interact-with-iredadmin-pro-restful-api">Sample code to interact with iRedAdmin-Pro RESTful API</h2>
+<ul>
+<li><a href="./iredadmin-pro.restful.api.curl.html">iRedAdmin-Pro RESTful API (interact with <code>curl</code>)</a></li>
+<li><a href="./iredadmin-pro.restful.api.python.html">iRedAdmin-Pro RESTful API (interact with Python)</a></li>
+</ul>
+<h2 id="apis">APIs</h2>
+<p>Notes:</p>
+<ul>
+<li>Parameter name with a <code>*</code> mark means the parameter is required, otherwise is optional.</li>
+<li>replace <code>&lt;domain&gt;</code> in URL by the real domain name.</li>
+<li>replace <code>&lt;mail&gt;</code> in URL by the real email address.</li>
+</ul>
+<p><button type="button" class="toggle_all">Expand/Collapse All API Parameters</button></p>
+<h3 class="toggle" id="domain">Domain</h3>
+<!--
+!!! api "`GET`{: .get } `/api/domain/<domain>`{: .url } `Get profile of an existing domain`{: .comment }"
+-->
+
+<div class="admonition api">
+<p class="admonition-title"><code class="post">POST</code> <code class="url">/api/domain/&lt;domain&gt;</code> <code class="comment">Create a new domain</code> <code class="has_params">Parameters</code></p>
+<div class="params params_domain">
+
+<table>
+<thead>
+<tr>
+<th>Parameter Name</th>
+<th>Summary</th>
+<th>Sample Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cn</code></td>
+<td>Short description of this domain name. e.g. company name</td>
+<td><code>cn=Google Inc</code></td>
+</tr>
+<tr>
+<td><code>quota</code></td>
+<td>Per-domain mailbox quota, in MB.</td>
+<td><code>quota=2048</code></td>
+</tr>
+<tr>
+<td><code>language</code></td>
+<td>Default preferred language for newly created mail user</td>
+<td><code>preferredLanguage=en_US</code></td>
+</tr>
+<tr>
+<td><code>defaultQuota</code></td>
+<td>Default per-user mailbox quota for newly created user, in MB.</td>
+<td><code>defaultQuota=1024</code></td>
+</tr>
+<tr>
+<td><code>maxUserQuota</code></td>
+<td>Max mailbox quota of a mail user, in MB.</td>
+<td><code>maxUserQuota=2048</code></td>
+</tr>
+<tr>
+<td><code>numberOfUsers</code></td>
+<td>Max number of mail user accounts</td>
+<td><code>numberOfUsers=20</code></td>
+</tr>
+<tr>
+<td><code>numberOfAliases</code></td>
+<td>Max number of mail alias accounts</td>
+<td><code>numberOfAliases=30</code></td>
+</tr>
+<tr>
+<td><code>numberOfLists</code></td>
+<td>Max number of mailing list accounts (LDAP only)</td>
+<td><code>numberOfLists=40</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="delete">DELETE</code> <code class="url">/api/domain/&lt;domain&gt;</code> <code class="comment">Delete an existing domain</code></p>
+</div>
+<!--
+!!! api "`PUT`{: .put } `/api/domain/<domain>`{: .url } `Update profile of an existing domain`{: .comment } `Parameters`{: .has_params }"
+
+    <div class="params params_domain">
+
+    Parameter Name | Summary | Sample Usage
+    --- |--- |---
+    `cn` | Short description of this domain name. e.g. company name | `cn=Google Inc`
+    `quota` | Mailbox quota for whole domain, in MB. | `quota=2048`
+    `language` | Default preferred language for newly created mail user | `preferredLanguage=en_US`
+    `defaultQuota` | Default per-user mailbox quota for newly created user | `defaultQuota=1024`
+    `maxUserQuota` | Max mailbox quota of a mail user | `maxUserQuota=2048`
+    `numberOfUsers` | Max number of mail user accounts | `numberOfUsers=20`
+    `numberOfAliases` | Max number of mail alias accounts | `numberOfAliases=30`
+    `numberOfLists` | Max number of mailing list accounts (LDAP only)| `numberOfLists=40`
+
+    </div>
+-->
+
+<h3 class="toggle" id="user">User</h3>
+<div class="admonition api">
+<p class="admonition-title"><code class="post">POST</code> <code class="url">/api/user/&lt;mail&gt;</code> <code class="comment">Create a new mail user</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="delete">DELETE</code> <code class="url">/api/user/&lt;mail&gt;</code> <code class="comment">Delete an existing mail user</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="put">PUT</code> <code class="url">/api/user/&lt;mail&gt;</code> <code class="comment">Update profile of an existing mail user</code> <code class="has_params">Parameters</code> </p>
+<div class="params params_user">
+
+<table>
+<thead>
+<tr>
+<th>Parameter Name</th>
+<th>Summary</th>
+<th>Sample Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cn</code></td>
+<td>Display name</td>
+<td><code>cn=My New Name</code></td>
+</tr>
+<tr>
+<td><code>language</code></td>
+<td>Preferred language of web UI</td>
+<td><code>preferredLanguage=en_US</code></td>
+</tr>
+<tr>
+<td><code>mailQuota</code></td>
+<td>User's mailbox quota, in MB</td>
+<td><code>mailQuota=1024</code></td>
+</tr>
+<tr>
+<td><code>transport</code></td>
+<td>Transport program</td>
+<td><code>transport=dovecot</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="put">PUT</code> <code class="url">/api/user/&lt;mail&gt;/password</code> <code class="comment">Update user's password</code> <code class="upcoming">upcoming</code> <code class="has_params">Parameters</code></p>
+<div class="params">
+
+<table>
+<thead>
+<tr>
+<th>Parameter Name</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>password</code></td>
+<td>Password</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="put">PUT</code> <code class="url">/api/users/&lt;domain&gt;</code> <code class="comment">Update profiles of all users under domain</code> <code class="upcoming">upcoming</code> <code class="has_params">Parameters</code></p>
+<div class="params">
+
+<table>
+<thead>
+<tr>
+<th>Parameter Name</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>accountStatus</td>
+<td>Account status. Possible value is: active, disabled.</td>
+</tr>
+<tr>
+<td>language</td>
+<td>Preferred language of web UI</td>
+</tr>
+<tr>
+<td>transport</td>
+<td>Per-user transport</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="put">PUT</code> <code class="url">/api/users/&lt;domain&gt;/password</code> <code class="comment">Update passwords of all users under domain</code> <code class="upcoming">upcoming</code> <code class="has_params">Parameters</code></p>
+<div class="params">
+
+<table>
+<thead>
+<tr>
+<th>Parameter Name</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>password</code></td>
+<td>Password</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<h3 class="toggle" id="mailing-list">Mailing List</h3>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>Mailing list is only available in OpenLDAP backend. For SQL backends,
+please use mail alias account as mailing list.</p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="post">POST</code> <code class="url">/api/maillist/&lt;mail&gt;</code> <code class="comment">Create a new mailing list</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="delete">DELETE</code> <code class="url">/api/maillist/&lt;mail&gt;</code> <code class="comment">Delete an existing mailing list</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="put">PUT</code> <code class="url">/api/maillist/&lt;mail&gt;</code> <code class="comment">Update profile of an existing mailing list</code> <code class="has_params">Parameters</code></p>
+<div class="params">
+
+<table>
+<thead>
+<tr>
+<th>Parameter Name</th>
+<th>Summary</th>
+<th>Sample Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cn</code></td>
+<td>display name</td>
+<td><code>cn=My List Name</code></td>
+</tr>
+<tr>
+<td><code>accessPolicy</code></td>
+<td>Defines who can send email to this mailing list</td>
+<td><code>accessPolicy=public</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<h3 class="toggle" id="mail-alias">Mail Alias</h3>
+<div class="admonition api">
+<p class="admonition-title"><code class="post">POST</code> <code class="url">/api/alias/&lt;mail&gt;</code> <code class="comment">Create a new mail alias</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="delete">DELETE</code> <code class="url">/api/alias/&lt;mail&gt;</code> <code class="comment">Delete an existing mail alias</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="put">PUT</code> <code class="url">/api/alias/&lt;mail&gt;</code> <code class="comment">Update profile of an existing mail alias</code> <code class="has_params">Parameters</code></p>
+<div class="params">
+
+<table>
+<thead>
+<tr>
+<th>Parameter Name</th>
+<th>Summary</th>
+<th>Sample Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cn</code></td>
+<td>display name</td>
+<td><code>cn=My List Name</code></td>
+</tr>
+<tr>
+<td><code>accessPolicy</code></td>
+<td>Defines who can send email to this mail alias account</td>
+<td><code>accessPolicy=public</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Note: <code>accessPolicy</code> for mail alias account is only available for SQL backends.</p>
+</blockquote>
+</div>
+
+</div>
+<h3 class="toggle" id="throttling">Throttling</h3>
+<div class="admonition api">
+<p class="admonition-title"><code class="get">GET</code> <code class="url">/api/throttle/global/inbound</code> <code class="comment">Get global inbound throttle settings</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="post">POST</code> <code class="url">/api/throttle/global/inbound</code> <code class="comment">Set global inbound throttle settings</code> <code class="has_params_throttle">Parameters</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="get">GET</code> <code class="url">/api/throttle/global/outbound</code> <code class="comment">Get global outbound throttle settings</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="post">POST</code> <code class="url">/api/throttle/global/outbound</code> <code class="comment">Set global inbound throttle settings</code> <code class="has_params_throttle">Parameters</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="get">GET</code> <code class="url">/api/throttle/&lt;domain&gt;/inbound</code> <code class="comment">Get domain inbound throttle settings</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="post">POST</code> <code class="url">/api/throttle/&lt;domain&gt;/inbound</code> <code class="comment">Set domain inbound throttle settings</code> <code class="has_params_throttle">Parameters</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="get">GET</code> <code class="url">/api/throttle/&lt;domain&gt;/outbound</code> <code class="comment">Get domain outbound throttle settings</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="post">POST</code> <code class="url">/api/throttle/&lt;domain&gt;/outbound</code> <code class="comment">Set domain outbound throttle settings</code> <code class="has_params_throttle">Parameters</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="get">GET</code> <code class="url">/api/throttle/&lt;mail&gt;/inbound</code> <code class="comment">Get user inbound throttle settings</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="post">POST</code> <code class="url">/api/throttle/&lt;mail&gt;/inbound</code> <code class="comment">Set user inbound throttle settings</code> <code class="has_params_throttle">Parameters</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="get">GET</code> <code class="url">/api/throttle/&lt;mail&gt;/outbound</code> <code class="comment">Get user outbound throttle settings</code></p>
+</div>
+<div class="admonition api">
+<p class="admonition-title"><code class="post">POST</code> <code class="url">/api/throttle/&lt;mail&gt;/outbound</code> <code class="comment">Set user outbound throttle settings</code> <code class="has_params_throttle">Parameters</code></p>
+<div class="params params_throttle">
+
+<p>Parameters available for global, per-domain, per-user throttle settings.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter Name</th>
+<th>Summary</th>
+<th>Sample Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>period</code> *</td>
+<td>Period of time, in seconds</td>
+<td><code>period=3600</code> (one hour)</td>
+</tr>
+<tr>
+<td><code>msg_size</code></td>
+<td>Max size of single email, in bytes</td>
+<td><code>msg_size=10485760</code> (10 MB)</td>
+</tr>
+<tr>
+<td><code>max_msgs</code></td>
+<td>Number of max inbound emails</td>
+<td><code>max_msgs=20</code> (up to 20 messages)</td>
+</tr>
+<tr>
+<td><code>max_quota</code></td>
+<td>Cumulative size of inbound or outbound emails, in bytes</td>
+<td><code>max_quota=1048576000</code> (1 GB)</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+<script src="./js/jquery-1.12.3.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    /* Collapse all parameters by default */
+    $('.params').hide();
+
+    /* Expand/Collapse ALL parameters */
+    $('.toggle_all').bind('click', function(){$('.params').toggle();});  
+
+    /* Expand/Collapse parameters under same title/category */
+    $('.toggle').on('click', function() {
+        $(this).nextUntil('.toggle').children('.params').toggle();
+    });
+
+    /* Expand/Collapse parameter for current API */
+    $('.has_params').on('click', function() {
+        $(this).parent().nextUntil('.has_params').toggle();
+    });
+
+    /* Expand/Collapse specific parameters */
+    $('.has_params_throttle').bind('click', function(){$('.params_throttle').toggle();});  
+});
+</script><div class="footer">
+    <p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. You can <a href="https://bitbucket.org/zhb/iredmail-docs/get/tip.tar.bz2">download the latest version</a> for offline reading. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.</p>
+</div>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-3293801-21', 'auto');
+  ga('send', 'pageview');
+</script>
+</body></html>

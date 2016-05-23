@@ -12,7 +12,7 @@ import web
 import markdown
 
 # Markdown extensions
-MD_EXTENSIONS = ['toc', 'meta', 'extra', 'footnotes', 'admonition']
+MD_EXTENSIONS = ['toc', 'meta', 'extra', 'footnotes', 'admonition', 'tables', 'attr_list']
 
 # Get file name
 filename = sys.argv[1]
@@ -30,9 +30,6 @@ for arg in args:
         (var, value) = arg.split('=')
         cmd_opts[var] = value
 
-if not 'css' in cmd_opts:
-    cmd_opts['css'] = './css/markdown.css'
-
 # Get article title
 if not 'title' in cmd_opts:
     cmd_opts['title'] = commands.getoutput("""grep 'Title:' %s |awk -F'Title: ' '{print $2}'""" % filename)
@@ -44,12 +41,12 @@ if 'output_filename' in cmd_opts:
     output_html_file = output_dir + '/' + cmd_opts['output_filename']
 
 # Set HTML head
-html = """\
+html = """<!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>%(title)s</title>
-        <link rel="stylesheet" type="text/css" href="%(css)s" />
+        <link rel="stylesheet" type="text/css" href="./css/markdown.css" />
     </head>
     <body>
     """ % cmd_opts
@@ -58,8 +55,14 @@ html = """\
 # Link to iRedMail.org
 html += """
     <div id="navigation">
-    <a href="/index.html" target="_blank"><img alt="iRedMail web site" src="images/logo-iredmail.png" style="vertical-align: middle; height: 30px;"/> <span>iRedMail</span></a>
-    """
+    <a href="/index.html" target="_blank">
+        <img alt="iRedMail web site"
+             src="./images/logo-iredmail.png"
+             style="vertical-align: middle; height: 30px;"
+             />&nbsp;
+        <span>iRedMail</span>
+    </a>
+    """ % cmd_opts
 
 # Add link to index page in article pages.
 if 'add_index_link' in cmd_opts:
@@ -75,11 +78,13 @@ html = web.safeunicode(html)
 orig_content = web.safeunicode(open(filename).read())
 html += markdown.markdown(orig_content, extensions=MD_EXTENSIONS)
 
-html += """<p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it."""
+html += """<div class="footer">
+    <p style="text-align: center; color: grey;">All documents are available in <a href="https://bitbucket.org/zhb/iredmail-docs/src">BitBucket repository</a>, and published under <a href="http://creativecommons.org/licenses/by-nd/3.0/us/" target="_blank">Creative Commons</a> license. You can <a href="https://bitbucket.org/zhb/iredmail-docs/get/tip.tar.bz2">download the latest version</a> for offline reading. If you found something wrong, please do <a href="http://www.iredmail.org/contact.html">contact us</a> to fix it.</p>
+</div>"""
 
 
-html += """\
-<script>
+html += """
+<script type="text/javascript">
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)

@@ -86,7 +86,7 @@ latest stable release:
 ### Upgrade Roundcube webmail to the latest stable release
 
 Please follow Roundcube official tutorial to upgrade Roundcube webmail to the
-latest stable release immediately: [How to upgrade Roundcube](http://trac.roundcube.net/wiki/Howto_Upgrade)
+latest stable release immediately: [How to upgrade Roundcube](https://github.com/roundcube/roundcubemail/wiki/Upgrade).
 
 Note: package `rsync` must be installed on your server before upgrading.
 
@@ -368,7 +368,7 @@ and append below settings right after `ssl on` line:
 # Use HTTP Strict Transport Security to force client to use secure connections only.
 # Reference:
 # https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security
-add_header Strict-Transport-Security "max-age=15768000"
+add_header Strict-Transport-Security "max-age=15768000";
 ```
 
 ### SOGo: Fix improper settings in Apache/Nginx config file
